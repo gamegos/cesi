@@ -3,7 +3,7 @@ class Proc_info:
     server = xmlrpclib.Server('http://user:123@gulsah.game.gos:9001/RPC2')
 
     def __init__(self, process_name):
-        self.process_name =	process_name
+        self.process_name = process_name
         self.process_info = Proc_info.server.supervisor.getProcessInfo(process_name)
         self.name = self.process_info['name']
 

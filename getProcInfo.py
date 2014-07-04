@@ -6,20 +6,30 @@ class Proc_info:
         self.process_name = process_name
         self.process_info = Proc_info.server.supervisor.getProcessInfo(process_name)
         self.name = self.process_info['name']
-
-		group = 		process_info('group')
-		start = 		process_info('start')
-		stop = 			process_info('stop')
-		now = 			process_info('now')
-		state = 		process_info('state')
-		statename = 		process_info('statename')
-		spawnerr = 		process_info('spawnerr')
-		exitstatus = 		process_info('exitstatus')
-		stdout_logfile = 	process_info('stdout_logfile')
-		stderr_logfile = 	process_info('stderr_logfile')
-		pid = 			process_info('pid')
+	self.group = self.process_info['group']
+	self.start = self.process_info['start']
+	self.stop = self.process_info['stop']
+	self.now = self.process_info['now']
+	self.state = self.process_info['state']
+	self.statename = self.process_info['statename']
+	self.spawnerr = self.process_info['spawnerr']
+	self.exitstatus = self.process_info['exitstatus']
+	self.stdout_logfile = self.process_info['stdout_logfile']
+	self.stderr_logfile = self.process_info['stderr_logfile']
+	self.pid = self.process_info['pid']
 
 
 one = Proc_info("long5_script")
 
-print one.name
+print "Name= %s" % (one.name)
+print "Group= %s" % (one.group)
+print "Start= %s" % (one.start)
+print "Stop= %s" % (one.stop)
+print "Now= %s" % (one.now)
+print "State= %s" % (one.state)
+print "Statename= %s" % (one.statename)
+print "Spawnerr= %s" % (one.spawnerr)
+print "Exitstatus= %s" % (one.exitstatus)
+print "Stdout_logfile= %s" % (one.stdout_logfile)
+print "Stderr_logfile= %s" % (one.stderr_logfile)
+print "Pid= %s" % (one.pid)

@@ -29,7 +29,27 @@ class Supervisord_info:
     state_code = server.supervisor.getState()['statecode']
     state_name = server.supervisor.getState()['statename']
     pid= server.supervisor.getPID()
+
+    def readlog(self,offset,length):
+        self.offset = offset
+        self.length = length
+        self.log = Supervisord_info.server.supervisor.readLog(offset,length)
+        return self.log
+
+    def clearlog(self):
+        if(Supervisord_info.server.supervisor.clearLog()):
+            return "Cleared supervisosd main log"
+        return "Could not cleared log"
+
+    def shutdown(self):
+        if(Supervisord_info.server.supervisor.shutdown()):
+            return "Success shutdown"
+        return "Unsuccess shutdown"
     
+    def restart(self):
+        if(Supervisord_info.server.supervisor.restart()):
+            return "Success restart"
+        return "Unsuccess restart"
 
 print "*****************Supervisor Control******************************"
 print Supervisord_info.api_version
@@ -37,6 +57,12 @@ print Supervisord_info.supervisor_version
 print Supervisord_info.supervisor_id
 print Supervisord_info.state_code
 print Supervisord_info.state_name
+
+two = Supervisord_info()
+print two.readlog(1,10)
+print two.clearlog()
+print two.restart()
+print two.shutdown()
 
 
 print "****************Process Control*******************************"

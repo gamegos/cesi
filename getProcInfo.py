@@ -1,22 +1,21 @@
 class Proc_info:
     import xmlrpclib
     server = xmlrpclib.Server('http://user:123@gulsah.game.gos:9001/RPC2')
-
     def __init__(self, process_name):
         self.process_name = process_name
         self.process_info = Proc_info.server.supervisor.getProcessInfo(process_name)
         self.name = self.process_info['name']
-	self.group = self.process_info['group']
-	self.start = self.process_info['start']
-	self.stop = self.process_info['stop']
-	self.now = self.process_info['now']
-	self.state = self.process_info['state']
-	self.statename = self.process_info['statename']
-	self.spawnerr = self.process_info['spawnerr']
-	self.exitstatus = self.process_info['exitstatus']
-	self.stdout_logfile = self.process_info['stdout_logfile']
-	self.stderr_logfile = self.process_info['stderr_logfile']
-	self.pid = self.process_info['pid']
+        self.group = self.process_info['group']
+        self.start = self.process_info['start']
+        self.stop = self.process_info['stop']
+        self.now = self.process_info['now']
+        self.state = self.process_info['state']
+        self.statename = self.process_info['statename']
+        self.spawnerr = self.process_info['spawnerr']
+        self.exitstatus = self.process_info['exitstatus']
+        self.stdout_logfile = self.process_info['stdout_logfile']
+        self.stderr_logfile = self.process_info['stderr_logfile']
+        self.pid = self.process_info['pid']
 
 
 class Supervisord_info:

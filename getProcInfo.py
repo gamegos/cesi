@@ -19,6 +19,27 @@ class Proc_info:
 	self.pid = self.process_info['pid']
 
 
+class Supervisord_info:
+    import xmlrpclib
+    server = xmlrpclib.Server('http://user:123@gulsah.game.gos:9001/RPC2')
+    
+    api_version = server.supervisor.getAPIVersion()
+    supervisor_version = server.supervisor.getSupervisorVersion()
+    supervisor_id = version = server.supervisor.getIdentification()
+    state_code = server.supervisor.getState()['statecode']
+    state_name = server.supervisor.getState()['statename']
+    pid= server.supervisor.getPID()
+    
+
+print "*****************Supervisor Control******************************"
+print Supervisord_info.api_version
+print Supervisord_info.supervisor_version
+print Supervisord_info.supervisor_id
+print Supervisord_info.state_code
+print Supervisord_info.state_name
+
+
+print "****************Process Control*******************************"
 one = Proc_info("long5_script")
 
 print "Name= %s" % (one.name)
@@ -33,3 +54,4 @@ print "Exitstatus= %s" % (one.exitstatus)
 print "Stdout_logfile= %s" % (one.stdout_logfile)
 print "Stderr_logfile= %s" % (one.stderr_logfile)
 print "Pid= %s" % (one.pid)
+

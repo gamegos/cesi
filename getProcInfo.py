@@ -41,14 +41,18 @@ class Supervisord_info:
         return "Could not cleared log"
 
     def shutdown(self):
-        if(Supervisord_info.server.supervisor.shutdown()):
+        if(Supervisord_info.state_code == 1):
+            Supervisord_info.server.supervisor.shutdown()
             return "Success shutdown"
-        return "Unsuccess shutdown"
+        else:
+            return "Unsuccess shutdown"
     
     def restart(self):
-        if(Supervisord_info.server.supervisor.restart()):
+        if(Supervisord_info.state_code == 1):
+            Supervisord_info.server.supervisor.restart()
             return "Success restart"
-        return "Unsuccess restart"
+        else:
+            return "Unsuccess restart"
 
 print "*****************Supervisor Control******************************"
 print Supervisord_info.api_version

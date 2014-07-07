@@ -1,6 +1,15 @@
 class Proc_info:
     import xmlrpclib
-    server = xmlrpclib.Server('http://user:123@gulsah.game.gos:9001/RPC2')
+    import ConfigParser
+    cfg = ConfigParser.ConfigParser()
+    cfg.read('authentication')
+    user = cfg.get('DEFAULT', 'user')
+    password = cfg.get('DEFAULT', 'password')
+    host = cfg.get('DEFAULT', 'host')
+    port = cfg.get('DEFAULT', 'port')
+    address="http://%s:%s@%s:%s/RPC2" %(user, password, host, port)
+    server = xmlrpclib.Server(address)
+
     def __init__(self, process_name):
         self.process_name = process_name
         self.process_info = Proc_info.server.supervisor.getProcessInfo(process_name)
@@ -20,8 +29,16 @@ class Proc_info:
 
 class Supervisord_info:
     import xmlrpclib
-    server = xmlrpclib.Server('http://user:123@gulsah.game.gos:9001/RPC2')
-    
+    import ConfigParser
+    cfg = ConfigParser.ConfigParser()
+    cfg.read('authentication')
+    user = cfg.get('DEFAULT', 'user')
+    password = cfg.get('DEFAULT', 'password')
+    host = cfg.get('DEFAULT', 'host')
+    port = cfg.get('DEFAULT', 'port')
+    address="http://%s:%s@%s:%s/RPC2" %(user, password, host, port)
+    server = xmlrpclib.Server(address)
+
     api_version = server.supervisor.getAPIVersion()
     supervisor_version = server.supervisor.getSupervisorVersion()
     supervisor_id = version = server.supervisor.getIdentification()
@@ -64,8 +81,8 @@ print Supervisord_info.state_name
 two = Supervisord_info()
 print two.readlog(1,10)
 print two.clearlog()
-print two.restart()
-print two.shutdown()
+#print two.restart()
+#print two.shutdown()
 
 
 print "****************Process Control*******************************"

@@ -1,10 +1,9 @@
+import xmlrpclib
+import ConfigParser
 
 CFILE = "/etc/supervisord-centralized.conf"
 
 class Proc_info:
-    import xmlrpclib
-    import ConfigParser
-
 
     cfg = ConfigParser.ConfigParser()
     cfg.read(CFILE)
@@ -33,8 +32,7 @@ class Proc_info:
 
 
 class Supervisord_info:
-    import xmlrpclib
-    import ConfigParser
+
     cfg = ConfigParser.ConfigParser()
     cfg.read(CFILE)
     user = cfg.get('DEFAULT', 'user')

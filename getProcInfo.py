@@ -1,8 +1,13 @@
+
+CFILE = "/etc/supervisord-centralized.conf"
+
 class Proc_info:
     import xmlrpclib
     import ConfigParser
+
+
     cfg = ConfigParser.ConfigParser()
-    cfg.read('authentication')
+    cfg.read(CFILE)
     user = cfg.get('DEFAULT', 'user')
     password = cfg.get('DEFAULT', 'password')
     host = cfg.get('DEFAULT', 'host')
@@ -31,7 +36,7 @@ class Supervisord_info:
     import xmlrpclib
     import ConfigParser
     cfg = ConfigParser.ConfigParser()
-    cfg.read('authentication')
+    cfg.read(CFILE)
     user = cfg.get('DEFAULT', 'user')
     password = cfg.get('DEFAULT', 'password')
     host = cfg.get('DEFAULT', 'host')

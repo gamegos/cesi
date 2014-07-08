@@ -4,7 +4,7 @@ import getProcInfo
 import ConfigParser
 import xmlrpclib
 
-CFILE = "/etc/supervisord-centralized.conf"
+CFILE = "/etc/supervisor-centralized.conf"
 
 app = Flask(__name__)
 app.config.from_object(__name__)

@@ -6,7 +6,7 @@ import xmlrpclib
 app = Flask(__name__)
 app.config.from_object(__name__)
 
-address="http://%s:%s@%s:%s/RPC2" %(getProcInfo.Parser.user, getProcInfo.Parser.password, getProcInfo.Parser.host, getProcInfo.Parser.port)
+address="http://%s:%s@%s:%s/RPC2" %(getProcInfo.Config.user, getProcInfo.Config.password, getProcInfo.Config.host, getProcInfo.Config.port)
 server = xmlrpclib.Server(address)
 
 @app.route('/')

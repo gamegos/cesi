@@ -31,7 +31,7 @@ class ProcInfo:
 
 class SupervisorInfo:
 
-    address="http://%s:%s@%s:%s/RPC2" %(Parser.user, Parser.password, Parser.host, Parser.port)
+    address="http://%s:%s@%s:%s/RPC2" %(Config.user, Config.password, Config.host, Config.port)
     server = xmlrpclib.Server(address)
 
     api_version = server.supervisor.getAPIVersion()

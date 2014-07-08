@@ -24,7 +24,13 @@
             <td> {{ i.stop }} </td>
             <td> {{ i.now }} </td>
             <td> {{ i.state }} </td>
-            <td> {{ i.statename }} </td>
+        {% if i.state==0 or i.state==40 or i.state==100 or i.state==200 %}
+            <td class="danger"> {{ i.statename }} </td>
+        {% elif i.state==10 or i.state==20 %}
+            <td class="success"> {{ i.statename }} </td>
+        {% else %}
+            <td class="info"> {{ i.statename }} </td>
+        {% endif  %}
             <td> {{ i.spawnerr }} </td>
             <td> {{ i.exitstatus }} </td>
             <td> {{ i.stdout_logfile }} </td>

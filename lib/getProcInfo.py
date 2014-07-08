@@ -14,21 +14,20 @@ class Proc_info:
     address="http://%s:%s@%s:%s/RPC2" %(user, password, host, port)
     server = xmlrpclib.Server(address)
 
-    def __init__(self, process_name):
-        self.process_name = process_name
-        self.process_info = Proc_info.server.supervisor.getProcessInfo(process_name)
-        self.name = self.process_info['name']
-        self.group = self.process_info['group']
-        self.start = self.process_info['start']
-        self.stop = self.process_info['stop']
-        self.now = self.process_info['now']
-        self.state = self.process_info['state']
-        self.statename = self.process_info['statename']
-        self.spawnerr = self.process_info['spawnerr']
-        self.exitstatus = self.process_info['exitstatus']
-        self.stdout_logfile = self.process_info['stdout_logfile']
-        self.stderr_logfile = self.process_info['stderr_logfile']
-        self.pid = self.process_info['pid']
+    def __init__(self, dictionary):
+        self.dictionary = dictionary
+        self.name = self.dictionary['name']
+        self.group = self.dictionary['group']
+        self.start = self.dictionary['start']
+        self.stop = self.dictionary['stop']
+        self.now = self.dictionary['now']
+        self.state = self.dictionary['state']
+        self.statename = self.dictionary['statename']
+        self.spawnerr = self.dictionary['spawnerr']
+        self.exitstatus = self.dictionary['exitstatus']
+        self.stdout_logfile = self.dictionary['stdout_logfile']
+        self.stderr_logfile = self.dictionary['stderr_logfile']
+        self.pid = self.dictionary['pid']
 
 
 class Supervisord_info:
@@ -89,18 +88,29 @@ print two.clearlog()
 
 
 print "****************Process Control*******************************"
-one = Proc_info("long5_script")
 
-print "Name= %s" % (one.name)
-print "Group= %s" % (one.group)
-print "Start= %s" % (one.start)
-print "Stop= %s" % (one.stop)
-print "Now= %s" % (one.now)
-print "State= %s" % (one.state)
-print "Statename= %s" % (one.statename)
-print "Spawnerr= %s" % (one.spawnerr)
-print "Exitstatus= %s" % (one.exitstatus)
-print "Stdout_logfile= %s" % (one.stdout_logfile)
-print "Stderr_logfile= %s" % (one.stderr_logfile)
-print "Pid= %s" % (one.pid)
+cfg = ConfigParser.ConfigParser()
+cfg.read(CFILE)
+user = cfg.get('DEFAULT', 'user')
+password = cfg.get('DEFAULT', 'password')
+host = cfg.get('DEFAULT', 'host')
+port = cfg.get('DEFAULT', 'port')
+address="http://%s:%s@%s:%s/RPC2" %(user, password, host, port)
+server = xmlrpclib.Server(address)
+
+lis = server.supervisor.getAllProcessInfo()
+for i in lis:
+    one = Proc_info(i)
+    print "Name= %s" % (one.name)
+    print "Group= %s" % (one.group)
+    print "Start= %s" % (one.start)
+    print "Stop= %s" % (one.stop)
+    print "Now= %s" % (one.now)
+    print "State= %s" % (one.state)
+    print "Statename= %s" % (one.statename)
+    print "Spawnerr= %s" % (one.spawnerr)
+    print "Exitstatus= %s" % (one.exitstatus)
+    print "Stdout_logfile= %s" % (one.stdout_logfile)
+    print "Stderr_logfile= %s" % (one.stderr_logfile)
+    print "Pid= %s" % (one.pid)
 

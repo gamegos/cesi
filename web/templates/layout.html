@@ -1,26 +1,3 @@
 <!doctype html>
 <title>Supervisor Centralized</title>
 <link rel=stylesheet type=text/css href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
-
-<!-- Table -->
-    <table class="table table-bordered" >
-        <tr class="info"> 
-            <th>Name</th>
-            <th>Group</th>
-            <th>Start</th>
-            <th>Stop</th>
-            <th>Now</th>
-            <th>State</th>
-            <th>State name</th>
-            <th>Spawnerr</th>
-            <th>Exit status</th>
-            <th>Stdout logfile</th>
-            <th>Stderr logfile</th>
-            <th>Pid</th>
-        <tr>
-        {% for i in info_list %}
-            <td> {{ i }} </td>
-        {% endfor %}
-        </tr>
-    </table>
-

@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<!-- Table -->
+    <table class="table table-bordered" >
+        <tr class="info"> 
+            <th>Name</th>
+            <th>Group</th>
+            <th>Start</th>
+            <th>Stop</th>
+            <th>Now</th>
+            <th>State</th>
+            <th>State name</th>
+            <th>Spawnerr</th>
+            <th>Exit status</th>
+            <th>Stdout logfile</th>
+            <th>Stderr logfile</th>
+            <th>Pid</th>
+        <tr>
+        {% for i in info_list %}
+            <td> {{ i }} </td>
+        {% endfor %}
+        </tr>
+    </table>
+
+{% endblock %}

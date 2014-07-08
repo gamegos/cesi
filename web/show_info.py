@@ -23,7 +23,7 @@ def show_info():
     stderrlog = obj.stderr_logfile
     pid = obj.pid
     info_list = (name, group, start, stop, now, state, statename, spawnerr, exitstatus, stdoutlog, stderrlog, pid)
-    return render_template('layout.html', info_list=info_list)
+    return render_template('show_info.html', info_list=info_list)
             
            # name=name, group=group, start=start, stop=stop,\
            # now=now, state=state, statename=statename, spawnerr=spawnerr, exitstatus=exitstatus,\

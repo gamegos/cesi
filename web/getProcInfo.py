@@ -1,7 +1,7 @@
 import xmlrpclib
 import ConfigParser
 
-class Parser:
+class Config:
     CFILE = "/etc/supervisor-centralized.conf"
     cfg = ConfigParser.ConfigParser()
     cfg.read(CFILE)

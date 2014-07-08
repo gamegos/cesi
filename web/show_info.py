@@ -9,11 +9,9 @@ app.config.from_object(__name__)
 address="http://%s:%s@%s:%s/RPC2" %(getProcInfo.Parser.user, getProcInfo.Parser.password, getProcInfo.Parser.host, getProcInfo.Parser.port)
 server = xmlrpclib.Server(address)
 
-lis = server.supervisor.getAllProcessInfo()
-info_list = []
-
 @app.route('/')
 def show_info():
+    info_list = []
     lis = server.supervisor.getAllProcessInfo()
     for i in lis:
         one = getProcInfo.ProcInfo(i)

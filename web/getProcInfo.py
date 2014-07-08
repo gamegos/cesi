@@ -1,7 +1,15 @@
 import xmlrpclib
 import ConfigParser
 
-CFILE = "/etc/supervisor-centralized.conf"
+class Parser:
+    CFILE = "/etc/supervisor-centralized.conf"
+    cfg = ConfigParser.ConfigParser()
+    cfg.read(CFILE)
+    user = cfg.get('DEFAULT', 'user')
+    password = cfg.get('DEFAULT', 'password')
+    host = cfg.get('DEFAULT', 'host')
+    port = cfg.get('DEFAULT', 'port')
+    
 
 class ProcInfo:
 
@@ -23,13 +31,7 @@ class ProcInfo:
 
 class SupervisorInfo:
 
-    cfg = ConfigParser.ConfigParser()
-    cfg.read(CFILE)
-    user = cfg.get('DEFAULT', 'user')
-    password = cfg.get('DEFAULT', 'password')
-    host = cfg.get('DEFAULT', 'host')
-    port = cfg.get('DEFAULT', 'port')
-    address="http://%s:%s@%s:%s/RPC2" %(user, password, host, port)
+    address="http://%s:%s@%s:%s/RPC2" %(Parser.user, Parser.password, Parser.host, Parser.port)
     server = xmlrpclib.Server(address)
 
     api_version = server.supervisor.getAPIVersion()

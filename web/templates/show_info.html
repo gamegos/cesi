@@ -36,10 +36,10 @@
             <td> {{ i.stdout_logfile }} </td>
             <td> {{ i.stderr_logfile }} </td>
             <td>
-            <a role="button" href="process/start/{{ i.name }}">start</a>
+            <a role="button" href="process/start/{{ i.group  }}:{{ i.name }}">start</a>
             </td>
             <td>
-            <a role="button" href="process/stop/{{ i.name }}">stop</a>
+            <a role="button" href="process/stop/{{ i.group  }}:{{ i.name }}">stop</a>
             </td>
         </tr>
         {% endfor %}

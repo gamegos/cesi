@@ -44,35 +44,35 @@ class ProcInfo:
 
 class SupervisorInfo:
 
-    server = SupervisorConnection(Config.host, Config.port, Config.username, Config.password).getConnection()
-    api_version = server.supervisor.getAPIVersion()
-    supervisor_version = server.supervisor.getSupervisorVersion()
-    supervisor_id = version = server.supervisor.getIdentification()
-    state_code = server.supervisor.getState()['statecode']
-    state_name = server.supervisor.getState()['statename']
-    pid= server.supervisor.getPID()
+    connection = SupervisorConnection(Config.host, Config.port, Config.username, Config.password).getConnection()
+    api_version = connection.supervisor.getAPIVersion()
+    supervisor_version = connection.supervisor.getSupervisorVersion()
+    supervisor_id = version = connection.supervisor.getIdentification()
+    state_code = connection.supervisor.getState()['statecode']
+    state_name = connection.supervisor.getState()['statename']
+    pid= connection.supervisor.getPID()
 
     def readLog(self,offset,length):
         self.offset = offset
         self.length = length
-        self.log = Supervisord_info.server.supervisor.readLog(offset,length)
+        self.log = Supervisord_info.connection.supervisor.readLog(offset,length)
         return self.log
 
     def clearLog(self):
-        if(Supervisord_info.server.supervisor.clearLog()):
+        if(Supervisord_info.connection.supervisor.clearLog()):
             return "Cleared supervisosd main log"
         return "Could not cleared log"
 
     def shutdown(self):
         if(Supervisord_info.state_code == 1):
-            Supervisord_info.server.supervisor.shutdown()
+            Supervisord_info.connection.supervisor.shutdown()
             return "Success shutdown"
         else:
             return "Unsuccess shutdown"
     
     def restart(self):
         if(Supervisord_info.state_code == 1):
-            Supervisord_info.server.supervisor.restart()
+            Supervisord_info.connection.supervisor.restart()
             return "Success restart"
         else:
             return "Unsuccess restart"

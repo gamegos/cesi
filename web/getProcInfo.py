@@ -2,13 +2,20 @@ import xmlrpclib
 import ConfigParser
 
 class Config:
-    CFILE = "/etc/supervisor-centralized.conf"
-    cfg = ConfigParser.ConfigParser()
-    cfg.read(CFILE)
-    username = cfg.get('DEFAULT', 'user')
-    password = cfg.get('DEFAULT', 'password')
-    host = cfg.get('DEFAULT', 'host')
-    port = cfg.get('DEFAULT', 'port')
+    
+    def __init__(self, section_name):
+        self.section_name = section_name
+        self.CFILE = "/etc/supervisor-centralized.conf"
+        self.cfg = ConfigParser.ConfigParser()
+        self.cfg.read(self.CFILE)
+        if not self.cfg.has_section(self.section_name):
+            self.username = self.cfg.get(self.section_name, 'username')
+            self.password = self.cfg.get(self.section_name, 'password')
+            self.host = self.cfg.get(self.section_name, 'host')
+            self.port = self.cfg.get(self.section_name, 'port')
+
+
+    
 
 
 class Connection:
@@ -44,7 +51,7 @@ class ProcInfo:
 
 class SupervisorInfo:
 
-    connection = Connection(Config.host, Config.port, Config.username, Config.password).getConnection()
+    connection = Connection(Config('DEFAULT').host, Config('DEFAULT').port, Config('DEFAULT').username, Config('DEFAULT').password).getConnection()
     api_version = connection.supervisor.getAPIVersion()
     supervisor_version = connection.supervisor.getSupervisorVersion()
     supervisor_id = version = connection.supervisor.getIdentification()

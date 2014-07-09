@@ -35,8 +35,18 @@
             <td> {{ i.exitstatus }} </td>
             <td> {{ i.stdout_logfile }} </td>
             <td> {{ i.stderr_logfile }} </td>
-            <td> <a class="btn btn-primary btn-sm" role="button" href="#">Restart</a>  </td>
-            <td> <a class="btn btn-primary btn-sm" role="button" href="#">Stop</a>  </td>
+            <td>
+            <form action"event.php" method="POST">
+                <input type="hidden" name="restart" value="{{ i.name  }}"> 
+                <input type="submit" class="btn btn-primary btn-sm" value="Restart"  href="#">
+            </form>
+            </td>
+            <td>
+            <form action"event.php" method="POST">
+                <input type="hidden" name="stop" value="{{ i.name  }}"> 
+                <input type="submit" class="btn btn-primary btn-sm" value="Stop"  href="#">
+            </form>
+            </td>
         </tr>
         {% endfor %}
     </table>

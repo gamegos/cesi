@@ -20,7 +20,7 @@ def show_info():
 @app.route('/node/<node_name>')
 def nodelist(node_name):
     node = Node(node_name)
-    return render_template('show_info.html', info_list = node.process_list)
+    return render_template('show_info.html', process_list = node.process_list)
 
 @app.route('/process/stop/<process_name>')
 def stopProcess(process_name):

@@ -28,6 +28,11 @@ def startProcess(process_name):
     connection.supervisor.startProcess(process_name)
     return redirect(url_for('show_info'))
 
+@app.route('/process/restart/<process_name>')
+def restartProcess(process_name):
+    connection.supervisor.stopProcess(process_name)
+    connection.supervisor.startProcess(process_name)
+    return redirect(url_for('show_info'))
 
 if __name__ == '__main__':
     app.run(debug=True, use_reloader=True)

@@ -35,12 +35,21 @@
             <td> {{ process.exitstatus }} </td>
             <td> {{ process.stdout_logfile }} </td>
             <td> {{ process.stderr_logfile }} </td>
+        {% if process.state==20  %}
             <td>
-            <a class="btn btn-info btn-sm" href="process/start/{{ process.group  }}:{{ process.name }}">start</a>
+            <a class="btn btn-info btn-sm" href="process/restart/{{ process.group  }}:{{ process.name }}">restart</a>
             </td>
             <td>
             <a class="btn btn-info btn-sm" href="process/stop/{{ process.group  }}:{{ process.name }}">stop</a>
             </td>
+        {% elif process.state==0  %}
+            <td>
+            <a class="btn btn-info btn-sm" href="process/start/{{ process.group  }}:{{ process.name }}">start</a>
+            </td>
+            <td>
+            <a class="btn btn-info btn-sm disabled" href="#">stop</a>
+            </td>
+        {% endif  %}
         </tr>
         {% endfor %}
     </table>

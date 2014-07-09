@@ -5,11 +5,24 @@ class Config:
     CFILE = "/etc/supervisor-centralized.conf"
     cfg = ConfigParser.ConfigParser()
     cfg.read(CFILE)
-    user = cfg.get('DEFAULT', 'user')
+    username = cfg.get('DEFAULT', 'user')
     password = cfg.get('DEFAULT', 'password')
     host = cfg.get('DEFAULT', 'host')
     port = cfg.get('DEFAULT', 'port')
-    
+
+
+class SupervisorConnection:
+
+    def __init__(self, host, port, username, password):
+        self.host = host
+        self.port = port
+        self.username = username
+        self.password = password
+        self.address = "http://%s:%s@%s:%s/RPC2" %(self.username, self.password, self.host, self.port)
+
+    def getConnection(self):
+        return xmlrpclib.Server(self.address)
+        
 
 class ProcInfo:
 
@@ -31,9 +44,7 @@ class ProcInfo:
 
 class SupervisorInfo:
 
-    address="http://%s:%s@%s:%s/RPC2" %(Config.user, Config.password, Config.host, Config.port)
-    server = xmlrpclib.Server(address)
-
+    server = SupervisorConnection(Config.host, Config.port, Config.username, Config.password).getConnection()
     api_version = server.supervisor.getAPIVersion()
     supervisor_version = server.supervisor.getSupervisorVersion()
     supervisor_id = version = server.supervisor.getIdentification()

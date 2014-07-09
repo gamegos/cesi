@@ -11,7 +11,7 @@ class Config:
     port = cfg.get('DEFAULT', 'port')
 
 
-class SupervisorConnection:
+class Connection:
 
     def __init__(self, host, port, username, password):
         self.host = host

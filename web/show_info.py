@@ -6,7 +6,7 @@ import xmlrpclib
 app = Flask(__name__)
 app.config.from_object(__name__)
 
-connection = Connection(Config.host, Config.port, Config.username, Config.password).getConnection()
+connection = Connection(Config('DEFAULT').host, Config('DEFAULT').port, Config('DEFAULT').username, Config('DEFAULT').password).getConnection()
 
 @app.route('/')
 def show_info():

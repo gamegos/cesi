@@ -44,7 +44,7 @@ class ProcInfo:
 
 class SupervisorInfo:
 
-    connection = SupervisorConnection(Config.host, Config.port, Config.username, Config.password).getConnection()
+    connection = Connection(Config.host, Config.port, Config.username, Config.password).getConnection()
     api_version = connection.supervisor.getAPIVersion()
     supervisor_version = connection.supervisor.getSupervisorVersion()
     supervisor_id = version = connection.supervisor.getIdentification()

@@ -20,12 +20,14 @@ def show_info():
 
 
 @app.route('/process/stop/<process_name>')
+def stopProcess(process_name):
+    connection.supervisor.stopProcess(process_name)
+    return "1" 
+
+@app.route('/process/start/<process_name>')
 def startProcess(process_name):
-    rv = connection.supervisor.stopProcess(process_name)
-    if rv == True:
-        return "yes"
-    else:
-        return "no"
+    connection.supervisor.startProcess(process_name)
+    return "1"
 
 
 if __name__ == '__main__':

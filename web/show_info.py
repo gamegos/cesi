@@ -1,7 +1,6 @@
-import os
-from flask import Flask, render_template
-import getProcInfo 
+from flask import Flask, render_template, url_for, redirect
 from getProcInfo import Config, Connection
+import getProcInfo 
 import xmlrpclib
 
 app = Flask(__name__)
@@ -22,12 +21,12 @@ def show_info():
 @app.route('/process/stop/<process_name>')
 def stopProcess(process_name):
     connection.supervisor.stopProcess(process_name)
-    return "1" 
+    return redirect(url_for('show_info')) 
 
 @app.route('/process/start/<process_name>')
 def startProcess(process_name):
     connection.supervisor.startProcess(process_name)
-    return "1"
+    return redirect(url_for('show_info'))
 
 
 if __name__ == '__main__':

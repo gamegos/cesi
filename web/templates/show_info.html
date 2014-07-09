@@ -15,31 +15,31 @@
             <th>Exit status</th>
             <th>Stdout logfile</th>
             <th>Stderr logfile</th>
-        {% for i in info_list %}
+        {% for process in info_list %}
         <tr>
-            <td> {{ i.pid }} </td>
-            <td> {{ i.name }} </td>
-            <td> {{ i.group }} </td>
-            <td> {{ i.start }} </td>
-            <td> {{ i.stop }} </td>
-            <td> {{ i.now }} </td>
-            <td> {{ i.state }} </td>
-        {% if i.state==0 or i.state==40 or i.state==100 or i.state==200 %}
-            <td class="alert alert-danger"> {{ i.statename }} </td>
-        {% elif i.state==10 or i.state==20 %}
-            <td class="alert alert-success"> {{ i.statename }} </td>
+            <td> {{ process.pid }} </td>
+            <td> {{ process.name }} </td>
+            <td> {{ process.group }} </td>
+            <td> {{ process.start }} </td>
+            <td> {{ process.stop }} </td>
+            <td> {{ process.now }} </td>
+            <td> {{ process.state }} </td>
+        {% if process.state==0 or process.state==40 or process.state==100 or process.state==200 %}
+            <td class="alert alert-danger"> {{ process.statename }} </td>
+        {% elif process.state==10 or process.state==20 %}
+            <td class="alert alert-success"> {{ process.statename }} </td>
         {% else %}
-            <td class="alert alert-warning"> {{ i.statename }} </td>
+            <td class="alert alert-warning"> {{ process.statename }} </td>
         {% endif  %}
-            <td> {{ i.spawnerr }} </td>
-            <td> {{ i.exitstatus }} </td>
-            <td> {{ i.stdout_logfile }} </td>
-            <td> {{ i.stderr_logfile }} </td>
+            <td> {{ process.spawnerr }} </td>
+            <td> {{ process.exitstatus }} </td>
+            <td> {{ process.stdout_logfile }} </td>
+            <td> {{ process.stderr_logfile }} </td>
             <td>
-            <a role="button" href="process/start/{{ i.group  }}:{{ i.name }}">start</a>
+            <a role="button" href="process/start/{{ process.group  }}:{{ process.name }}">start</a>
             </td>
             <td>
-            <a role="button" href="process/stop/{{ i.group  }}:{{ i.name }}">stop</a>
+            <a role="button" href="process/stop/{{ process.group  }}:{{ process.name }}">stop</a>
             </td>
         </tr>
         {% endfor %}

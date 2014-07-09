@@ -8,11 +8,26 @@ class Config:
         self.CFILE = "/etc/supervisor-centralized.conf"
         self.cfg = ConfigParser.ConfigParser()
         self.cfg.read(self.CFILE)
-        if not self.cfg.has_section(self.section_name):
+
+        if self.cfg.has_option(self.section_name, 'username'):
             self.username = self.cfg.get(self.section_name, 'username')
+        else:
+            self.username = self.cfg.get('DEFAULT', 'username')
+
+        if self.cfg.has_option(self.section_name, 'password'):
             self.password = self.cfg.get(self.section_name, 'password')
+        else:
+            self.password = self.cfg.get('DEFAULT', 'password')
+
+        if self.cfg.has_option(self.section_name, 'host'):
             self.host = self.cfg.get(self.section_name, 'host')
+        else:
+            self.host = self.cfg.get('DEFAULT', 'host')
+
+        if self.cfg.has_option(self.section_name, 'port'):
             self.port = self.cfg.get(self.section_name, 'port')
+        else:
+            self.port = self.cfg.get('DEFAULT', 'port')
 
 
     

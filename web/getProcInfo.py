@@ -8,30 +8,23 @@ class Config:
         self.CFILE = "/etc/supervisor-centralized.conf"
         self.cfg = ConfigParser.ConfigParser()
         self.cfg.read(self.CFILE)
+        self.username = self.cfg.get(self.section_name, 'username')
+        self.password = self.cfg.get(self.section_name, 'password')
+        self.host = self.cfg.get(self.section_name, 'host')
+        self.port = self.cfg.get(self.section_name, 'port')
 
-        if self.cfg.has_option(self.section_name, 'username'):
-            self.username = self.cfg.get(self.section_name, 'username')
-        else:
-            self.username = self.cfg.get('DEFAULT', 'username')
-
-        if self.cfg.has_option(self.section_name, 'password'):
-            self.password = self.cfg.get(self.section_name, 'password')
-        else:
-            self.password = self.cfg.get('DEFAULT', 'password')
-
-        if self.cfg.has_option(self.section_name, 'host'):
-            self.host = self.cfg.get(self.section_name, 'host')
-        else:
-            self.host = self.cfg.get('DEFAULT', 'host')
-
-        if self.cfg.has_option(self.section_name, 'port'):
-            self.port = self.cfg.get(self.section_name, 'port')
-        else:
-            self.port = self.cfg.get('DEFAULT', 'port')
+    def __repr__(self):
+        return "%s :: %s :: %s :: %s" %(self.username, self.password, self.host, self.port)
 
 
+class Node:
+    def __init__(self, name):
+        self.config = Config("node:%s" %(name))
+        self.connection = Connection(self.config.host, self.config.port, self.config.username, self.config.password).getConnection()
+        self.process_list = []
+        for p in self.connection.supervisor.getAllProcessInfo():
+            self.process_list.append(ProcessInfo(p))
     
-
 
 class Connection:
 
@@ -46,7 +39,7 @@ class Connection:
         return xmlrpclib.Server(self.address)
         
 
-class ProcInfo:
+class ProcessInfo:
 
     def __init__(self, dictionary):
         self.dictionary = dictionary

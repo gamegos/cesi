@@ -4,3 +4,8 @@
 ; host = localhost
 ; port = 9001
 
+[node:gulsah]
+environment = staj
+
+[node:kaan]
+environemnt = staj

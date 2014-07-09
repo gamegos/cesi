@@ -1,5 +1,5 @@
 from flask import Flask, render_template, url_for, redirect
-from getProcInfo import Config, Connection
+from getProcInfo import Config, Connection, Node
 import getProcInfo 
 import xmlrpclib
 
@@ -13,10 +13,14 @@ def show_info():
     info_list = []
     lis = connection.supervisor.getAllProcessInfo()
     for i in lis:
-        one = getProcInfo.ProcInfo(i)
+        one = getProcInfo.ProcessInfo(i)
         info_list.append(one)
     return render_template('show_info.html', info_list = info_list)
 
+@app.route('/node/<node_name>')
+def nodelist(node_name):
+    node = Node(node_name)
+    return render_template('show_info.html', info_list = node.process_list)
 
 @app.route('/process/stop/<process_name>')
 def stopProcess(process_name):

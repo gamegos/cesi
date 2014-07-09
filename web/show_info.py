@@ -19,10 +19,13 @@ def show_info():
     return render_template('show_info.html', info_list = info_list)
 
 
-@app.route('/process/start/<process_name>')
+@app.route('/process/stop/<process_name>')
 def startProcess(process_name):
-    return process_name
-
+    rv = connection.supervisor.stopProcess(process_name)
+    if rv == True:
+        return "yes"
+    else:
+        return "no"
 
 
 if __name__ == '__main__':

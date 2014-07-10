@@ -9,11 +9,29 @@ app.config.from_object(__name__)
 CFILE="/etc/supervisor-centralized.conf"
 
 @app.route('/')
-def allProcess():
-    plist=[]
-    for nod in Config(CFILE).allSectionsName():
-        plist = plist.append(Node(nod[5:]).process_list)
-    return render_template('show_info.html', process_list = plist)
+def showAllProcess():
+    node_list = []
+    node_names = Config(CFILE).getAllNodeNames()
+    for node_name in node_names:
+        node_name = node_name[5:]
+        node_config = Config(CFILE).getNodeConfig(node_name)
+        node = Node(node_config)
+        node_list.append(node)
+
+    for node in node_list:
+        for process in node.process_list:
+            print node.name, process.name
+
+    return ""
+    
+
+
+
+    #process_list=[]
+    #for node_name in Config(CFILE).allSectionsName():
+    #    node_name = node_name[5:]
+    #    process_list.append(Node(node_name).process_list)
+    #return render_template('show_info.html', process_list = plist)
 
 @app.route('/node/<node_name>')
 def showNode(node_name):

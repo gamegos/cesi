@@ -10,23 +10,35 @@ class Config:
         self.cfg = ConfigParser.ConfigParser()
         self.cfg.read(self.CFILE)
         
-    def getSectionName(self, section_name):
-        self.section_name = "node:%s" % (section_name)
-        self.username = self.cfg.get(self.section_name, 'username')
-        self.password = self.cfg.get(self.section_name, 'password')
-        self.host = self.cfg.get(self.section_name, 'host')
-        self.port = self.cfg.get(self.section_name, 'port')
+    def getNodeConfig(self, node_name):
+        self.node_name = "node:%s" % (node_name)
+        self.username = self.cfg.get(self.node_name, 'username')
+        self.password = self.cfg.get(self.node_name, 'password')
+        self.host = self.cfg.get(self.node_name, 'host')
+        self.port = self.cfg.get(self.node_name, 'port')
+        self.node_config = NodeConfig(self.node_name, self.host, self.port, self.username, self.password)
+        return self.node_config
 
-    def allSectionsName(self):
-        self.slist = self.cfg.sections()
-        return self.slist
+    def getAllNodeNames(self):
+        node_list = self.cfg.sections()
+        return node_list
+
+
+class NodeConfig:
+
+        def __init__(self, node_name, host, port, username, password):
+            self.node_name = node_name
+            self.host = host
+            self.port = port
+            self.username = username
+            self.password = password
             
+
 class Node:
 
-    def __init__(self, name):
-        self.name = name
-        self.config = Config(CFILE).getSectionName(self.name)
-        self.connection = Connection(self.config.host, self.config.port, self.config.username, self.config.password).getConnection()
+    def __init__(self, node_config):
+        self.name = node_config.node_name
+        self.connection = Connection(node_config.host, node_config.port, node_config.username, node_config.password).getConnection()
         self.process_list = []
         for p in self.connection.supervisor.getAllProcessInfo():
             self.process_list.append(ProcessInfo(p))

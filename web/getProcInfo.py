@@ -6,7 +6,7 @@ CONFIG_FILE = "/etc/supervisor-centralized.conf"
 class Config:
     
     def __init__(self, CFILE):
-        self.CFILE = CFILE
+        self.CFILE = CONFIG_FILE
         self.cfg = ConfigParser.ConfigParser()
         self.cfg.read(self.CFILE)
         
@@ -26,12 +26,12 @@ class Config:
 
 class NodeConfig:
 
-        def __init__(self, node_name, host, port, username, password):
-            self.node_name = node_name
-            self.host = host
-            self.port = port
-            self.username = username
-            self.password = password
+    def __init__(self, node_name, host, port, username, password):
+        self.node_name = node_name
+        self.host = host
+        self.port = port
+        self.username = username
+        self.password = password
             
 
 class Node:

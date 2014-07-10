@@ -1,20 +1,18 @@
 from flask import Flask, render_template, url_for, redirect
-from getProcInfo import Config, Connection, Node
+from getProcInfo import Config, Connection, Node, CONFIG_FILE
 import getProcInfo 
 import xmlrpclib
 
 app = Flask(__name__)
 app.config.from_object(__name__)
 
-CFILE="/etc/supervisor-centralized.conf"
-
 @app.route('/')
 def showAllProcess():
     node_list = []
-    node_names = Config(CFILE).getAllNodeNames()
+    node_names = Config(CONFIG_FILE).getAllNodeNames()
     for node_name in node_names:
         node_name = node_name[5:]
-        node_config = Config(CFILE).getNodeConfig(node_name)
+        node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
         node = Node(node_config)
         node_list.append(node)
 
@@ -24,15 +22,6 @@ def showAllProcess():
 
     return ""
     
-
-
-
-    #process_list=[]
-    #for node_name in Config(CFILE).allSectionsName():
-    #    node_name = node_name[5:]
-    #    process_list.append(Node(node_name).process_list)
-    #return render_template('show_info.html', process_list = plist)
-
 @app.route('/node/<node_name>')
 def showNode(node_name):
     node = Node(node_name)

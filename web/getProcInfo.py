@@ -1,7 +1,7 @@
 import xmlrpclib
 import ConfigParser
 
-CFILE = "/etc/supervisor-centralized.conf"
+CONFIG_FILE = "/etc/supervisor-centralized.conf"
 
 class Config:
     

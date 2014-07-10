@@ -1,34 +1,35 @@
 import xmlrpclib
 import ConfigParser
 
+CFILE = "/etc/supervisor-centralized.conf"
+
 class Config:
     
-    def __init__(self, section_name):
-        self.section_name = section_name
-        self.CFILE = "/etc/supervisor-centralized.conf"
+    def __init__(self, CFILE):
+        self.CFILE = CFILE
         self.cfg = ConfigParser.ConfigParser()
         self.cfg.read(self.CFILE)
+        
+    def getSectionName(self, section_name):
+        self.section_name = "node:%s" % (section_name)
         self.username = self.cfg.get(self.section_name, 'username')
         self.password = self.cfg.get(self.section_name, 'password')
         self.host = self.cfg.get(self.section_name, 'host')
         self.port = self.cfg.get(self.section_name, 'port')
 
-    def __repr__(self):
-        return "%s :: %s :: %s :: %s" %(self.username, self.password, self.host, self.port)
-
+    def allSectionsName(self):
+        self.slist = self.cfg.sections()
+        return self.slist
+            
 class Node:
+
     def __init__(self, name):
-        self.config = Config("node:%s" %(name))
+        self.name = name
+        self.config = Config(CFILE).getSectionName(self.name)
         self.connection = Connection(self.config.host, self.config.port, self.config.username, self.config.password).getConnection()
         self.process_list = []
         for p in self.connection.supervisor.getAllProcessInfo():
             self.process_list.append(ProcessInfo(p))
-    
-class AllNodeList:
-    CFILE = "/etc/supervisor-centralized.conf"
-    cfg = ConfigParser.ConfigParser()
-    cfg.read(CFILE)
-    node_list = cfg.sections()
 
 class Connection:
 
@@ -61,38 +62,40 @@ class ProcessInfo:
         self.pid = self.dictionary['pid']
 
 
-class SupervisorInfo:
+#class SupervisorInfo:
 
-    connection = Connection(Config('DEFAULT').host, Config('DEFAULT').port, Config('DEFAULT').username, Config('DEFAULT').password).getConnection()
-    api_version = connection.supervisor.getAPIVersion()
-    supervisor_version = connection.supervisor.getSupervisorVersion()
-    supervisor_id = version = connection.supervisor.getIdentification()
-    state_code = connection.supervisor.getState()['statecode']
-    state_name = connection.supervisor.getState()['statename']
-    pid= connection.supervisor.getPID()
+#    def __init__(self):
+#        self.cfg = Config(CFILE).getSectionName('node:gulsah')
+#        self.connection = Connection(self.cfg.host, self.cfg.port, self.cfg.username, self.cfg.password)
+#        self.api_version = self.connection.supervisor.getAPIVersion()
+#        self.supervisor_version = self.connection.supervisor.getSupervisorVersion()
+#        self.supervisor_id = self.connection.supervisor.getIdentification()
+#        self.state_code = self.connection.supervisor.getState()['statecode']
+#        self.state_name = self.connection.supervisor.getState()['statename']
+#        self.pid= self.connection.supervisor.getPID()
 
-    def readLog(self,offset,length):
-        self.offset = offset
-        self.length = length
-        self.log = Supervisord_info.connection.supervisor.readLog(offset,length)
-        return self.log
+#    def readLog(self,offset,length):
+#        self.offset = offset
+#        self.length = length
+#        self.log = Supervisord_info.connection.supervisor.readLog(offset,length)
+#        return self.log
 
-    def clearLog(self):
-        if(Supervisord_info.connection.supervisor.clearLog()):
-            return "Cleared supervisosd main log"
-        return "Could not cleared log"
+#    def clearLog(self):
+#        if(Supervisord_info.connection.supervisor.clearLog()):
+#            return "Cleared supervisosd main log"
+#        return "Could not cleared log"
 
-    def shutdown(self):
-        if(Supervisord_info.state_code == 1):
-            Supervisord_info.connection.supervisor.shutdown()
-            return "Success shutdown"
-        else:
-            return "Unsuccess shutdown"
+#    def shutdown(self):
+#        if(Supervisord_info.state_code == 1):
+#            Supervisord_info.connection.supervisor.shutdown()
+#            return "Success shutdown"
+#        else:
+#            return "Unsuccess shutdown"
     
-    def restart(self):
-        if(Supervisord_info.state_code == 1):
-            Supervisord_info.connection.supervisor.restart()
-            return "Success restart"
-        else:
-            return "Unsuccess restart"
+#    def restart(self):
+#        if(Supervisord_info.state_code == 1):
+#            Supervisord_info.connection.supervisor.restart()
+#            return "Success restart"
+#        else:
+#            return "Unsuccess restart"
 

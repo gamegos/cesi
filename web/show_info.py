@@ -1,17 +1,22 @@
 from flask import Flask, render_template, url_for, redirect
-from getProcInfo import Config, Connection, Node, AllNodeList
+from getProcInfo import Config, Connection, Node
 import getProcInfo 
 import xmlrpclib
 
 app = Flask(__name__)
 app.config.from_object(__name__)
 
+CFILE="/etc/supervisor-centralized.conf"
+
 @app.route('/')
-def nlist():
-    return AllNodeList().node_list
+def allProcess():
+    plist=[]
+    for nod in Config(CFILE).allSectionsName():
+        plist = plist.append(Node(nod[5:]).process_list)
+    return render_template('show_info.html', process_list = plist)
 
 @app.route('/node/<node_name>')
-def nodelist(node_name):
+def showNode(node_name):
     node = Node(node_name)
     return render_template('show_info.html', process_list = node.process_list, node_name = node_name)
 

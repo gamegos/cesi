@@ -16,7 +16,6 @@ class Config:
     def __repr__(self):
         return "%s :: %s :: %s :: %s" %(self.username, self.password, self.host, self.port)
 
-
 class Node:
     def __init__(self, name):
         self.config = Config("node:%s" %(name))
@@ -25,6 +24,11 @@ class Node:
         for p in self.connection.supervisor.getAllProcessInfo():
             self.process_list.append(ProcessInfo(p))
     
+class AllNodeList:
+    CFILE = "/etc/supervisor-centralized.conf"
+    cfg = ConfigParser.ConfigParser()
+    cfg.read(CFILE)
+    node_list = cfg.sections()
 
 class Connection:
 

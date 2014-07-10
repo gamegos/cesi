@@ -1,21 +1,14 @@
 from flask import Flask, render_template, url_for, redirect
-from getProcInfo import Config, Connection, Node
+from getProcInfo import Config, Connection, Node, AllNodeList
 import getProcInfo 
 import xmlrpclib
 
 app = Flask(__name__)
 app.config.from_object(__name__)
 
-connection = Connection(Config('DEFAULT').host, Config('DEFAULT').port, Config('DEFAULT').username, Config('DEFAULT').password).getConnection()
-
 @app.route('/')
-def show_info():
-    info_list = []
-    lis = connection.supervisor.getAllProcessInfo()
-    for i in lis:
-        one = getProcInfo.ProcessInfo(i)
-        info_list.append(one)
-    return render_template('show_info.html', info_list = info_list)
+def nlist():
+    return AllNodeList().node_list
 
 @app.route('/node/<node_name>')
 def nodelist(node_name):

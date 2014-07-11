@@ -49,21 +49,21 @@ def restartProcess(node_name, process_name):
     return redirect(url_for('showNode', node_name = node_name)) 
 
 @app.route('/node/all/<node_name>/process/stop/<process_name>')
-def stopProcess(node_name, process_name):
+def stopProcessFromAll(node_name, process_name):
     node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
     node = Node(node_config)
     node.connection.supervisor.stopProcess(process_name)
     return redirect(url_for('showAllProcess', node_name = node_name)) 
 
 @app.route('/node/all/<node_name>/process/start/<process_name>')
-def startProcess(node_name, process_name):
+def startProcessFromAll(node_name, process_name):
     node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
     node = Node(node_config)
     node.connection.supervisor.startProcess(process_name)
     return redirect(url_for('showAllProcess', node_name = node_name)) 
 
 @app.route('/node/all/<node_name>/process/restart/<process_name>')
-def restartProcess(node_name, process_name):
+def restartProcessFromAll(node_name, process_name):
     node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
     node = Node(node_config)
     node.connection.supervisor.stopProcess(process_name)

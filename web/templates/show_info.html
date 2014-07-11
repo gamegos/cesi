@@ -1,7 +1,13 @@
 {% extends "layout.html" %}
 {% block body %}
 <!-- Table -->
+{% for node in node_list %} 
     <table class="table table-bordered" >
+        <tr> 
+            <td colspan="14">
+            <h1 align="center"> {{ node.name[5:] }} </h1>
+            </td>
+        <tr>
         <tr class="info"> 
             <th>Pid</th>
             <th>Name</th>
@@ -15,7 +21,7 @@
             <th>Exit status</th>
             <th>Stdout logfile</th>
             <th>Stderr logfile</th>
-        {% for process in process_list%}
+        {% for process in node.process_list%}
         <tr>
             <td> {{ process.pid }} </td>
             <td> {{ process.name }} </td>
@@ -53,4 +59,5 @@
         </tr>
         {% endfor %}
     </table>
+{% endfor %}
 {% endblock %}

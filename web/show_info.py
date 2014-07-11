@@ -14,14 +14,10 @@ def showAllProcess():
         node_name = node_name[5:]
         node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
         node = Node(node_config)
-        node_list.append(node)
+        node_list.append(node) 
+    return render_template('show_info.html', node_list = node_list)
 
-    for node in node_list:
-        for process in node.process_list:
-            print node.name, process.name
 
-    return ""
-    
 @app.route('/node/<node_name>')
 def showNode(node_name):
     node_config = Config(CONFIG_FILE).getNodeConfig(node_name)

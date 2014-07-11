@@ -41,21 +41,39 @@
             <td> {{ process.exitstatus }} </td>
             <td> {{ process.stdout_logfile }} </td>
             <td> {{ process.stderr_logfile }} </td>
-        {% if process.state==20  %}
-            <td>
-            <a class="btn btn-info btn-sm" href="/node/{{ node.name[5:] }}/process/restart/{{ process.group  }}:{{ process.name }}">restart</a>
-            </td>
-            <td>
-            <a class="btn btn-info btn-sm" href="/node/{{ node.name[5:] }}/process/stop/{{ process.group  }}:{{ process.name }}">stop</a>
-            </td>
-        {% elif process.state==0  %}
-            <td>
-            <a class="btn btn-info btn-sm" href="/node/{{ node.name[5:] }}/process/start/{{ process.group  }}:{{ process.name }}">start</a>
-            </td>
-            <td>
-            <a class="btn btn-info btn-sm disabled" href="#">stop</a>
-            </td>
-        {% endif  %}
+        {% if node_list|length < 2 %}
+            {% if process.state==20  %}
+                <td>
+                    <a class="btn btn-info btn-sm" href="/node/{{ node.name[5:] }}/process/restart/{{ process.group  }}:{{ process.name }}">restart</a>
+                </td>
+                <td>
+                    <a class="btn btn-info btn-sm" href="/node/{{ node.name[5:] }}/process/stop/{{ process.group  }}:{{ process.name }}">stop</a>
+                </td>
+            {% elif process.state==0  %}
+                <td>
+                    <a class="btn btn-info btn-sm" href="/node/{{ node.name[5:] }}/process/start/{{ process.group  }}:{{ process.name }}">start</a>
+                </td>
+                <td>
+                    <a class="btn btn-info btn-sm disabled" href="#">stop</a>
+                </td>
+            {% endif  %}
+        {% else  %}
+            {% if process.state==20  %}
+                <td>
+                    <a class="btn btn-info btn-sm" href="/node/all/{{ node.name[5:] }}/process/restart/{{ process.group  }}:{{ process.name }}">restart</a>
+                </td>
+                <td>
+                    <a class="btn btn-info btn-sm" href="/node/all/{{ node.name[5:] }}/process/stop/{{ process.group  }}:{{ process.name }}">stop</a>
+                </td>
+            {% elif process.state==0  %}
+                <td>
+                    <a class="btn btn-info btn-sm" href="/node/all/{{ node.name[5:] }}/process/start/{{ process.group  }}:{{ process.name }}">start</a>
+                </td>
+                <td>
+                    <a class="btn btn-info btn-sm disabled" href="#">stop</a>
+                </td>
+            {% endif %}
+        {% endif  %} 
         </tr>
         {% endfor %}
     </table>

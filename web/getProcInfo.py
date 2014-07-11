@@ -38,7 +38,7 @@ class Node:
 
     def __init__(self, node_config):
         self.long_name = node_config.node_name
-        self.short_name = node_config.node_name[5:]
+        self.name = node_config.node_name[5:]
         self.connection = Connection(node_config.host, node_config.port, node_config.username, node_config.password).getConnection()
         self.process_list = []
         for p in self.connection.supervisor.getAllProcessInfo():

@@ -1,5 +1,5 @@
-from flask import Flask, render_template, url_for, redirect
-from getProcInfo import Config, Connection, Node, CONFIG_FILE
+from flask import Flask, render_template, url_for, redirect, jsonify
+from getProcInfo import Config, Connection, Node, CONFIG_FILE, ProcessInfo
 import getProcInfo 
 import xmlrpclib
 
@@ -69,5 +69,35 @@ def restartProcessFromAll(node_name, process_name):
     node.connection.supervisor.stopProcess(process_name)
     node.connection.supervisor.startProcess(process_name)
     return redirect(url_for('showAllProcess', node_name = node_name)) 
+
+@app.route('/environment/node/<node_name>/process/start/<process_name>')
+@app.route('/environment/node/all/<node_name>/process/start/<process_name>')
+def startProcessJson(node_name, process_name):
+    node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
+    node = Node(node_config)
+    node.connection.supervisor.startProcess(process_name)
+    dict_process_info = node.connection.supervisor.getProcessInfo(process_name)
+    return jsonify(json_process_info = dict_process_info) 
+
+@app.route('/environment/node/<node_name>/process/stop/<process_name>')
+@app.route('/environment/node/all/<node_name>/process/stop/<process_name>')
+def stopProcessJson(node_name, process_name):
+    node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
+    node = Node(node_config)
+    node.connection.supervisor.stopProcess(process_name)
+    dict_process_info = node.connection.supervisor.getProcessInfo(process_name)
+    return jsonify(json_process_info = dict_process_info) 
+
+
+@app.route('/environment/node/<node_name>/process/restart/<process_name>')
+@app.route('/environment/node/all/<node_name>/process/restart/<process_name>')
+def restartProcessJson(node_name, process_name):
+    node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
+    node = Node(node_config)
+    node.connection.supervisor.stopProcess(process_name)
+    node.connection.supervisor.startProcess(process_name)
+    dict_process_info = node.connection.supervisor.getProcessInfo(process_name)
+    return jsonify(json_process_info = dict_process_info) 
+
 if __name__ == '__main__':
     app.run(debug=True, use_reloader=True)

@@ -5,7 +5,7 @@
     <table class="table table-bordered" >
         <tr> 
             <td colspan="14">
-            <h1 align="center"> {{ node.name[5:] }} </h1>
+            <h4 align="center"> {{ node.name[5:] }} </h4>
             </td>
         <tr>
         <tr class="info"> 
@@ -43,14 +43,14 @@
             <td> {{ process.stderr_logfile }} </td>
         {% if process.state==20  %}
             <td>
-            <a class="btn btn-info btn-sm" href="/node/{{ node_name }}/process/restart/{{ process.group  }}:{{ process.name }}">restart</a>
+            <a class="btn btn-info btn-sm" href="/node/{{ node.name[5:] }}/process/restart/{{ process.group  }}:{{ process.name }}">restart</a>
             </td>
             <td>
-            <a class="btn btn-info btn-sm" href="/node/{{ node_name }}/process/stop/{{ process.group  }}:{{ process.name }}">stop</a>
+            <a class="btn btn-info btn-sm" href="/node/{{ node.name[5:] }}/process/stop/{{ process.group  }}:{{ process.name }}">stop</a>
             </td>
         {% elif process.state==0  %}
             <td>
-            <a class="btn btn-info btn-sm" href="/node/{{ node_name }}/process/start/{{ process.group  }}:{{ process.name }}">start</a>
+            <a class="btn btn-info btn-sm" href="/node/{{ node.name[5:] }}/process/start/{{ process.group  }}:{{ process.name }}">start</a>
             </td>
             <td>
             <a class="btn btn-info btn-sm disabled" href="#">stop</a>

@@ -20,9 +20,11 @@ def showAllProcess():
 
 @app.route('/node/<node_name>')
 def showNode(node_name):
+    node_list=[]
     node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
     node = Node(node_config)
-    return render_template('show_info.html', process_list = node.process_list, node_name = node_name)
+    node_list.append(node)
+    return render_template('show_info.html', node_list = node_list)
 
 @app.route('/node/<node_name>/process/stop/<process_name>')
 def stopProcess(node_name, process_name):

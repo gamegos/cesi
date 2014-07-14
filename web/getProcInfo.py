@@ -1,6 +1,6 @@
 import xmlrpclib
 import ConfigParser
-import datetime
+from datetime import datetime, timedelta
 
 CONFIG_FILE = "/etc/supervisor-centralized.conf"
 
@@ -65,6 +65,9 @@ class ProcessInfo:
         self.name = self.dictionary['name']
         self.group = self.dictionary['group']
         self.start = self.dictionary['start']
+        self.start_hr = datetime.fromtimestamp(self.dictionary['start']).strftime('%Y-%m-%d %H:%M:%S')[11:]
+        self.stop_hr = datetime.fromtimestamp(self.dictionary['stop']).strftime('%Y-%m-%d %H:%M:%S')[11:]
+        self.now_hr = datetime.fromtimestamp(self.dictionary['now']).strftime('%Y-%m-%d %H:%M:%S')[11:]
         self.stop = self.dictionary['stop']
         self.now = self.dictionary['now']
         self.state = self.dictionary['state']
@@ -75,6 +78,4 @@ class ProcessInfo:
         self.stderr_logfile = self.dictionary['stderr_logfile']
         self.pid = self.dictionary['pid']
         self.seconds = self.now - self.start
-        self.uptime = str(datetime.timedelta(seconds=self.seconds))
-
-
+        self.uptime = str(timedelta(seconds=self.seconds))

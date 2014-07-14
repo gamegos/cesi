@@ -31,9 +31,9 @@
             {% endif  %}
             <td> {{ process.name }} </td>
             <td> {{ process.group }} </td>
-            <td> {{ process.start }} </td>
-            <td> {{ process.stop }} </td>
-            <td> {{ process.now }} </td>
+            <td> {{ process.start_hr }} </td>
+            <td> {{ process.stop_hr }} </td>
+            <td> {{ process.now_hr }} </td>
             <td> {{ process.uptime }} </td>
             <td> {{ process.state }} </td>
         {% if process.state==0 or process.state==40 or process.state==100 or process.state==200 %}

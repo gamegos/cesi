@@ -23,7 +23,11 @@
             <th>Stderr logfile</th>
         {% for process in node.process_list%}
         <tr>
-            <td> {{ process.pid }} </td>
+            {% if process.pid==0 %}
+                 <td> - </td>
+            {% else  %}
+                <td> {{ process.pid }} </td>
+            {% endif  %}
             <td> {{ process.name }} </td>
             <td> {{ process.group }} </td>
             <td> {{ process.start }} </td>
@@ -44,14 +48,14 @@
         {% if node_list|length < 2 %}
             {% if process.state==20  %}
                 <td>
-                    <a class="btn btn-info btn-sm" href="/environment/node/{{ node_name }}/process/restart/{{ process.group  }}:{{ process.name }}">restart</a>
+                    <a class="btn btn-info btn-sm" href="/node/{{ node_name }}/process/restart/{{ process.group  }}:{{ process.name }}">restart</a>
                 </td>
                 <td>
-                    <a class="btn btn-info btn-sm" href="/environment/node/{{ node.name }}/process/stop/{{ process.group  }}:{{ process.name }}">stop</a>
+                    <a class="btn btn-info btn-sm" href="/node/{{ node.name }}/process/stop/{{ process.group  }}:{{ process.name }}">stop</a>
                 </td>
             {% elif process.state==0  %}
                 <td>
-                    <a class="btn btn-info btn-sm" href="/environment/node/{{ node.name }}/process/start/{{ process.group  }}:{{ process.name }}">start</a>
+                    <a class="btn btn-info btn-sm" href="/node/{{ node.name }}/process/start/{{ process.group  }}:{{ process.name }}">start</a>
                 </td>
                 <td>
                     <a class="btn btn-info btn-sm disabled" href="#">stop</a>
@@ -60,14 +64,14 @@
         {% else  %}
             {% if process.state==20  %}
                 <td>
-                    <a class="btn btn-info btn-sm" href="/environment/node/all/{{ node.name }}/process/restart/{{ process.group  }}:{{ process.name }}">restart</a>
+                    <a class="btn btn-info btn-sm" href="/node/all/{{ node.name }}/process/restart/{{ process.group  }}:{{ process.name }}">restart</a>
                 </td>
                 <td>
-                    <a class="btn btn-info btn-sm" href="/environment/node/all/{{ node.name }}/process/stop/{{ process.group  }}:{{ process.name }}">stop</a>
+                    <a class="btn btn-info btn-sm" href="/node/all/{{ node.name }}/process/stop/{{ process.group  }}:{{ process.name }}">stop</a>
                 </td>
             {% elif process.state==0  %}
                 <td>
-                    <a class="btn btn-info btn-sm" href="/environment/node/all/{{ node.name }}/process/start/{{ process.group  }}:{{ process.name }}">start</a>
+                    <a class="btn btn-info btn-sm" href="/node/all/{{ node.name }}/process/start/{{ process.group  }}:{{ process.name }}">start</a>
                 </td>
                 <td>
                     <a class="btn btn-info btn-sm disabled" href="#">stop</a>

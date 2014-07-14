@@ -15,6 +15,7 @@
             <th>Start</th>
             <th>Stop</th>
             <th>Now</th>
+            <th>Uptime</th>
             <th>State</th>
             <th>State name</th>
             <th>Spawnerr</th>
@@ -33,6 +34,7 @@
             <td> {{ process.start }} </td>
             <td> {{ process.stop }} </td>
             <td> {{ process.now }} </td>
+            <td> {{ process.uptime }} </td>
             <td> {{ process.state }} </td>
         {% if process.state==0 or process.state==40 or process.state==100 or process.state==200 %}
             <td class="alert alert-danger"> {{ process.statename }} </td>

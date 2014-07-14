@@ -1,5 +1,6 @@
 import xmlrpclib
 import ConfigParser
+import datetime
 
 CONFIG_FILE = "/etc/supervisor-centralized.conf"
 
@@ -73,5 +74,7 @@ class ProcessInfo:
         self.stdout_logfile = self.dictionary['stdout_logfile']
         self.stderr_logfile = self.dictionary['stderr_logfile']
         self.pid = self.dictionary['pid']
+        self.seconds = self.now - self.start
+        self.uptime = str(datetime.timedelta(seconds=self.seconds))
 
 

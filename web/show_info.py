@@ -112,9 +112,9 @@ def restartProcessJson(node_name, process_name):
     if node.connection.supervisor.stopProcess(process_name):
         if node.connection.supervisor.startProcess(process_name):
             return jsonify(status = "Success",
-                   code = 80,
-                   message = "Stopped successfully",
-                   data = node.connection.supervisor.getProcessInfo(process_name))
+                           code = 80,
+                           message = "Stopped successfully",
+                           data = node.connection.supervisor.getProcessInfo(process_name))
     else:
         return jsonify(status = "Error",
                        code = "Unknown")

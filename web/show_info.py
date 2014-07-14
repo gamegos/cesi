@@ -79,41 +79,27 @@ def startProcessJson(node_name, process_name):
     node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
     node = Node(node_config)
     if node.connection.supervisor.startProcess(process_name):
-        status['status'] = "Success"
-        code['code'] = 80
-        data = node.connection.supervisor.getProcessInfo(process_name)
-        dict_array_process_info.append(status.copy())
-        dict_array_process_info.append(code.copy())
-        dict_array_process_info.append(node.connection.supervisor.getProcessInfo(process_name).copy())
+        return jsonify(status = "Success",
+                       code = 80,
+                       message = "Stopped successfully",
+                       data = node.connection.supervisor.getProcessInfo(process_name))
     else:
-        dict_process_info['status'] = "Error"
-        dict_process_info['code'] = "Unknown"
-        dict_array_process_info.append(status.copy())
-        dict_array_process_info.append(code.copy())
-    return jsonify(json_process_info = dict_array_process_info) 
+        return jsonify(status = "Error",
+                       code = "Unknown")
 
 @app.route('/environment/node/<node_name>/process/stop/<process_name>')
 @app.route('/environment/node/all/<node_name>/process/stop/<process_name>')
 def stopProcessJson(node_name, process_name):
-    dict_array_process_info=[]
-    status={}
-    code={}
     node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
     node = Node(node_config)
     if node.connection.supervisor.stopProcess(process_name):
-        status['status'] = "Success"
-        code['code'] = 80
-        data = node.connection.supervisor.getProcessInfo(process_name)
-        dict_array_process_info.append(status.copy())
-        dict_array_process_info.append(code.copy())
-        dict_array_process_info.append(node.connection.supervisor.getProcessInfo(process_name).copy())
+        return jsonify(status = "Success",
+                       code = 80,
+                       message = "Stopped successfully",
+                       data = node.connection.supervisor.getProcessInfo(process_name))
     else:
-        dict_process_info['status'] = "Error"
-        dict_process_info['code'] = "Unknown"
-        dict_array_process_info.append(status.copy())
-        dict_array_process_info.append(code.copy())
-    return jsonify(json_process_info = dict_array_process_info)
-
+        return jsonify(status = "Error",
+                       code = "Unknown")
 
 @app.route('/environment/node/<node_name>/process/restart/<process_name>')
 @app.route('/environment/node/all/<node_name>/process/restart/<process_name>')
@@ -125,18 +111,13 @@ def restartProcessJson(node_name, process_name):
     node = Node(node_config)
     if node.connection.supervisor.stopProcess(process_name):
         if node.connection.supervisor.startProcess(process_name):
-            status['status'] = "Success"
-            code['code'] = 80
-            data = node.connection.supervisor.getProcessInfo(process_name)
-            dict_array_process_info.append(status.copy())
-            dict_array_process_info.append(code.copy())
-            dict_array_process_info.append(node.connection.supervisor.getProcessInfo(process_name).copy())
+            return jsonify(status = "Success",
+                   code = 80,
+                   message = "Stopped successfully",
+                   data = node.connection.supervisor.getProcessInfo(process_name))
     else:
-        dict_process_info['status'] = "Error"
-        dict_process_info['code'] = "Unknown"
-        dict_array_process_info.append(status.copy())
-        dict_array_process_info.append(code.copy())
-    return jsonify(json_process_info = dict_array_process_info) 
+        return jsonify(status = "Error",
+                       code = "Unknown")
 
 if __name__ == '__main__':
     app.run(debug=True, use_reloader=True)

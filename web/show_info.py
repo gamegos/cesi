@@ -1,5 +1,5 @@
 from flask import Flask, render_template, url_for, redirect, jsonify
-from getProcInfo import Config, Connection, Node, CONFIG_FILE, ProcessInfo
+from getProcInfo import Config, Connection, Node, CONFIG_FILE, ProcessInfo, JsonValue
 import getProcInfo 
 import xmlrpclib
 
@@ -119,10 +119,7 @@ def startProcessJson(node_name, process_name):
         node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
         node = Node(node_config)
         if node.connection.supervisor.startProcess(process_name):
-            return jsonify(status = "Success",
-                           code = 80,
-                           message = "Stopped successfully",
-                           data = node.connection.supervisor.getProcessInfo(process_name))
+            return JsonValue(process_name, node_name, "start").success()
         else:
             return jsonify(status = "Error",
                            code = "Unknown")
@@ -139,10 +136,7 @@ def stopProcessJson(node_name, process_name):
         node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
         node = Node(node_config)
         if node.connection.supervisor.stopProcess(process_name):
-            return jsonify(status = "Success",
-                           code = 80,
-                           message = "Stopped successfully",
-                           data = node.connection.supervisor.getProcessInfo(process_name))
+            return JsonValue(process_name, node_name, "stop").success()
         else:
             return jsonify(status = "Error",
                            code = "Unknown")
@@ -157,16 +151,13 @@ def stopProcessJson(node_name, process_name):
 def restartProcessJson(node_name, process_name):
     try:
         array_process_info=[]
-        tatus={}
-        ode={}
-        ode_config = Config(CONFIG_FILE).getNodeConfig(node_name)
-        ode = Node(node_config)
+        status={}
+        code={}
+        node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
+        node = Node(node_config)
         if node.connection.supervisor.stopProcess(process_name):
             if node.connection.supervisor.startProcess(process_name):
-                return jsonify(status = "Success",
-                               code = 80,
-                               message = "Stopped successfully",
-                               data = node.connection.supervisor.getProcessInfo(process_name))
+                return JsonValue(process_name, node_name, "restart").success()
         else:
             return jsonify(status = "Error",
                            code = "Unknown")

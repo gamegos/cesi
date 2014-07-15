@@ -1,6 +1,7 @@
 import xmlrpclib
 import ConfigParser
 from datetime import datetime, timedelta
+from flask import jsonify
 
 CONFIG_FILE = "/etc/supervisor-centralized.conf"
 
@@ -79,3 +80,19 @@ class ProcessInfo:
         self.pid = self.dictionary['pid']
         self.seconds = self.now - self.start
         self.uptime = str(timedelta(seconds=self.seconds))
+
+class JsonValue:
+    
+    def __init__(self, process_name, node_name, event):
+        self.process_name = process_name
+        self.event = event
+        self.node_name = node_name
+        self.node_config = Config(CONFIG_FILE).getNodeConfig(self.node_name)
+        self.node = Node(self.node_config)
+
+    def success(self):
+        return jsonify(status = "Succsess",
+                       code = 80,
+                       message = "%s event succesfully" %(self.event),
+                       data = self.node.connection.supervisor.getProcessInfo(self.process_name))
+

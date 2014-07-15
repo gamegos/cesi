@@ -2,7 +2,7 @@
 {% block body %}
 <!-- Table -->
 {% for node in node_list %} 
-    <table class="table table-bordered" >
+    <table id="process_info" class="table table-bordered" >
         <tr> 
             <td colspan="14">
             <h4 align="center"> {{ node.name }} </h4>
@@ -23,7 +23,7 @@
             <th>Stdout logfile</th>
             <th>Stderr logfile</th>
         {% for process in node.process_list%}
-        <tr>
+        <tr class="process_info">
             {% if process.pid==0 %}
                  <td> - </td>
             {% else  %}

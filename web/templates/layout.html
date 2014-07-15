@@ -1,6 +1,24 @@
 <!doctype html>
 <title>Supervisor Centralized</title>
 <link rel=stylesheet type=text/css href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+<script src="{{ url_for('static', filename='jquery-1.11.1.min.js') }}"></script>
+
+<script>
+$( document ).ready(function() {
+    $("#process_info").on('click', '.process_info',function(){
+        var $tr = $(this).children('tr');
+        var $td = $tr.children('td');
+        $.ajax({
+            url: '../show_info.py',
+            dataType: 'json',
+            success: function(data){
+                console.log(data)
+            }
+        }
+    }
+}
+</script>
+
 <html>
 {% block body %}{% endblock %}
 </html>

@@ -120,14 +120,10 @@ def startProcessJson(node_name, process_name):
         node = Node(node_config)
         if node.connection.supervisor.startProcess(process_name):
             return JsonValue(process_name, node_name, "start").success()
-        else:
-            return jsonify(status = "Error",
-                           code = "Unknown")
+    except ValueError:
+        pass
     except xmlrpclib.Fault as err:
-        print "A fault occurred"
-        print "Fault code: %d" % err.faultCode
-        print "Fault string: %s" % err.faultString
-
+        return JsonValue(process_name, node_name, "start").error(err.faultCode, err.faultString)
 
 @app.route('/environment/node/<node_name>/process/stop/<process_name>')
 @app.route('/environment/node/all/<node_name>/process/stop/<process_name>')
@@ -137,13 +133,10 @@ def stopProcessJson(node_name, process_name):
         node = Node(node_config)
         if node.connection.supervisor.stopProcess(process_name):
             return JsonValue(process_name, node_name, "stop").success()
-        else:
-            return jsonify(status = "Error",
-                           code = "Unknown")
+    except ValueError:
+        pass
     except xmlrpclib.Fault as err:
-        print "A fault occurred"
-        print "Fault code: %d" % err.faultCode
-        print "Fault string: %s" % err.faultString
+        return JsonValue(process_name, node_name, "stop").error(err.faultCode, err.faultString)
 
 
 @app.route('/environment/node/<node_name>/process/restart/<process_name>')
@@ -158,13 +151,10 @@ def restartProcessJson(node_name, process_name):
         if node.connection.supervisor.stopProcess(process_name):
             if node.connection.supervisor.startProcess(process_name):
                 return JsonValue(process_name, node_name, "restart").success()
-        else:
-            return jsonify(status = "Error",
-                           code = "Unknown")
+    except ValueError:
+        pass
     except xmlrpclib.Fault as err:
-        print "A fault occurred"
-        print "Fault code: %d" % err.faultCode
-        print "Fault string: %s" % err.faultString
+        return JsonValue(process_name, node_name, "restart").error(err.faultCode, err.faultString)
 
 @app.errorhandler(404)
 def page_not_found(error):

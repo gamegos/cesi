@@ -3,8 +3,7 @@
 <link rel=stylesheet type=text/css href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
 <link rel=stylesheet type=text/css href="{{ url_for('static', filename='custom.css') }}">
 <script src="{{ url_for('static', filename='jquery-1.11.1.min.js') }}"></script>
-<script type="text/javascript" src="../static/supervisor.js"></script>
-
+<script type="text/javascript" src="{{ url_for('static', filename='custom.js') }}"></script>
 <html>
 {% block body %}{% endblock %}
 </html>

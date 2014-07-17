@@ -1,13 +1,17 @@
 $(document).ready(function(){
-  $(".btn").click(function(){
-        var $tr = $(this).parent();
-        var $link ="../show_info.py" 
+  $("button").click(function(){
+        var $tr = $(this).parent().parent();
+        var $td = $tr.children('td').first();
+        var $link = $(this).attr('name');
         $.ajax({
                 url: $link,
                 dataType: 'json',
                 success: function(data){
-                    console.log(data['status'])
-                    $tr.html(data['status']);
+                    if (data['data']['pid'] == 0 ){
+                        $td.html("-");
+                    }else{
+                        $td.html(data['data']['pid']);
+                    }
                }});
   });
 });

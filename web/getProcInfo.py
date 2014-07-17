@@ -91,7 +91,7 @@ class JsonValue:
         self.node = Node(self.node_config)
 
     def success(self):
-        return jsonify(status = "Succsess",
+        return jsonify(status = "Success",
                        code = 80,
                        message = "%s event succesfully" %(self.event),
                        data = self.node.connection.supervisor.getProcessInfo(self.process_name))

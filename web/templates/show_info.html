@@ -33,17 +33,17 @@
         {% endif  %}
         {% if process.state==20  %}
             <td>
-                <a class="btn btn-info btn-sm" href="/node/{{ node.name }}/process/{{ process.group  }}:{{ process.name }}/restart">restart</a>
+                <button class="btn btn-info btn-sm" name="/node/{{ node.name }}/process/{{ process.group  }}:{{ process.name }}/restart"> Restart </button>
             </td>
             <td>
-                <a class="btn btn-info btn-sm" href="/node/{{ node.name }}/process/{{ process.group  }}:{{ process.name }}/stop">stop</a>
+                <button class="btn btn-info btn-sm" name="/node/{{ node.name }}/process/{{ process.group  }}:{{ process.name }}/stop"> Stop </button>
             </td>
         {% elif process.state==0  %}
             <td>
-                <a class="btn btn-info btn-sm" href="/node/{{ node.name }}/process/{{ process.group  }}:{{ process.name }}/start">start</a>
+                <button class="btn btn-info btn-sm" name="/node/{{ node.name }}/process/{{ process.group  }}:{{ process.name }}/start"> Start </button>
             </td>
             <td>
-                <a class="btn btn-info btn-sm disabled" href="#">stop</a>
+                <button class="btn btn-info btn-sm disabled"> Stop </button>
             </td>
         {% endif  %}
         </tr>

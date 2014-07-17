@@ -35,7 +35,7 @@ def showNode(node_name):
         print "Fault code: %d" % err.faultCode
         print "Fault string: %s" % err.faultString
 
-@app.route('/<node_name>/<process_name>/restart/json')
+@app.route('/node/<node_name>/process/<process_name>/restart')
 def json_restart(node_name, process_name):
     try:
         node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
@@ -46,7 +46,7 @@ def json_restart(node_name, process_name):
     except xmlrpclib.Fault as err:
         return JsonValue(process_name, node_name, "restart").error(err.faultCode, err.faultString)
 
-@app.route('/<node_name>/<process_name>/start/json')
+@app.route('/node/<node_name>/process/<process_name>/start')
 def json_start(node_name, process_name):
     try:
         node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
@@ -56,7 +56,7 @@ def json_start(node_name, process_name):
     except xmlrpclib.Fault as err:
         return JsonValue(process_name, node_name, "start").error(err.faultCode, err.faultString)
 
-@app.route('/<node_name>/<process_name>/stop/json')
+@app.route('/node/<node_name>/process/<process_name>/stop')
 def json_stop(node_name, process_name):
     try:
         node_config = Config(CONFIG_FILE).getNodeConfig(node_name)

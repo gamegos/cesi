@@ -1,11 +1,12 @@
 $(document).ready(function(){
   $(".btn").click(function(){
-        var $tr = $(this).parent(); 
+        var $tr = $(this).parent();
+        var $link = $(this).children('a').attr('href')
         $.ajax({
-                url: 'demo_test.html',
+                url: $link,
                 dataType: 'json',
                 success: function(data){
-                    $.html(data['status']);
+                    $tr.html(data['status']);
                }});
   });
 });

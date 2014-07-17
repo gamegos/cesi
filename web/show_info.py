@@ -35,126 +35,36 @@ def showNode(node_name):
         print "Fault code: %d" % err.faultCode
         print "Fault string: %s" % err.faultString
 
-@app.route('/node/<node_name>/process/stop/<process_name>')
-def stopProcess(node_name, process_name):
+@app.route('/<node_name>/<process_name>/restart/json')
+def json(node_name, process_name):
     try:
-        node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
-        node = Node(node_config)
-        node.connection.supervisor.stopProcess(process_name)
-        return redirect(url_for('showNode', node_name = node_name)) 
-    except xmlrpclib.Fault as err:
-        print "A fault occurred"
-        print "Fault code: %d" % err.faultCode
-        print "Fault string: %s" % err.faultString
-
-@app.route('/node/<node_name>/process/start/<process_name>')
-def startProcess(node_name, process_name):
-    try:
-        node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
-        node = Node(node_config)
-        node.connection.supervisor.startProcess(process_name)
-        return redirect(url_for('showNode', node_name = node_name)) 
-    except xmlrpclib.Fault as err:
-        print "A fault occurred"
-        print "Fault code: %d" % err.faultCode
-        print "Fault string: %s" % err.faultString
-
-@app.route('/node/<node_name>/process/restart/<process_name>')
-def restartProcess(node_name, process_name):
-    try:
-        node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
-        node = Node(node_config)
-        node.connection.supervisor.stopProcess(process_name)
-        node.connection.supervisor.startProcess(process_name)
-        return redirect(url_for('showNode', node_name = node_name)) 
-    except xmlrpclib.Fault as err:
-        print "A fault occurred"
-        print "Fault code: %d" % err.faultCode
-        print "Fault string: %s" % err.faultString
-
-@app.route('/node/all/<node_name>/process/stop/<process_name>')
-def stopProcessFromAll(node_name, process_name):
-    try:
-        node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
-        node = Node(node_config)
-        node.connection.supervisor.stopProcess(process_name)
-        return redirect(url_for('showAllProcess', node_name = node_name)) 
-    except xmlrpclib.Fault as err:
-        print "A fault occurred"
-        print "Fault code: %d" % err.faultCode
-        print "Fault string: %s" % err.faultString
-
-@app.route('/node/all/<node_name>/process/start/<process_name>')
-def startProcessFromAll(node_name, process_name):
-    try:
-        node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
-        node = Node(node_config)
-        node.connection.supervisor.startProcess(process_name)
-        return redirect(url_for('showAllProcess', node_name = node_name)) 
-    except xmlrpclib.Fault as err:
-        print "A fault occurred"
-        print "Fault code: %d" % err.faultCode
-        print "Fault string: %s" % err.faultString
-
-@app.route('/node/all/<node_name>/process/restart/<process_name>')
-def restartProcessFromAll(node_name, process_name):
-    try:
-        node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
-        node = Node(node_config)
-        node.connection.supervisor.stopProcess(process_name)
-        node.connection.supervisor.startProcess(process_name)
-        return redirect(url_for('showAllProcess', node_name = node_name)) 
-    except xmlrpclib.Fault as err:
-        print "A fault occurred"
-        print "Fault code: %d" % err.faultCode
-        print "Fault string: %s" % err.faultString
-
-@app.route('/environment/node/<node_name>/process/start/<process_name>')
-@app.route('/environment/node/all/<node_name>/process/start/<process_name>')
-def startProcessJson(node_name, process_name):
-    try:
-        dict_array_process_info=[]
-        status={}
-        code={}
-        node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
-        node = Node(node_config)
-        if node.connection.supervisor.startProcess(process_name):
-            return JsonValue(process_name, node_name, "start").success()
-    except ValueError:
-        pass
-    except xmlrpclib.Fault as err:
-        return JsonValue(process_name, node_name, "start").error(err.faultCode, err.faultString)
-
-@app.route('/environment/node/<node_name>/process/stop/<process_name>')
-@app.route('/environment/node/all/<node_name>/process/stop/<process_name>')
-def stopProcessJson(node_name, process_name):
-    try:
-        node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
-        node = Node(node_config)
-        if node.connection.supervisor.stopProcess(process_name):
-            return JsonValue(process_name, node_name, "stop").success()
-    except ValueError:
-        pass
-    except xmlrpclib.Fault as err:
-        return JsonValue(process_name, node_name, "stop").error(err.faultCode, err.faultString)
-
-
-@app.route('/environment/node/<node_name>/process/restart/<process_name>')
-@app.route('/environment/node/all/<node_name>/process/restart/<process_name>')
-def restartProcessJson(node_name, process_name):
-    try:
-        array_process_info=[]
-        status={}
-        code={}
         node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
         node = Node(node_config)
         if node.connection.supervisor.stopProcess(process_name):
             if node.connection.supervisor.startProcess(process_name):
                 return JsonValue(process_name, node_name, "restart").success()
-    except ValueError:
-        pass
     except xmlrpclib.Fault as err:
         return JsonValue(process_name, node_name, "restart").error(err.faultCode, err.faultString)
+
+@app.route('/<node_name>/<process_name>/start/json')
+def json(node_name, process_name):
+    try:
+        node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
+        node = Node(node_config)
+        if node.connection.supervisor.startProcess(process_name):
+            return JsonValue(process_name, node_name, event).success()
+    except xmlrpclib.Fault as err:
+        return JsonValue(process_name, node_name, "start").error(err.faultCode, err.faultString)
+
+@app.route('/<node_name>/<process_name>/stop/json')
+def json(node_name, process_name):
+    try:
+        node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
+        node = Node(node_config)
+        if node.connection.supervisor.stopProcess(process_name):
+            return JsonValue(process_name, node_name, event).success()
+    except xmlrpclib.Fault as err:
+        return JsonValue(process_name, node_name, "stop").error(err.faultCode, err.faultString)
 
 @app.errorhandler(404)
 def page_not_found(error):

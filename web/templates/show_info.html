@@ -5,12 +5,14 @@
 {% for node in node_list %}
 <div class="panel-heading">{{ node.name }}</div> 
     <table class="table table-bordered" >
-        <tr class="info"> 
+        <tr class="active"> 
             <th>Pid</th>
             <th>Name</th>
             <th>Group</th>
             <th>Uptime</th>
             <th>State name</th>
+            <th></th>
+            <th></th>
         {% for process in node.process_list%}
         <tr class="process_info">
             {% if process.pid==0 %}
@@ -30,17 +32,17 @@
         {% endif  %}
         {% if process.state==20  %}
             <td>
-                <button class="btn btn-info btn-sm" name="/node/{{ node.name }}/process/{{ process.group  }}:{{ process.name }}/restart" value="Restart">Restart</button>
+                <button class="btn btn-primary btn-block" name="/node/{{ node.name }}/process/{{ process.group  }}:{{ process.name }}/restart" value="Restart">Restart</button>
             </td>
             <td>
-                <button class="btn btn-info btn-sm" name="/node/{{ node.name }}/process/{{ process.group  }}:{{ process.name }}/stop" value="Stop">Stop</button>
+                <button class="btn btn-primary btn-block" name="/node/{{ node.name }}/process/{{ process.group  }}:{{ process.name }}/stop" value="Stop">Stop</button>
             </td>
         {% elif process.state==0  %}
             <td>
-                <button class="btn btn-info btn-sm" name="/node/{{ node.name }}/process/{{ process.group  }}:{{ process.name }}/start"value="Start">Start</button>
+                <button class="btn btn-primary btn-block" name="/node/{{ node.name }}/process/{{ process.group  }}:{{ process.name }}/start"value="Start">Start</button>
             </td>
             <td>
-                <button class="btn btn-info btn-sm disabled" value="Stop">Stop</button>
+                <button class="btn btn-primary btn-block disabled" value="Stop">Stop</button>
             </td>
         {% endif  %}
         </tr>

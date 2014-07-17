@@ -94,6 +94,7 @@ class JsonValue:
         return jsonify(status = "Success",
                        code = 80,
                        message = "%s event succesfully" %(self.event),
+                       nodename = self.node_name,
                        data = self.node.connection.supervisor.getProcessInfo(self.process_name))
 
     def error(self, code, payload):     
@@ -102,6 +103,7 @@ class JsonValue:
         return jsonify(status = "Error",
                        code = self.code,
                        message = "%s event unsuccesful" %(self.event),
+                       nodename = self.node_name,
                        payload = self.payload)
  
 

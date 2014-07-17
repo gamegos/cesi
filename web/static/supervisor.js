@@ -31,18 +31,15 @@ $(document).ready(function(){
                     $td = $td.next();
                     if( data['data']['state']==20){
                         $restart = $td.children('button').first();
-                        console.log($restart);
                         $restart.attr('class',"btn btn-info btn-sm");
                         $name0 = "\/node\/";
                         $name = $name0.concat(data['nodename'], "\/process\/", data['data']['group'], ":", data['data']['name'], "\/restart");
-                        console.log($name);
                         $restart.attr('name',$name );
                         $restart.attr('value',"Restart");
                         $restart.html("Restart");
                         
                         $td = $td.next();
                         $stop = $td.children('button').first();
-                        console.log($stop);
                         $stop.attr('class',"btn btn-info btn-sm");
                         $name2 = $name0.concat(data['nodename'], "\/process\/", data['data']['group'], ":", data['data']['name'], "\/stop");
                         $stop.attr('name',$name2 );
@@ -50,18 +47,15 @@ $(document).ready(function(){
                         $stop.html("Stop");
                     }else if(data['data']['state']==0){
                         $start = $td.children('button');
-                        console.log($start);
                         $start.attr('class',"btn btn-info btn-sm");
                         $name0 = "\/node\/";
                         $name = $name0.concat(data['nodename'], "\/process\/", data['data']['group'], ":", data['data']['name'], "\/start");
-                        console.log($name);
                         $start.attr('name',$name );
                         $start.attr('value',"Start");
                         $start.html("Start");
 
                         $td = $td.next();
                         $stop = $td.children('button').first();
-                        console.log($stop);
                         $stop.attr('class',"btn btn-info btn-sm");
                         $stop.attr('class',"btn btn-info btn-sm disabled");
                         $stop.attr('name'," ");

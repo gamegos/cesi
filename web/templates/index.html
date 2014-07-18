@@ -271,9 +271,9 @@
                         <li>
                             <a class="ajax" href="#"><i class="glyphicon glyphicon-th-list"></i> Nodes<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
-                            {% for i in node_names %}
+                            {% for node_name in node_name_list %}
                                 <li>
-                                    <a href="#"></a>
+                                    <a href="#"> {{ node_name  }}  </a>
                                 </li>
                             {% endfor %}
                             </ul>

@@ -64,34 +64,4 @@ $(document).ready(function(){
                     }
                }});
   });
-
-
-
-$(".ajax").click(function(){
-        var $li = $(this).parent();
-        console.log($li)
-        var $ul = $li.children('ul');
-        console.log($ul)
-        var $nodeli = $ul.children('li').first();
-        console.log($nodeli)
-        var $a = $nodeli.children('a').first();
-        console.log($a)
-        var $url = "/node/name/list";
-        console.log($url)
-        $.ajax({
-                url: $url,
-                dataType: 'json',
-                success: function(result){
-                    for($counter = 0; $counter < result['node_name_list'].length; $counter++){
-                        console.log($counter);
-                        $a.html(result['node_name_list'][$counter]);
-                        console.log($a);
-                        $nodeli = $nodeli.next();
-                        console.log($nodeli);
-                        $a = $nodeli.children('a').first();
-                        console.log($a);
-                    }
-                }});
-        });
-
 });

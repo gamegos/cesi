@@ -10,13 +10,15 @@ app.config.from_object(__name__)
 def showAllProcess():
     try:
         node_list = []
+        node_name_list = []
         node_names = Config(CONFIG_FILE).getAllNodeNames()
         for node_name in node_names:
             node_name = node_name[5:]
+            node_name_list.append(node_name)
             node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
             node = Node(node_config)
             node_list.append(node) 
-        return render_template('index.html', node_list = node_list, node_names = node_names)
+        return render_template('index.html', node_list = node_list, node_name_list = node_name_list)
     except xmlrpclib.Fault as err:
         print "A fault occurred"
         print "Fault code: %d" % err.faultCode
@@ -25,12 +27,16 @@ def showAllProcess():
 @app.route('/node/<node_name>')
 def showNode(node_name):
     try:
-        node_names = Config(CONFIG_FILE).getAllNodeNames()
         node_list=[]
+        node_name_list = []
+        node_names = Config(CONFIG_FILE).getAllNodeNames()
+        for node_name in node_names:
+            node_name = node_name[5:]
+            node_name_list.append(node_name)
         node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
         node = Node(node_config)
         node_list.append(node)
-        return render_template('index.html', node_list = node_list, node_names = node_names)
+        return render_template('index.html', node_list = node_list, node_name_list = node_name_list)
     except xmlrpclib.Fault as err:
         print "A fault occurred"
         print "Fault code: %d" % err.faultCode

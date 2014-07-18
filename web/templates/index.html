@@ -269,83 +269,13 @@
                             <a href="#"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
                         </li>
                         <li>
-                            <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Charts<span class="fa arrow"></span></a>
+                            <a class="ajax" href="#"><i class="fa fa-bar-chart-o fa-fw "></i>Nodes<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
+                            {% for i in node_names %}
                                 <li>
-                                    <a href="#">Flot Charts</a>
+                                    <a href="#"></a>
                                 </li>
-                                <li>
-                                    <a href="#">Morris.js Charts</a>
-                                </li>
-                            </ul>
-                            <!-- /.nav-second-level -->
-                        </li>
-                        <li>
-                            <a href="#"><i class="fa fa-table fa-fw"></i> Tables</a>
-                        </li>
-                        <li>
-                            <a href="#"><i class="fa fa-edit fa-fw"></i> Forms</a>
-                        </li>
-                        <li>
-                            <a href="#"><i class="fa fa-wrench fa-fw"></i> UI Elements<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-                                <li>
-                                    <a href="#">Panels and Wells</a>
-                                </li>
-                                <li>
-                                    <a href="#">Buttons</a>
-                                </li>
-                                <li>
-                                    <a href="#">Notifications</a>
-                                </li>
-                                <li>
-                                    <a href="#">Typography</a>
-                                </li>
-                                <li>
-                                    <a href="#">Grid</a>
-                                </li>
-                            </ul>
-                            <!-- /.nav-second-level -->
-                        </li>
-                        <li>
-                            <a href="#"><i class="fa fa-sitemap fa-fw"></i> Multi-Level Dropdown<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-                                <li>
-                                    <a href="#">Second Level Item</a>
-                                </li>
-                                <li>
-                                    <a href="#">Second Level Item</a>
-                                </li>
-                                <li>
-                                    <a href="#">Third Level <span class="fa arrow"></span></a>
-                                    <ul class="nav nav-third-level">
-                                        <li>
-                                            <a href="#">Third Level Item</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">Third Level Item</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">Third Level Item</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">Third Level Item</a>
-                                        </li>
-                                    </ul>
-                                    <!-- /.nav-third-level -->
-                                </li>
-                            </ul>
-                            <!-- /.nav-second-level -->
-                        </li>
-                        <li>
-                            <a href="#"><i class="fa fa-files-o fa-fw"></i> Sample Pages<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-                                <li>
-                                    <a href="#">Blank Page</a>
-                                </li>
-                                <li>
-                                    <a href="#">Login Page</a>
-                                </li>
+                            {% endfor %}
                             </ul>
                             <!-- /.nav-second-level -->
                         </li>
@@ -361,55 +291,56 @@
             <div class="row">
                 <div class="col-lg-12">
                     <!-- Table -->
-{% for node in node_list %}
-<div class="panel panel-primary panel-custom">
-<div class="panel-heading">{{ node.name }}</div>
-    <table class="table table-bordered" >
-        <tr class="active">
-            <th>Pid</th>
-            <th>Name</th>
-            <th>Group</th>
-            <th>Uptime</th>
-            <th>State name</th>
-            <th></th>
-            <th></th>
-        {% for process in node.process_list%}
-        <tr class="process_info">
-            {% if process.pid==0 %}
-                 <td> - </td>
-            {% else  %}
-                <td> {{ process.pid }} </td>
-            {% endif  %}
-            <td> {{ process.name }} </td>
-            <td> {{ process.group }} </td>
-            <td> {{ process.uptime }} </td>
-        {% if process.state==0 or process.state==40 or process.state==100 or process.state==200 %}
-            <td class="alert alert-danger"> {{ process.statename }} </td>
-        {% elif process.state==10 or process.state==20 %}
-            <td class="alert alert-success"> {{ process.statename }} </td>
-        {% else %}
-            <td class="alert alert-warning"> {{ process.statename }} </td>
-        {% endif  %}
-        {% if process.state==20  %}
-            <td>
-                <button class="btn btn-primary btn-block act" name="/node/{{ node.name }}/process/{{ process.group  }}:{{ process.name }}/restart" value="Restart">Restart</button>
-            </td>
-            <td>
-                <button class="btn btn-primary btn-block act" name="/node/{{ node.name }}/process/{{ process.group  }}:{{ process.name }}/stop" value="Stop">Stop</button>
-            </td>
-        {% elif process.state==0  %}
-            <td>
-                <button class="btn btn-primary btn-block act" name="/node/{{ node.name }}/process/{{ process.group  }}:{{ process.name }}/start" value="Start">Start</button>
-            </td>
-            <td>
-                <button class="btn btn-primary btn-block disabled act" value="Stop">Stop</button>
-            </td>
-        {% endif  %}
-        </tr>
-        {% endfor %}
-    </table>
-</div>
-{% endfor %}
+                    {% for node in node_list %}
+                    <div class="panel panel-primary panel-custom">
+                        <div class="panel-heading">{{ node.name }}</div>
+                        <table class="table table-bordered" >
+                            <tr class="active">
+                                <th>Pid</th>
+                                <th>Name</th>
+                                <th>Group</th>
+                                <th>Uptime</th>
+                                <th>State name</th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                            {% for process in node.process_list%}
+                            <tr class="process_info">
+                            {% if process.pid==0 %}
+                                <td> - </td>
+                            {% else  %}
+                                <td> {{ process.pid }} </td>
+                            {% endif  %}
+                                <td> {{ process.name }} </td>
+                                <td> {{ process.group }} </td>
+                                <td> {{ process.uptime }} </td>
+                            {% if process.state==0 or process.state==40 or process.state==100 or process.state==200 %}
+                                <td class="alert alert-danger"> {{ process.statename }} </td>
+                            {% elif process.state==10 or process.state==20 %}
+                                <td class="alert alert-success"> {{ process.statename }} </td>
+                            {% else %}
+                                <td class="alert alert-warning"> {{ process.statename }} </td>
+                            {% endif  %}
+                            {% if process.state==20  %}
+                                <td>
+                                    <button class="btn btn-primary btn-block act" name="/node/{{ node.name }}/process/{{ process.group  }}:{{ process.name }}/restart" value="Restart">Restart</button>
+                                </td>
+                                <td>
+                                    <button class="btn btn-primary btn-block act" name="/node/{{ node.name }}/process/{{ process.group  }}:{{ process.name }}/stop" value="Stop">Stop</button>
+                                </td>
+                            {% elif process.state==0  %}
+                                <td>
+                                    <button class="btn btn-primary btn-block act" name="/node/{{ node.name }}/process/{{ process.group  }}:{{ process.name }}/start" value="Start">Start</button>
+                                </td>
+                                <td>
+                                    <button class="btn btn-primary btn-block disabled act" value="Stop">Stop</button>
+                                </td>
+                            {% endif  %}
+                            </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                    {% endfor %}
                     <!-- End Table -->
                 </div>
             <!-- /.row -->

@@ -16,7 +16,7 @@ def showAllProcess():
             node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
             node = Node(node_config)
             node_list.append(node) 
-        return render_template('index.html', node_list = node_list)
+        return render_template('index.html', node_list = node_list, node_names = node_names)
     except xmlrpclib.Fault as err:
         print "A fault occurred"
         print "Fault code: %d" % err.faultCode
@@ -25,11 +25,12 @@ def showAllProcess():
 @app.route('/node/<node_name>')
 def showNode(node_name):
     try:
+        node_names = Config(CONFIG_FILE).getAllNodeNames()
         node_list=[]
         node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
         node = Node(node_config)
         node_list.append(node)
-        return render_template('index.html', node_list = node_list)
+        return render_template('index.html', node_list = node_list, node_names = node_names)
     except xmlrpclib.Fault as err:
         print "A fault occurred"
         print "Fault code: %d" % err.faultCode
@@ -65,6 +66,15 @@ def json_stop(node_name, process_name):
             return JsonValue(process_name, node_name, "stop").success()
     except xmlrpclib.Fault as err:
         return JsonValue(process_name, node_name, "stop").error(err.faultCode, err.faultString)
+
+@app.route('/node/name/list')
+def getlist():
+    node_name_list = []
+    node_names = Config(CONFIG_FILE).getAllNodeNames()
+    for node_name in node_names:
+        node_name_list.append(node_name[5:])
+    return jsonify( node_name_list = node_name_list )
+
 
 @app.errorhandler(404)
 def page_not_found(error):

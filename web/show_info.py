@@ -30,9 +30,9 @@ def showNode(node_name):
         node_list=[]
         node_name_list = []
         node_names = Config(CONFIG_FILE).getAllNodeNames()
-        for node_name in node_names:
-            node_name = node_name[5:]
-            node_name_list.append(node_name)
+        for node_name2 in node_names:
+            node_name2 = node_name2[5:]
+            node_name_list.append(node_name2)
         node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
         node = Node(node_config)
         node_list.append(node)

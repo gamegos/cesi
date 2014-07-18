@@ -16,7 +16,7 @@ def showAllProcess():
             node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
             node = Node(node_config)
             node_list.append(node) 
-        return render_template('show_info.html', node_list = node_list)
+        return render_template('index.html', node_list = node_list)
     except xmlrpclib.Fault as err:
         print "A fault occurred"
         print "Fault code: %d" % err.faultCode
@@ -29,7 +29,7 @@ def showNode(node_name):
         node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
         node = Node(node_config)
         node_list.append(node)
-        return render_template('show_info.html', node_list = node_list)
+        return render_template('index.html', node_list = node_list)
     except xmlrpclib.Fault as err:
         print "A fault occurred"
         print "Fault code: %d" % err.faultCode

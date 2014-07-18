@@ -1,5 +1,4 @@
-$(document).ready(function(){
-  $("button").click(function(){
+$(".act").click(function(){
         var $tr = $(this).parent().parent();
         var $td = $tr.children('td').first();
         var $link = $(this).attr('name');
@@ -63,5 +62,5 @@ $(document).ready(function(){
                     }
                }});
   });
-});
+
 

@@ -9,18 +9,19 @@
     <title>Supervisor Centralized</title>
 
     <!-- Core CSS - Include with every page -->
-    <link href="{{ url_for('static', filename = 'css/bootstrap.min.css') }}" rel="stylesheet">
-    <link href="{{ url_for('static', filename = 'font-awesome/css/font-awesome.css') }}" rel="stylesheet">
+    <link rel=stylesheet type=text/css  href="{{ url_for('static', filename = 'css/bootstrap.min.css') }}" rel="stylesheet">
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename = 'font-awesome/css/font-awesome.css') }}" rel="stylesheet">
 
     <!-- Page-Level Plugin CSS - Dashboard -->
-    <link href="{{ url_for('static', filename = 'css/plugins/morris/morris-0.4.3.min.css') }}" rel="stylesheet">
-    <link href="{{ url_for('static', filename = 'css/plugins/timeline/timeline.css') }}" rel="stylesheet">
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename = 'css/plugins/morris/morris-0.4.3.min.css') }}" rel="stylesheet">
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename = 'css/plugins/timeline/timeline.css') }}" rel="stylesheet">
 
     <!-- SB Admin CSS - Include with every page -->
-    <link href="{{ url_for('static', filename = 'css/sb-admin.css') }}" rel="stylesheet">
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename = 'css/sb-admin.css') }}" rel="stylesheet">
 
     <!-- Table links -->
     <link rel=stylesheet type=text/css href="{{ url_for('static', filename='custom.css') }}">
+
 
 </head>
 
@@ -391,17 +392,17 @@
         {% endif  %}
         {% if process.state==20  %}
             <td>
-                <button class="btn btn-primary btn-block" name="/node/{{ node.name }}/process/{{ process.group  }}:{{ process.name }}/restart" value="Restart">Restart</button>
+                <button class="btn btn-primary btn-block act" name="/node/{{ node.name }}/process/{{ process.group  }}:{{ process.name }}/restart" value="Restart">Restart</button>
             </td>
             <td>
-                <button class="btn btn-primary btn-block" name="/node/{{ node.name }}/process/{{ process.group  }}:{{ process.name }}/stop" value="Stop">Stop</button>
+                <button class="btn btn-primary btn-block act" name="/node/{{ node.name }}/process/{{ process.group  }}:{{ process.name }}/stop" value="Stop">Stop</button>
             </td>
         {% elif process.state==0  %}
             <td>
-                <button class="btn btn-primary btn-block" name="/node/{{ node.name }}/process/{{ process.group  }}:{{ process.name }}/start" value="Start">Start</button>
+                <button class="btn btn-primary btn-block act" name="/node/{{ node.name }}/process/{{ process.group  }}:{{ process.name }}/start" value="Start">Start</button>
             </td>
             <td>
-                <button class="btn btn-primary btn-block disabled" value="Stop">Stop</button>
+                <button class="btn btn-primary btn-block disabled act" value="Stop">Stop</button>
             </td>
         {% endif  %}
         </tr>
@@ -417,21 +418,22 @@
     </div>
     <!-- /#wrapper -->
 
+    <script language="JavaScript" type="text/javascript" src="{{ url_for('static', filename='jquery-1.11.1.min.js') }}"></script>
     <!-- Core Scripts - Include with every page -->
-    <script type="text/javascript" src="{{ url_for('static', filename='custom.js') }}"></script>
-    <script src="{{ url_for('static', filename ='js/jquery-1.10.2.js') }}"></script>
-    <script src="{{ url_for('static', filename ='js/bootstrap.min.js') }}"></script>
-    <script src="{{ url_for('static', filename ='js/plugins/metisMenu/jquery.metisMenu.js') }}"></script>
+    <script language="JavaScript" type="text/javascript" src="{{ url_for('static', filename='custom.js') }}"></script>
+    <script language="JavaScript" type="text/javascript" src="{{ url_for('static', filename ='js/jquery-1.10.2.js') }}"></script>
+    <script language="JavaScript" type="text/javascript" src="{{ url_for('static', filename ='js/bootstrap.min.js') }}"></script>
+    <script language="JavaScript" type="text/javascript" src="{{ url_for('static', filename ='js/plugins/metisMenu/jquery.metisMenu.js') }}"></script>
 
     <!-- Page-Level Plugin Scripts - Dashboard -->
-    <script src="{{ url_for('static', filename ='js/plugins/morris/raphael-2.1.0.min.js') }}"></script>
-    <script src="{{ url_for('static', filename ='js/plugins/morris/morris.js') }}"></script>
+    <script language="JavaScript" type="text/javascript"  src="{{ url_for('static', filename ='js/plugins/morris/raphael-2.1.0.min.js') }}"></script>
+    <script language="JavaScript" type="text/javascript" src="{{ url_for('static', filename ='js/plugins/morris/morris.js') }}"></script>
 
     <!-- SB Admin Scripts - Include with every page -->
-    <script src="{{ url_for('static', filename ='js/sb-admin.js') }}"></script>
+    <script language="JavaScript" type="text/javascript" src="{{ url_for('static', filename ='js/sb-admin.js') }}"></script>
 
     <!-- Page-Level Demo Scripts - Dashboard - Use for reference -->
-    <script src="{{ url_for('static', filename ='js/demo/dashboard-demo.js') }}"></script>
+    <script language="JavaScript" type="text/javascript"  src="{{ url_for('static', filename ='js/demo/dashboard-demo.js') }}"></script>
 
 </body>
 

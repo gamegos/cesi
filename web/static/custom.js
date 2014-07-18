@@ -86,7 +86,7 @@ $(".ajax").click(function(){
                         console.log($counter);
                         $a.html(result['node_name_list'][$counter]);
                         console.log($a);
-                        $nodeli.next();
+                        $nodeli = $nodeli.next();
                         console.log($nodeli);
                         $a = $nodeli.children('a').first();
                         console.log($a);

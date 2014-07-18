@@ -266,10 +266,10 @@
                             <!-- /input-group -->
                         </li>
                         <li>
-                            <a href="#"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                            <a href="#"><i class="glyphicon glyphicon-dashboard"></i> Dashboard</a>
                         </li>
                         <li>
-                            <a class="ajax" href="#"><i class="fa fa-bar-chart-o fa-fw "></i>Nodes<span class="fa arrow"></span></a>
+                            <a class="ajax" href="#"><i class="glyphicon glyphicon-th-list"></i> Nodes<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                             {% for i in node_names %}
                                 <li>
@@ -293,7 +293,7 @@
                     <!-- Table -->
                     {% for node in node_list %}
                     <div class="panel panel-primary panel-custom">
-                        <div class="panel-heading">{{ node.name }}</div>
+                        <div class="panel-heading"><span class="glyphicon glyphicon-th-list"></span> {{ node.name }}</div>
                         <table class="table table-bordered" >
                             <tr class="active">
                                 <th>Pid</th>

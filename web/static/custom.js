@@ -1,4 +1,5 @@
-$(".act").click(function(){
+$(".act").click(actc)
+var actc = function(){
         var $tr = $(this).parent().parent();
         var $td = $tr.children('td').first();
         var $link = $(this).attr('name');
@@ -61,7 +62,7 @@ $(".act").click(function(){
                         $stop.attr('value',"Stop");
                     }
                }});
-  });
+  };
 
 $(".ajax").click(function(){
         var $node_name = $(this).attr('value');
@@ -115,6 +116,7 @@ $(".ajax").click(function(){
                                     }else if($state==0){
                                         $tr_p.append('<td><button class="btn btn-primary btn-block act" name="/node/'+$node_name+'/process/'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'/start" value="Start">Start</button></td><td><button class="btn btn-primary btn-block disabled act" value="Stop">Stop</button> </td>');
                                     }
+$(".act").click(actc)
                                 }
                         }   
                 });

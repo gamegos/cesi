@@ -42,9 +42,11 @@ class Node:
         self.long_name = node_config.node_name
         self.name = node_config.node_name[5:]
         self.connection = Connection(node_config.host, node_config.port, node_config.username, node_config.password).getConnection()
-        self.process_list = []
+        self.process_list=[]
         for p in self.connection.supervisor.getAllProcessInfo():
-            self.process_list.append(ProcessInfo(p))
+            self.process_list.append(p)
+        self.process_dict = self.connection.supervisor.getAllProcessInfo()
+
 
 class Connection:
 

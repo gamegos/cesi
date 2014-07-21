@@ -1,6 +1,4 @@
-
-$(document).ready(function(){
-    $(".act").click(function(){
+$(".act").click(function(){
         var $tr = $(this).parent().parent();
         var $td = $tr.children('td').first();
         var $link = $(this).attr('name');
@@ -64,4 +62,62 @@ $(document).ready(function(){
                     }
                }});
   });
-});
+
+$(".ajax").click(function(){
+        var $node_name = $(this).attr('value');
+        var $base = "/node/";
+        var $url = $base.concat($node_name);
+        var $maindiv = $("#maindiv");
+        $.ajax({
+                url: $url,
+                dataType: 'json',
+                success: function(result){
+                                $maindiv.empty();
+                                $maindiv.append('<div class="panel panel-primary panel-custom" id="panel"></div>');
+                                $panel = $("#panel");
+                                $panel.append('<div class="panel-heading"><span class="glyphicon glyphicon-th-list"></span> '+ $node_name +'</div>');
+                                $panel.append('<table class="table table-bordered" ></table>');
+                                $table = $('.table-bordered');
+                                $table.append('<tr class="active"> <th>Pid</th> <th>Name</th> <th>Group</th> <th>Uptime</th> <th>State name</th> <th></th> <th></th> </tr>');
+                                for (var $counter = 0; $counter < result['process_info'].length; $counter++){
+                                    $table.append('<tr class="process_info" id="'+$counter+'"></tr>');
+                                    $tr_p = $('#'+$counter);
+                                    //pid
+                                    if( result['process_info'][$counter]['pid'] == 0 ){
+                                        $tr_p.append('<td> - </td>');
+                                    }else{
+                                        $tr_p.append('<td>'+ result['process_info'][$counter]['pid'] + '</td>');
+                                    }
+
+                                    //name
+                                    $tr_p.append('<td>'+ result['process_info'][$counter]['name'] + '</td>')
+                                    
+                                    //group
+                                    $tr_p.append('<td>'+ result['process_info'][$counter]['group'] + '</td>');
+                                    
+                                    //uptime
+                                    var $uptime = result['process_info'][$counter]['description'].substring(17,24)
+                                    $tr_p.append('<td>'+ $uptime + '</td>');
+                                    
+                                    //statename
+                                    $state = result['process_info'][$counter]['state'];
+                                    if( $state==0 || $state==40 || $state==100 || $state==200 ){
+                                        $tr_p.append('<td class="alert alert-danger">'+ result['process_info'][$counter]['statename'] + '</td>');
+                                    }else if($state==10 || $state==20){
+                                        $tr_p.append('<td class="alert alert-success">'+ result['process_info'][$counter]['statename'] + '</td>');
+                                    }else{
+                                        $tr_p.append('<td class="alert alert-warning">'+ result['process_info'][$counter]['statename'] + '</td>');
+                                    }
+
+                                    //buttons
+                                     if( $state==20 ){
+                                        $tr_p.append('<td><button class="btn btn-primary btn-block act" name="/node/'+$node_name+'/process/'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'/restart" value="Restart">Restart</button></td><td><button class="btn btn-primary btn-block act" name="/node/'+$node_name+'/process/'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'/stop" value="Stop">Stop</button> </td>');
+                                    }else if($state==0){
+                                        $tr_p.append('<td><button class="btn btn-primary btn-block act" name="/node/'+$node_name+'/process/'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'/start" value="Start">Start</button></td><td><button class="btn btn-primary btn-block disabled act" value="Stop">Stop</button> </td>');
+                                    }
+                                }
+                        }   
+                });
+
+        });
+

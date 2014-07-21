@@ -26,21 +26,8 @@ def showAllProcess():
 
 @app.route('/node/<node_name>')
 def showNode(node_name):
-    try:
-        node_list=[]
-        node_name_list = []
-        node_names = Config(CONFIG_FILE).getAllNodeNames()
-        for node_name2 in node_names:
-            node_name2 = node_name2[5:]
-            node_name_list.append(node_name2)
-        node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
-        node = Node(node_config)
-        node_list.append(node)
-        return render_template('index.html', node_list = node_list, node_name_list = node_name_list)
-    except xmlrpclib.Fault as err:
-        print "A fault occurred"
-        print "Fault code: %d" % err.faultCode
-        print "Fault string: %s" % err.faultString
+    node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
+    return jsonify( process_info = Node(node_config).process_dict )
 
 @app.route('/node/<node_name>/process/<process_name>/restart')
 def json_restart(node_name, process_name):

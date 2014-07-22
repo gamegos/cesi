@@ -1,3 +1,6 @@
+$( "#selectable" ).selectable();
+
+
 $(".act").click(actc)
 var actc = function(){
         var $tr = $(this).parent().parent();

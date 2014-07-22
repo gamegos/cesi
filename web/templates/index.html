@@ -22,7 +22,6 @@
     <!-- Table links -->
     <link rel=stylesheet type=text/css href="{{ url_for('static', filename='custom.css') }}">
 
-
 </head>
 
 <body>
@@ -270,7 +269,7 @@
                         </li>
                         <li>
                             <a href="#"><i class="glyphicon glyphicon-th-list"></i> Nodes<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
+                            <ul class="nav nav-second-level" id="selectable">
                             {% for node_name in node_name_list %}
                                 <li>
                                     <a class="ajax" value="{{ node_name  }}" href="#"> {{ node_name  }}  </a>
@@ -352,6 +351,7 @@
     <!-- /#wrapper -->
 
     <script language="JavaScript" type="text/javascript" src="{{ url_for('static', filename='jquery-1.11.1.min.js') }}"></script>
+    <script language="JavaScript" type="text/javascript" src="{{ url_for('static', filename='js/ui/jquery-ui-1.11.0/jquery-ui.js') }}"></script>
     <!-- Core Scripts - Include with every page -->
     <script language="JavaScript" type="text/javascript" src="{{ url_for('static', filename='custom.js') }}"></script>
     <script language="JavaScript" type="text/javascript" src="{{ url_for('static', filename ='js/jquery-1.10.2.js') }}"></script>

@@ -1,3 +1,6 @@
 .panel-custom {
     margin-bottom: 10px;
 }
+
+#selectable .ui-selected { background: #D1FFD1; }
+

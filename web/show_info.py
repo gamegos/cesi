@@ -7,6 +7,30 @@ app = Flask(__name__)
 app.config.from_object(__name__)
 
 @app.route('/')
+def showDashboard():
+    all_process_count = 0
+    running_process_count = 0
+    stopped_process_count = 0
+    node_count = 0
+    for nodename in Config(CONFIG_FILE).getAllNodeNames():
+        node_count = node_count + 1
+        nodename = nodename[5:]
+        nodeconfig = Config(CONFIG_FILE).getNodeConfig(nodename)
+        node = Node(nodeconfig)
+        for process in node.process_list:
+            all_process_count = all_process_count + 1
+            if process.state==20:
+                running_process_count = running_process_count + 1
+            if process.state==0:
+                stopped_process_count = stopped_process_count + 1
+    return jsonify(
+                   all_process_count = all_process_count,
+                   running_process_count = running_process_count,
+                   stopped_process_count = stopped_process_count,
+                   node_count = node_count
+                   )  
+
+@app.route('/all')
 def showAllProcess():
     try:
         node_list = []

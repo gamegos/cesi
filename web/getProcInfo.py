@@ -22,8 +22,8 @@ class Config:
         return self.node_config
 
     def getAllNodeNames(self):
-        node_list = self.cfg.sections()
-        return node_list
+        self.node_list = self.cfg.sections()
+        return self.node_list
 
 
 class NodeConfig:
@@ -44,7 +44,7 @@ class Node:
         self.connection = Connection(node_config.host, node_config.port, node_config.username, node_config.password).getConnection()
         self.process_list=[]
         for p in self.connection.supervisor.getAllProcessInfo():
-            self.process_list.append(p)
+            self.process_list.append(ProcessInfo(p))
         self.process_dict = self.connection.supervisor.getAllProcessInfo()
 
 

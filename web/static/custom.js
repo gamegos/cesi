@@ -48,8 +48,7 @@ var actc = function(){
                     if( data['data']['state']==20){
                         $restart = $td.children('button').first();
                         $restart.attr('class',"btn btn-primary btn-block");
-                        $name0 = "\/node\/";
-                        $name = $name0.concat(data['nodename'], "\/process\/", data['data']['group'], ":", data['data']['name'], "\/restart");
+                        $name = "/node/"+data['nodename'] + "/process/" + data['data']['group'] + ":" + data['data']['name'] + "/restart";
                         $restart.attr('name',$name );
                         $restart.attr('value',"Restart");
                         $restart.html("Restart");
@@ -57,15 +56,14 @@ var actc = function(){
                         $td = $td.next();
                         $stop = $td.children('button').first();
                         $stop.attr('class',"btn btn-primary btn-block");
-                        $name2 = $name0.concat(data['nodename'], "\/process\/", data['data']['group'], ":", data['data']['name'], "\/stop");
+                        $name = "/node/"+data['nodename'] + "/process/" + data['data']['group'] + ":" + data['data']['name'] + "/stop";
                         $stop.attr('name',$name2 );
                         $stop.attr('value',"Stop");
                         $stop.html("Stop");
                     }else if(data['data']['state']==0){
                         $start = $td.children('button');
                         $start.attr('class',"btn btn-primary btn-block");
-                        $name0 = "\/node\/";
-                        $name = $name0.concat(data['nodename'], "\/process\/", data['data']['group'], ":", data['data']['name'], "\/start");
+                        $name = "/node/"+data['nodename'] + "/process/" + data['data']['group'] + ":" + data['data']['name'] + "/start";
                         $start.attr('name',$name );
                         $start.attr('value',"Start");
                         $start.html("Start");

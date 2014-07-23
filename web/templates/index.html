@@ -271,7 +271,7 @@
                             <a href="#"><i class="glyphicon glyphicon-th-list"></i> Nodes<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level" id="selectable">
                             {% for node_name in node_name_list %}
-                                <li>
+                                <li value="{{node_name}}">
                                     <a class="ajax" value="{{ node_name  }}" href="#"> {{ node_name  }}  </a>
                                 </li>
                             {% endfor %}
@@ -288,10 +288,11 @@
 
         <div id="page-wrapper">
             <div class="row">
+<span>You've selected:</span> <span id="select-result">none</span>
                 <div class="col-lg-12" id="maindiv">
                     <!-- Table -->
                     {% for node in node_list %}
-                        <div class="panel panel-primary panel-custom">
+                        <div class="panel panel-primary panel-custom" id="panel{{ node.name }}">
                             <div class="panel-heading"><span class="glyphicon glyphicon-th-list"></span> {{ node.name }}</div>
                             <table class="table table-bordered" >
                                 <tr class="active">

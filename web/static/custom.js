@@ -1,7 +1,3 @@
-$( "#selectable" ).selectable();
-
-
-$(".act").click(actc)
 var actc = function(){
         var $tr = $(this).parent().parent();
         var $td = $tr.children('td').first();
@@ -67,18 +63,23 @@ var actc = function(){
                }});
   };
 
-$(".ajax").click(function(){
-        var $node_name = $(this).attr('value');
-        var $base = "/node/";
-        var $url = $base.concat($node_name);
+
+
+var x ={stop: function(){
         var $maindiv = $("#maindiv");
-        $.ajax({
+        $maindiv.empty();
+        $( ".ui-selected", this ).each(function() { 
+            $node_name = $(this).find('a').attr('value');
+            $url = "/node/"+$node_name
+            console.log($node_name);
+            $.ajax({
                 url: $url,
                 dataType: 'json',
                 success: function(result){
-                                $maindiv.empty();
-                                $maindiv.append('<div class="panel panel-primary panel-custom" id="panel"></div>');
-                                $panel = $("#panel");
+                                $maindiv.append('<div class="panel panel-primary panel-custom" id="panel'+$node_name+'"></div>');
+                                console.log($maindiv);
+                                $panel = $("#panel"+$node_name);
+                                console.log($panel);
                                 $panel.append('<div class="panel-heading"><span class="glyphicon glyphicon-th-list"></span> '+ $node_name +'</div>');
                                 $panel.append('<table class="table table-bordered" ></table>');
                                 $table = $('.table-bordered');
@@ -95,14 +96,14 @@ $(".ajax").click(function(){
 
                                     //name
                                     $tr_p.append('<td>'+ result['process_info'][$counter]['name'] + '</td>')
-                                    
+
                                     //group
                                     $tr_p.append('<td>'+ result['process_info'][$counter]['group'] + '</td>');
-                                    
+
                                     //uptime
                                     var $uptime = result['process_info'][$counter]['description'].substring(17,24)
                                     $tr_p.append('<td>'+ $uptime + '</td>');
-                                    
+
                                     //statename
                                     $state = result['process_info'][$counter]['state'];
                                     if( $state==0 || $state==40 || $state==100 || $state==200 ){
@@ -121,8 +122,15 @@ $(".ajax").click(function(){
                                     }
 $(".act").click(actc)
                                 }
-                        }   
+                        }  
                 });
+         });
+}}
 
-        });
 
+$("#selectable").selectable(x);
+$( document ).ready(function() {
+
+$(".act").click(actc);
+
+});

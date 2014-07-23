@@ -1,3 +1,20 @@
+var dashboard = function(){
+    var $maindiv = $("#maindiv");
+    $maindiv.empty();
+    $.ajax({
+            url: '/dashboard',
+            dataType: 'json',
+            success: function(data){
+               $maindiv.append('<div class="row" id="dashboard"></div>');
+               $dash = $("#dashboard");
+               $dash.append('<div class="col-lg-6 col-xs-6"> <div class="small-box bg-aqua"> <div class="inner">  <h3>'+data['node_count']+'</h3> <p>  All Node Count  </p> </div>  </div> </div>');
+               $dash.append('<div class="col-lg-6 col-xs-6"> <div class="small-box bg-green"> <div class="inner">  <h3>'+data['all_process_count']+'</h3> <p>  All Process Count </p> </div>  </div> </div>');
+               $dash.append('<div class="col-lg-6 col-xs-6"> <div class="small-box bg-yellow"> <div class="inner">  <h3>'+data['running_process_count']+'</h3> <p> Running Process Count  </p> </div>  </div> </div>');
+               $dash.append('<div class="col-lg-6 col-xs-6"> <div class="small-box bg-red"> <div class="inner">  <h3>'+data['stopped_process_count']+'</h3> <p>  Stopped Process Count </p> </div>  </div> </div>');
+            }
+    });
+}
+
 var actc = function(){
         var $tr = $(this).parent().parent();
         var $td = $tr.children('td').first();
@@ -129,4 +146,5 @@ $("#selectable").selectable(x);
 
 $( document ).ready(function() {
     $(".act").click(actc);
+    $(".dash").click(dashboard);
 });

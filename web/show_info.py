@@ -6,7 +6,7 @@ import xmlrpclib
 app = Flask(__name__)
 app.config.from_object(__name__)
 
-@app.route('/')
+@app.route('/dashboard')
 def showDashboard():
     all_process_count = 0
     running_process_count = 0

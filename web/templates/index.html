@@ -265,10 +265,10 @@
                             <!-- /input-group -->
                         </li>
                         <li>
-                            <a href="#" class="dash"><i class="glyphicon glyphicon-dashboard"></i> Dashboard</a>
+                            <a href="/" class="dash"><i class="glyphicon glyphicon-dashboard"></i> Dashboard</a>
                         </li>
                         <li>
-                            <a href="/all"><i class="glyphicon glyphicon-th-list"></i> Show All</a>
+                            <a href="#" class="showall"><i class="glyphicon glyphicon-th-list"></i> Show All</a>
                         </li>
                         <li>
                             <a href="#"><i class="glyphicon glyphicon-th-list"></i> Nodes<span class="fa arrow"></span></a>
@@ -292,58 +292,57 @@
         <div id="page-wrapper">
             <div class="row">
                 <div class="col-lg-12" id="maindiv">
-                    <!-- Table -->
-                    {% for node in node_list %}
-                        <div class="panel panel-primary panel-custom">
-                            <div class="panel-heading"><span class="glyphicon glyphicon-th-list"></span> {{ node.name }}</div>
-                            <table class="table table-bordered">
-                                <tr class="active">
-                                    <th>Pid</th>
-                                    <th>Name</th>
-                                    <th>Group</th>
-                                    <th>Uptime</th>
-                                    <th>State name</th>
-                                    <th></th>
-                                    <th></th>
-                                </tr>
-                                {% for process in node.process_list%}
-                                    <tr class="process_info">
-                                    {% if process.pid==0 %}
-                                        <td> - </td>
-                                    {% else  %}
-                                        <td> {{ process.pid }} </td>
-                                {% endif  %}
-                                    <td> {{ process.name }} </td>
-                                    <td> {{ process.group }} </td>
-                                    <td> {{ process.uptime }} </td>
-                                {% if process.state==0 or process.state==40 or process.state==100 or process.state==200 %}
-                                    <td class="alert alert-danger"> {{ process.statename }} </td>
-                                {% elif process.state==10 or process.state==20 %}
-                                    <td class="alert alert-success"> {{ process.statename }} </td>
-                                {% else %}
-                                    <td class="alert alert-warning"> {{ process.statename }} </td>
-                                {% endif  %}
-                                {% if process.state==20  %}
-                                    <td>
-                                        <button class="btn btn-primary btn-block act" name="/node/{{ node.name }}/process/{{ process.group  }}:{{ process.name }}/restart" value="Restart">Restart</button>
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-primary btn-block act" name="/node/{{ node.name }}/process/{{ process.group  }}:{{ process.name }}/stop" value="Stop">Stop</button>
-                                    </td>
-                                {% elif process.state==0  %}
-                                    <td>
-                                        <button class="btn btn-primary btn-block act" name="/node/{{ node.name }}/process/{{ process.group  }}:{{ process.name }}/start" value="Start">Start</button>
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-primary btn-block disabled act" value="Stop">Stop</button>
-                                    </td>
-                                {% endif  %}
-                                </tr>
-                                {% endfor %}
-                            </table>
-                            <!-- End Table -->
-                        </div> 
-                    {% endfor %}
+                    <div class="row">
+                        <div class="col-lg-6 col-xs-6">
+                            <div class="small-box bg-aqua">
+                                <div class="inner">
+                                    <h3>
+                                        {{node_count}}
+                                    </h3>
+                                    <p>
+                                        All Node Count
+                                    </p>
+                                </div>
+                            </div>
+                        </div><!-- ./col -->
+                        <div class="col-lg-6 col-xs-6">
+                            <div class="small-box bg-green">
+                                <div class="inner">
+                                    <h3>
+                                        {{all_process_count}}
+                                    </h3>
+                                    <p>
+                                        All Process Count
+                                    </p>
+                                </div>
+                            </div>
+                        </div><!-- ./col -->
+                        <div class="col-lg-6 col-xs-6">
+                            <!-- small box -->
+                            <div class="small-box bg-yellow">
+                                <div class="inner">
+                                    <h3>
+                                        {{running_process_count}}
+                                    </h3>
+                                    <p>
+                                        Running Process Count
+                                    </p>
+                                </div>
+                            </div>
+                        </div><!-- ./col -->
+                        <div class="col-lg-6 col-xs-6">
+                            <div class="small-box bg-red">
+                                <div class="inner">
+                                    <h3>
+                                        {{stopped_process_count}}
+                                    </h3>
+                                    <p>
+                                        Stopped Process Count
+                                    </p>
+                                </div>
+                            </div>
+                        </div><!-- ./col -->
+                    </div><!-- /.row -->
                 </div>
                 <!-- End collg-12 -->
             </div>
@@ -357,7 +356,6 @@
     <script language="JavaScript" type="text/javascript" src="{{ url_for('static', filename='js/ui/jquery-ui-1.11.0/jquery-ui.js') }}"></script>
     <!-- Core Scripts - Include with every page -->
     <script language="JavaScript" type="text/javascript" src="{{ url_for('static', filename='custom.js') }}"></script>
-    <script language="JavaScript" type="text/javascript" src="{{ url_for('static', filename ='js/jquery-1.10.2.js') }}"></script>
     <script language="JavaScript" type="text/javascript" src="{{ url_for('static', filename ='js/bootstrap.min.js') }}"></script>
     <script language="JavaScript" type="text/javascript" src="{{ url_for('static', filename ='js/plugins/metisMenu/jquery.metisMenu.js') }}"></script>
 

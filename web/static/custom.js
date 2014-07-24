@@ -1,21 +1,4 @@
-var dashboard = function(){
-    var $maindiv = $("#maindiv");
-    $maindiv.empty();
-    $.ajax({
-            url: '/dashboard',
-            dataType: 'json',
-            success: function(data){
-               $maindiv.append('<div class="row" id="dashboard"></div>');
-               $dash = $("#dashboard");
-               $dash.append('<div class="col-lg-6 col-xs-6"> <div class="small-box bg-aqua"> <div class="inner">  <h3>'+data['node_count']+'</h3> <p>  All Node Count  </p> </div>  </div> </div>');
-               $dash.append('<div class="col-lg-6 col-xs-6"> <div class="small-box bg-green"> <div class="inner">  <h3>'+data['all_process_count']+'</h3> <p>  All Process Count </p> </div>  </div> </div>');
-               $dash.append('<div class="col-lg-6 col-xs-6"> <div class="small-box bg-yellow"> <div class="inner">  <h3>'+data['running_process_count']+'</h3> <p> Running Process Count  </p> </div>  </div> </div>');
-               $dash.append('<div class="col-lg-6 col-xs-6"> <div class="small-box bg-red"> <div class="inner">  <h3>'+data['stopped_process_count']+'</h3> <p>  Stopped Process Count </p> </div>  </div> </div>');
-            }
-    });
-}
-
-var actc = function(){
+var $actc = function(){
         var $tr = $(this).parent().parent();
         var $td = $tr.children('td').first();
         var $link = $(this).attr('name');
@@ -80,7 +63,7 @@ var actc = function(){
 
 
 
-var x ={stop: function(){
+var $select ={stop: function(){
         var $maindiv = $("#maindiv");
         $maindiv.empty();
         $( ".ui-selected", this ).each(function() { 
@@ -132,7 +115,7 @@ var x ={stop: function(){
                                     }else if($state==0){
                                         $tr_p.append('<td><button class="btn btn-primary btn-block act" name="/node/'+$node_name+'/process/'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'/start" value="Start">Start</button></td><td><button class="btn btn-primary btn-block disabled act" value="Stop">Stop</button> </td>');
                                     }
-$(".act").click(actc)
+$(".act").click($actc)
                                 }
                         }  
                 });
@@ -140,9 +123,23 @@ $(".act").click(actc)
 }}
 
 
-$("#selectable").selectable(x);
+var $showallprocess = function(){
+    var $selectable_ul = $("#selectable");
+    var $node_count = $selectable_ul.children('li').length;
+    var $selected_li =  $selectable_ul.children('li').first();
+    $selected_li.attr('class', 'ui-selectee ui-selected');
+    var $selected_a = $selected_li.children('a').first();
+    $selected_a.attr('class', 'ajax ui-selectee');
+    for(var i=1; i < $node_count; i++){    
+        $selected_li = $selected_li.next();
+        $selected_li.attr('class', 'ui-selectee ui-selected');
+        $selected_a = $selected_li.children('a').first();
+        $selected_a.attr('class', 'ajax ui-selectee');
+    }
+}
 
 $( document ).ready(function() {
-    $(".act").click(actc);
-    $(".dash").click(dashboard);
+    $(".showall").click($showallprocess);
+    $("#selectable").selectable($select);
+    $(".act").click($actc);
 });

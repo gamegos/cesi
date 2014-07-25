@@ -66,6 +66,13 @@ var $actc = function(){
 var $select = function(){
         var $maindiv = $("#maindiv");
         $maindiv.empty();
+        $checkbox = $(this).children('input').first();
+        var ischecked = $checkbox.is(":checked");
+        if(ischecked){
+            $checkbox.prop("checked", false);
+        }else{
+            $checkbox.prop("checked", true);
+        }
         $( "input:checked" ).each(function() { 
             var $node_name = $(this).attr('value');
             var $url = "/node/"+$node_name

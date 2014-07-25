@@ -274,7 +274,7 @@
                             <a href="#"><i class="glyphicon glyphicon-th-list"></i> Nodes<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level" id="selectable">
                             {% for node_name in node_name_list %}
-                                <li value="{{node_name}}">
+                                <li class="ajax2" value="{{node_name}}">
                                     <a class="ajax" value="{{ node_name  }}" href="#"> {{ node_name  }}  </a>
                                 </li>
                             {% endfor %}
@@ -301,7 +301,7 @@
                                     <h3>{{node_count}}</h3>
                                     <h4>Process Count</h4>
                                     <h3>{{all_process_count}}</h3>
-                                    <br/><br/><br/><br/><br/>
+                                    <br/><br/><br/><br/>
                                 </div>
                             </div>
                         </div><!-- ./col -->
@@ -325,7 +325,7 @@
                                     <h3>Process'</h3>
                                     <h4> Process Count </h4>
                                     <h3>{{all_process_count}}</h3>
-                                    <h4>Running</h4><br/>
+                                    <h4>Running</h4>
                                     <h3>{{running_process_count}}</h3>
                                     <h4>Stopped</h4>
                                     <h3>{{stopped_process_count}}</h3>

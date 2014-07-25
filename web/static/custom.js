@@ -39,7 +39,7 @@ var $actc = function(){
                         $td = $td.next();
                         $stop = $td.children('button').first();
                         $stop.attr('class',"btn btn-primary btn-block");
-                        $name = "/node/"+data['nodename'] + "/process/" + data['data']['group'] + ":" + data['data']['name'] + "/stop";
+                        $name2 = "/node/"+data['nodename'] + "/process/" + data['data']['group'] + ":" + data['data']['name'] + "/stop";
                         $stop.attr('name',$name2 );
                         $stop.attr('value',"Stop");
                         $stop.html("Stop");
@@ -63,10 +63,10 @@ var $actc = function(){
 
 
 
-var $select ={stop: function(){
+var $select = function(){
         var $maindiv = $("#maindiv");
         $maindiv.empty();
-        $( ".ui-selected", this ).each(function() { 
+        $( ".ui-selected").each(function() { 
             var $node_name = $(this).find('a').attr('value');
             var $url = "/node/"+$node_name
             $.ajax({
@@ -120,26 +120,13 @@ $(".act").click($actc)
                         }  
                 });
          });
-}}
-
+}
 
 var $showallprocess = function(){
-    var $selectable_ul = $("#selectable");
-    var $node_count = $selectable_ul.children('li').length;
-    var $selected_li =  $selectable_ul.children('li').first();
-    $selected_li.attr('class', 'ui-selectee ui-selected');
-    var $selected_a = $selected_li.children('a').first();
-    $selected_a.attr('class', 'ajax ui-selectee');
-    for(var i=1; i < $node_count; i++){    
-        $selected_li = $selected_li.next();
-        $selected_li.attr('class', 'ui-selectee ui-selected');
-        $selected_a = $selected_li.children('a').first();
-        $selected_a.attr('class', 'ajax ui-selectee');
-    }
 }
 
 $( document ).ready(function() {
-    $(".showall").click($showallprocess);
-    $("#selectable").selectable($select);
+    $(".ajax2").click($select);
+    $("#selectable").selectable();
     $(".act").click($actc);
 });

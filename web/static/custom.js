@@ -66,8 +66,8 @@ var $actc = function(){
 var $select = function(){
         var $maindiv = $("#maindiv");
         $maindiv.empty();
-        $( ".ui-selected").each(function() { 
-            var $node_name = $(this).find('a').attr('value');
+        $( "input:checked" ).each(function() { 
+            var $node_name = $(this).attr('value');
             var $url = "/node/"+$node_name
             $.ajax({
                 url: $url,
@@ -191,6 +191,5 @@ $(".act").click($actc)
 $( document ).ready(function() {
     $(".showall").click($showallprocess);
     $(".ajax2").click($select);
-    $("#selectable").selectable();
     $(".act").click($actc);
 });

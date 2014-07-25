@@ -275,7 +275,7 @@
                             <ul class="nav nav-second-level" id="selectable">
                             {% for node_name in node_name_list %}
                                 <li class="ajax2" value="{{node_name}}">
-                                    <a class="ajax" value="{{ node_name  }}" href="#"> {{ node_name  }}  </a>
+                                    <input type="checkbox" class="checkbox ajax" value="{{ node_name  }}"> <label> {{ node_name  }} </label>
                                 </li>
                             {% endfor %}
                             </ul>

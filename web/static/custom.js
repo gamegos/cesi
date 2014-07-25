@@ -160,7 +160,7 @@ var $showallprocess = function(){
                                     $tr_p.append('<td>'+ result['process_info'][$counter]['group'] + '</td>');
 
                                     //uptime
-                                    var $uptime = result['process_info'][$counter]['description'].substring(17,24)
+                                    var $uptime = result['process_info'][$counter]['description'].substring(17,25)
                                     $tr_p.append('<td>'+ $uptime + '</td>');
  
                                     //statename

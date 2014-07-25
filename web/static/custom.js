@@ -111,11 +111,30 @@ var $select = function(){
 
                                     //buttons
                                      if( $state==20 ){
-                                        $tr_p.append('<td><button class="btn btn-primary btn-block act" name="/node/'+$node_name+'/process/'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'/restart" value="Restart">Restart</button></td><td><button class="btn btn-primary btn-block act" name="/node/'+$node_name+'/process/'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'/stop" value="Stop">Stop</button> </td>');
+                                        $tr_p.append('<td></td>');
+                                        $td_p = $tr_p.children('td').last();
+                                        $td_p.append('<button class="btn btn-primary btn-block act" name="/node/'+$node_name+'/process/'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'/restart" value="Restart">Restart</button>');
+                                        $btn_restart = $td_p.children('button').first();
+                                        $btn_restart.click($actc);
+
+                                        $tr_p.append('<td></td>');
+                                        $td_p = $tr_p.children('td').last();
+                                        $td_p.append('<button class="btn btn-primary btn-block act" name="/node/'+$node_name+'/process/'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'/stop" value="Stop">Stop</button>');
+                                        $btn_stop = $td_p.children('button').first();
+                                        $btn_stop.click($actc);
                                     }else if($state==0){
-                                        $tr_p.append('<td><button class="btn btn-primary btn-block act" name="/node/'+$node_name+'/process/'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'/start" value="Start">Start</button></td><td><button class="btn btn-primary btn-block disabled act" value="Stop">Stop</button> </td>');
+                                        $tr_p.append('<td></td>');
+                                        $td_p = $tr_p.children('td').last();;
+                                        $td_p.append('<button class="btn btn-primary btn-block act" name="/node/'+$node_name+'/process/'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'/start" value="Start">Start</button>');
+                                        $btn_restart = $td_p.children('button').first();
+                                        $btn_restart.click($actc);
+
+                                        $tr_p.append('<td></td>');
+                                        $td_p = $tr_p.children('td').last();
+                                        $td_p.append('<button class="btn btn-primary btn-block disabled act" value="Stop">Stop</button>');
+                                        $btn_stop = $td_p.children('button').first();
+                                        $btn_stop.click($actc);
                                     }
-$(".act").click($actc)
                                 }
                         }  
                 });

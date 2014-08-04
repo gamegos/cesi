@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, redirect, jsonify, request
+from flask import Flask, render_template, url_for, redirect, jsonify, request, g
 from getProcInfo import Config, Connection, Node, CONFIG_FILE, ProcessInfo, JsonValue
 import getProcInfo 
 import xmlrpclib

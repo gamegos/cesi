@@ -6,6 +6,11 @@ import xmlrpclib
 app = Flask(__name__)
 app.config.from_object(__name__)
 
+
+@app.route('/login')
+def login():
+    return render_template('login.html')
+
 @app.route('/')
 def showMain():
     all_process_count = 0

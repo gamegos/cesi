@@ -1,38 +1,79 @@
-from flask import Flask, render_template, url_for, redirect, jsonify
+from flask import Flask, render_template, url_for, redirect, jsonify, request
 from getProcInfo import Config, Connection, Node, CONFIG_FILE, ProcessInfo, JsonValue
 import getProcInfo 
 import xmlrpclib
+import sqlite3
+
+DATABASE = "./userinfo.db"
 
 app = Flask(__name__)
 app.config.from_object(__name__)
+session=0
 
+def get_db():
+    db = getattr(g, '_database', None)
+    if db is None:
+        db = g._database = sqlite3.connect(DATABASE)
+    return db
 
-@app.route('/login')
+@app.teardown_appcontext
+def close_connection(exception):
+    db = getattr(g, '_database', None)
+    if db is not None:
+        db.close()
+
+@app.route('/login/control', methods = ['GET', 'POST'])
+def control():
+    if request.method == 'POST':
+        username = request.form['email']
+        password = request.form['password']
+        cur = get_db().cursor()
+        cur.execute("select * from userinfo where username=?",(username,))
+        if not cur.fetchall():
+            return "Username is not available"
+        else:
+            cur.execute("select * from userinfo where username=?",(username,))
+            if password == cur.fetchall()[0][1]:
+                global session
+                session = 1
+                return redirect(url_for('showMain'))
+            else:
+                return "Invalid password"
+
+@app.route('/login', methods = ['GET', 'POST'])
 def login():
     return render_template('login.html')
 
+@app.route('/logout', methods = ['GET', 'POST'])
+def logout():
+    global session
+    session = 0
+    return redirect(url_for('login'))
+
 @app.route('/')
 def showMain():
-    all_process_count = 0
-    running_process_count = 0
-    stopped_process_count = 0
-    node_count = 0
-    node_name_list = []
-    for nodename in Config(CONFIG_FILE).getAllNodeNames():
-        node_count = node_count + 1
-        nodename = nodename[5:]
-        node_name_list.append(nodename)
-        nodeconfig = Config(CONFIG_FILE).getNodeConfig(nodename)
-        node = Node(nodeconfig)
-        for process in node.process_list:
-            all_process_count = all_process_count + 1
-            if process.state==20:
-                running_process_count = running_process_count + 1
-            if process.state==0:
-                stopped_process_count = stopped_process_count + 1
+    if session ==1:
+        all_process_count = 0
+        running_process_count = 0
+        stopped_process_count = 0
+        node_count = 0
+        node_name_list = []
+        for nodename in Config(CONFIG_FILE).getAllNodeNames():
+            node_count = node_count + 1
+            nodename = nodename[5:]
+            node_name_list.append(nodename)
+            nodeconfig = Config(CONFIG_FILE).getNodeConfig(nodename)
+            node = Node(nodeconfig)
+            for process in node.process_list:
+                all_process_count = all_process_count + 1
+                if process.state==20:
+                    running_process_count = running_process_count + 1
+                if process.state==0:
+                    stopped_process_count = stopped_process_count + 1
 
-    return render_template('index.html', all_process_count =all_process_count, running_process_count =running_process_count, stopped_process_count =stopped_process_count, node_count =node_count, node_name_list = node_name_list)
-
+        return render_template('index.html', all_process_count =all_process_count, running_process_count =running_process_count, stopped_process_count =stopped_process_count, node_count =node_count, node_name_list = node_name_list)
+    else:
+        return redirect(url_for('login'))
 @app.route('/node/<node_name>')
 def showNode(node_name):
     node_config = Config(CONFIG_FILE).getNodeConfig(node_name)

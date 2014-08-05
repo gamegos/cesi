@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, redirect, jsonify, request, g, session
+from flask import Flask, render_template, url_for, redirect, jsonify, request, g, session, flash
 from getProcInfo import Config, Connection, Node, CONFIG_FILE, ProcessInfo, JsonValue
 import getProcInfo 
 import xmlrpclib
@@ -140,8 +140,30 @@ def readlog(node_name, process_name):
     log_file_path = node.process_dict2[process_name].stdout_logfile
     print log_file_path
     return "dddd"
-    
 
+@app.route('/add/user')
+def add_user():
+    return render_template('adduser.html')
+
+@app.route('/add/user/handler', methods = ['GET', 'POST'])
+def adduserhandler():
+    username = request.form['username']
+    password = request.form['password']
+    usertype = request.form['usertype']
+    cur = get_db().cursor()
+    cur.execute("select * from userinfo where username=?",(username,))
+    if not cur.fetchall():
+        cur.execute("insert into userinfo values(?, ?, ?)", (username, password, usertype,))
+        get_db().commit()
+        flash('User added succesfully')
+        return redirect(url_for('showMain'))
+    else:
+        flash('Username in use')
+        return redirect(url_for('add_user'))
+
+@app.route('/delete/user')
+def del_user():
+    return render_template('deluser.html')
 
 @app.errorhandler(404)
 def page_not_found(error):

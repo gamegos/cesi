@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, redirect, jsonify, request, g
+from flask import Flask, render_template, url_for, redirect, jsonify, request, g, session
 from getProcInfo import Config, Connection, Node, CONFIG_FILE, ProcessInfo, JsonValue
 import getProcInfo 
 import xmlrpclib
@@ -8,7 +8,7 @@ DATABASE = "./userinfo.db"
 
 app = Flask(__name__)
 app.config.from_object(__name__)
-session=0
+app.secret_key = '42' # :)
 
 def get_db():
     db = getattr(g, '_database', None)
@@ -29,15 +29,17 @@ def control():
         password = request.form['password']
         cur = get_db().cursor()
         cur.execute("select * from userinfo where username=?",(username,))
+#if query returns an empty list
         if not cur.fetchall():
+            session['logged_in'] = False
             return "Username is not available"
         else:
             cur.execute("select * from userinfo where username=?",(username,))
             if password == cur.fetchall()[0][1]:
-                global session
-                session = 1
+                session['logged_in'] = True
                 return redirect(url_for('showMain'))
             else:
+                session['logged_in'] = False
                 return "Invalid password"
 
 @app.route('/login', methods = ['GET', 'POST'])
@@ -46,13 +48,12 @@ def login():
 
 @app.route('/logout', methods = ['GET', 'POST'])
 def logout():
-    global session
-    session = 0
+    session['logged_in'] = False
     return redirect(url_for('login'))
 
 @app.route('/')
 def showMain():
-    if session ==1:
+    if session.get('logged_in'):
         all_process_count = 0
         running_process_count = 0
         stopped_process_count = 0
@@ -76,47 +77,61 @@ def showMain():
         return redirect(url_for('login'))
 @app.route('/node/<node_name>')
 def showNode(node_name):
-    node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
-    return jsonify( process_info = Node(node_config).process_dict )
+    if session.get('logged_in'):
+        node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
+        return jsonify( process_info = Node(node_config).process_dict) 
+    else:
+        return redirect(url_for('login'))
 
 @app.route('/node/<node_name>/process/<process_name>/restart')
 def json_restart(node_name, process_name):
-    try:
-        node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
-        node = Node(node_config)
-        if node.connection.supervisor.stopProcess(process_name):
-            if node.connection.supervisor.startProcess(process_name):
-                return JsonValue(process_name, node_name, "restart").success()
-    except xmlrpclib.Fault as err:
-        return JsonValue(process_name, node_name, "restart").error(err.faultCode, err.faultString)
-
+    if session.get('logged_in'):
+        try:
+            node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
+            node = Node(node_config)
+            if node.connection.supervisor.stopProcess(process_name):
+                if node.connection.supervisor.startProcess(process_name):
+                    return JsonValue(process_name, node_name, "restart").success()
+        except xmlrpclib.Fault as err:
+            return JsonValue(process_name, node_name, "restart").error(err.faultCode, err.faultString)
+    else:
+        return redirect(url_for('login'))
 @app.route('/node/<node_name>/process/<process_name>/start')
 def json_start(node_name, process_name):
-    try:
-        node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
-        node = Node(node_config)
-        if node.connection.supervisor.startProcess(process_name):
-            return JsonValue(process_name, node_name, "start").success()
-    except xmlrpclib.Fault as err:
-        return JsonValue(process_name, node_name, "start").error(err.faultCode, err.faultString)
+    if session.get('logged_in'):
+        try:
+            node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
+            node = Node(node_config)
+            if node.connection.supervisor.startProcess(process_name):
+                return JsonValue(process_name, node_name, "start").success()
+        except xmlrpclib.Fault as err:
+            return JsonValue(process_name, node_name, "start").error(err.faultCode, err.faultString)
+    else:
+        return redirect(url_for('login'))
 
 @app.route('/node/<node_name>/process/<process_name>/stop')
 def json_stop(node_name, process_name):
-    try:
-        node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
-        node = Node(node_config)
-        if node.connection.supervisor.stopProcess(process_name):
-            return JsonValue(process_name, node_name, "stop").success()
-    except xmlrpclib.Fault as err:
-        return JsonValue(process_name, node_name, "stop").error(err.faultCode, err.faultString)
+    if session.get('logged_in'):
+        try:
+            node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
+            node = Node(node_config)
+            if node.connection.supervisor.stopProcess(process_name):
+                return JsonValue(process_name, node_name, "stop").success()
+        except xmlrpclib.Fault as err:
+            return JsonValue(process_name, node_name, "stop").error(err.faultCode, err.faultString)
+    else:
+        return redirect(url_for('login'))
 
 @app.route('/node/name/list')
 def getlist():
-    node_name_list = []
-    node_names = Config(CONFIG_FILE).getAllNodeNames()
-    for node_name in node_names:
-        node_name_list.append(node_name[5:])
-    return jsonify( node_name_list = node_name_list )
+    if session.get('logged_in'):
+        node_name_list = []
+        node_names = Config(CONFIG_FILE).getAllNodeNames()
+        for node_name in node_names:
+            node_name_list.append(node_name[5:])
+        return jsonify( node_name_list = node_name_list )
+    else:
+        return redirect(url_for('login'))
 
 
 @app.errorhandler(404)

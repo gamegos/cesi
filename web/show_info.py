@@ -37,6 +37,8 @@ def control():
             cur.execute("select * from userinfo where username=?",(username,))
             if password == cur.fetchall()[0][1]:
                 session['logged_in'] = True
+                cur.execute("select * from userinfo where username=?",(username,))
+                session['usertype'] = cur.fetchall()[0][2]
                 return redirect(url_for('showMain'))
             else:
                 session['logged_in'] = False
@@ -143,7 +145,11 @@ def readlog(node_name, process_name):
 
 @app.route('/add/user')
 def add_user():
-    return render_template('adduser.html')
+    if session.get('logged_in'):
+        if session['usertype'] == 'Admin':
+            return render_template('adduser.html')
+        else:
+            return "Only admin can add user"
 
 @app.route('/add/user/handler', methods = ['GET', 'POST'])
 def adduserhandler():

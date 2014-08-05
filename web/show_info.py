@@ -133,6 +133,15 @@ def getlist():
     else:
         return redirect(url_for('login'))
 
+@app.route('/node/<node_name>/process/<process_name>/readlog')
+def readlog(node_name, process_name):
+    node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
+    node = Node(node_config)
+    log_file_path = node.process_dict2[process_name].stdout_logfile
+    print log_file_path
+    return "dddd"
+    
+
 
 @app.errorhandler(404)
 def page_not_found(error):

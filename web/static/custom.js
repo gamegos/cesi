@@ -142,6 +142,9 @@ var $select = function(){
                                         $btn_stop = $td_p.children('button').first();
                                         $btn_stop.click($actc);
                                     }
+                                   //Readlog
+                                   $tr_p.append('<td><button class="btn btn-primary btn-block act" onclick="/node/'+$node_name+'/process/'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'/readlog"> Readlog </button></td>');
+                                    
                                 }
                         }  
                 });

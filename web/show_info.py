@@ -32,6 +32,7 @@ def control():
 #if query returns an empty list
         if not cur.fetchall():
             session['logged_in'] = False
+            session['usertype'] = " "
             return "Username is not available"
         else:
             cur.execute("select * from userinfo where username=?",(username,))
@@ -88,39 +89,48 @@ def showNode(node_name):
 @app.route('/node/<node_name>/process/<process_name>/restart')
 def json_restart(node_name, process_name):
     if session.get('logged_in'):
-        try:
-            node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
-            node = Node(node_config)
-            if node.connection.supervisor.stopProcess(process_name):
-                if node.connection.supervisor.startProcess(process_name):
-                    return JsonValue(process_name, node_name, "restart").success()
-        except xmlrpclib.Fault as err:
-            return JsonValue(process_name, node_name, "restart").error(err.faultCode, err.faultString)
+        if session['usertype'] == 'Admin' or session['usertype'] == 'Standart User':
+            try:
+                node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
+                node = Node(node_config)
+                if node.connection.supervisor.stopProcess(process_name):
+                    if node.connection.supervisor.startProcess(process_name):
+                        return JsonValue(process_name, node_name, "restart").success()
+            except xmlrpclib.Fault as err:
+                return JsonValue(process_name, node_name, "restart").error(err.faultCode, err.faultString)
+        else:
+            return "You are not authorized for this action"
     else:
         return redirect(url_for('login'))
 @app.route('/node/<node_name>/process/<process_name>/start')
 def json_start(node_name, process_name):
     if session.get('logged_in'):
-        try:
-            node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
-            node = Node(node_config)
-            if node.connection.supervisor.startProcess(process_name):
-                return JsonValue(process_name, node_name, "start").success()
-        except xmlrpclib.Fault as err:
-            return JsonValue(process_name, node_name, "start").error(err.faultCode, err.faultString)
+        if session['usertype'] == 'Admin' or session['usertype'] == 'Standart User':
+            try:
+                node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
+                node = Node(node_config)
+                if node.connection.supervisor.startProcess(process_name):
+                    return JsonValue(process_name, node_name, "start").success()
+            except xmlrpclib.Fault as err:
+                return JsonValue(process_name, node_name, "start").error(err.faultCode, err.faultString)
+        else:   
+            return "You are not authorized for this action"
     else:
         return redirect(url_for('login'))
 
 @app.route('/node/<node_name>/process/<process_name>/stop')
 def json_stop(node_name, process_name):
     if session.get('logged_in'):
-        try:
-            node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
-            node = Node(node_config)
-            if node.connection.supervisor.stopProcess(process_name):
-                return JsonValue(process_name, node_name, "stop").success()
-        except xmlrpclib.Fault as err:
-            return JsonValue(process_name, node_name, "stop").error(err.faultCode, err.faultString)
+        if session['usertype'] == 'Admin' or session['usertype'] == 'Standart User':
+            try:
+                node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
+                node = Node(node_config)
+                if node.connection.supervisor.stopProcess(process_name):
+                    return JsonValue(process_name, node_name, "stop").success()
+            except xmlrpclib.Fault as err:
+                return JsonValue(process_name, node_name, "stop").error(err.faultCode, err.faultString)
+        else:
+            return "You are not authorized for this action"
     else:
         return redirect(url_for('login'))
 

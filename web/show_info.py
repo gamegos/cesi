@@ -10,18 +10,21 @@ app = Flask(__name__)
 app.config.from_object(__name__)
 app.secret_key = '42' # :)
 
+# Database connection
 def get_db():
     db = getattr(g, '_database', None)
     if db is None:
         db = g._database = sqlite3.connect(DATABASE)
     return db
 
+# Close database connection
 @app.teardown_appcontext
 def close_connection(exception):
     db = getattr(g, '_database', None)
     if db is not None:
         db.close()
 
+# Username and password control
 @app.route('/login/control', methods = ['GET', 'POST'])
 def control():
     if request.method == 'POST':
@@ -45,15 +48,18 @@ def control():
                 session['logged_in'] = False
                 return "Invalid password"
 
+# Render login page
 @app.route('/login', methods = ['GET', 'POST'])
 def login():
     return render_template('login.html')
 
+# Logout action
 @app.route('/logout', methods = ['GET', 'POST'])
 def logout():
     session['logged_in'] = False
     return redirect(url_for('login'))
 
+# Dashboard
 @app.route('/')
 def showMain():
     if session.get('logged_in'):
@@ -78,6 +84,8 @@ def showMain():
         return render_template('index.html', all_process_count =all_process_count, running_process_count =running_process_count, stopped_process_count =stopped_process_count, node_count =node_count, node_name_list = node_name_list)
     else:
         return redirect(url_for('login'))
+
+# Show node
 @app.route('/node/<node_name>')
 def showNode(node_name):
     if session.get('logged_in'):
@@ -102,6 +110,8 @@ def json_restart(node_name, process_name):
             return "You are not authorized for this action"
     else:
         return redirect(url_for('login'))
+
+# Process start
 @app.route('/node/<node_name>/process/<process_name>/start')
 def json_start(node_name, process_name):
     if session.get('logged_in'):
@@ -118,6 +128,7 @@ def json_start(node_name, process_name):
     else:
         return redirect(url_for('login'))
 
+# Process stop
 @app.route('/node/<node_name>/process/<process_name>/stop')
 def json_stop(node_name, process_name):
     if session.get('logged_in'):
@@ -134,6 +145,7 @@ def json_stop(node_name, process_name):
     else:
         return redirect(url_for('login'))
 
+# Node name list in the configuration file
 @app.route('/node/name/list')
 def getlist():
     if session.get('logged_in'):
@@ -145,6 +157,7 @@ def getlist():
     else:
         return redirect(url_for('login'))
 
+# Show log for process
 @app.route('/node/<node_name>/process/<process_name>/readlog')
 def readlog(node_name, process_name):
     node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
@@ -153,6 +166,7 @@ def readlog(node_name, process_name):
     print log_file_path
     return "dddd"
 
+# Add user method for only admin type user
 @app.route('/add/user')
 def add_user():
     if session.get('logged_in'):
@@ -161,6 +175,7 @@ def add_user():
         else:
             return "Only admin can add user"
 
+# Writes new user information to database
 @app.route('/add/user/handler', methods = ['GET', 'POST'])
 def adduserhandler():
     username = request.form['username']
@@ -177,6 +192,7 @@ def adduserhandler():
         flash('Username in use')
         return redirect(url_for('add_user'))
 
+# Delete user method for only admin type user
 @app.route('/delete/user')
 def del_user():
     return render_template('deluser.html')

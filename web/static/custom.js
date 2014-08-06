@@ -12,7 +12,7 @@ var $adduser= function(){
                 $login_panel.append('<div class="panel-heading"> <h3 class="panel-title">Please Enter User Information </h3>  </div>');
                 $login_panel.append('<div class="add_user panel-body"></div>');
                 $panel_body =$('.add_user');
-                $panel_body.append('<form role="form" method="post" action="{{ url_for(\'adduserhandler\') }}">');
+                $panel_body.append('<form role="form" method="post" action="/add/user/handler">');
                 $form = $panel_body.children('form').first();
                 $form.append('<fieldset></fieldset>');
                 $fieldset= $form.children('fieldset').first();

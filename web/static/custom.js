@@ -35,60 +35,68 @@ var $actc = function(){
                 url: $link,
                 dataType: 'json',
                 success: function(data){
-                    if (data['data']['pid'] == 0 ){ $td.html("-"); }else{ $td.html(data['data']['pid']); }
+                    if(data['status'] == "Success"){
+                        if (data['data']['pid'] == 0 ){ $td.html("-"); }else{ $td.html(data['data']['pid']); }
                     
-                    $td = $td.next();
-                    $td.html(data['data']['name']);
+                        $td = $td.next();
+                        $td.html(data['data']['name']);
 
-                    $td = $td.next();
-                    $td.html(data['data']['group']);
+                        $td = $td.next();
+                        $td.html(data['data']['group']);
 
-                    $td = $td.next();
-                    $td.html(data['data']['description'].substring(17,24));
+                        $td = $td.next();
+                        $td.html(data['data']['description'].substring(17,24));
 
-                    $td = $td.next();
-                    if( data['data']['state']==0 || data['data']['state']==40 || data['data']['state']==100 || data['data']['state']==200 ){
-                        $td.attr('class', "alert alert-danger");
-                    }else if( data['data']['state']==10 || data['data']['state']==20 ){
-                        $td.attr('class', "alert alert-success");
-                    }else{
-                        $td.attr('class', "alert alert-warning");
-                    }
-                    $td.html(data['data']['statename']);
+                        $td = $td.next();
+                        if( data['data']['state']==0 || data['data']['state']==40 || data['data']['state']==100 || data['data']['state']==200 ){
+                            $td.attr('class', "alert alert-danger");
+                        }else if( data['data']['state']==10 || data['data']['state']==20 ){
+                            $td.attr('class', "alert alert-success");
+                        }else{
+                            $td.attr('class', "alert alert-warning");
+                        }
+                        $td.html(data['data']['statename']);
 
-                    $td = $td.next();
-                    if( data['data']['state']==20){
-                        $restart = $td.children('button').first();
-                        $restart.attr('class',"btn btn-primary btn-block");
-                        $name = "/node/"+data['nodename'] + "/process/" + data['data']['group'] + ":" + data['data']['name'] + "/restart";
-                        $restart.attr('name',$name );
-                        $restart.attr('value',"Restart");
-                        $restart.html("Restart");
+                        $td = $td.next();
+                        if( data['data']['state']==20){
+                            $restart = $td.children('button').first();
+                            $restart.attr('class',"btn btn-primary btn-block");
+                            $name = "/node/"+data['nodename'] + "/process/" + data['data']['group'] + ":" + data['data']['name'] + "/restart";
+                            $restart.attr('name',$name );
+                            $restart.attr('value',"Restart");
+                            $restart.html("Restart");
                         
-                        $td = $td.next();
-                        $stop = $td.children('button').first();
-                        $stop.attr('class',"btn btn-primary btn-block");
-                        $name2 = "/node/"+data['nodename'] + "/process/" + data['data']['group'] + ":" + data['data']['name'] + "/stop";
-                        $stop.attr('name',$name2 );
-                        $stop.attr('value',"Stop");
-                        $stop.html("Stop");
-                    }else if(data['data']['state']==0){
-                        $start = $td.children('button');
-                        $start.attr('class',"btn btn-primary btn-block");
-                        $name = "/node/"+data['nodename'] + "/process/" + data['data']['group'] + ":" + data['data']['name'] + "/start";
-                        $start.attr('name',$name );
-                        $start.attr('value',"Start");
-                        $start.html("Start");
+                            $td = $td.next();
+                            $stop = $td.children('button').first();
+                            $stop.attr('class',"btn btn-primary btn-block");
+                            $name2 = "/node/"+data['nodename'] + "/process/" + data['data']['group'] + ":" + data['data']['name'] + "/stop";
+                            $stop.attr('name',$name2 );
+                            $stop.attr('value',"Stop");
+                            $stop.html("Stop");
+                        }else if(data['data']['state']==0){
+                            $start = $td.children('button');
+                            $start.attr('class',"btn btn-primary btn-block");
+                            $name = "/node/"+data['nodename'] + "/process/" + data['data']['group'] + ":" + data['data']['name'] + "/start";
+                            $start.attr('name',$name );
+                            $start.attr('value',"Start");
+                            $start.html("Start");
 
-                        $td = $td.next();
-                        $stop = $td.children('button').first();
-                        $stop.attr('class',"btn btn-primary btn-block");
-                        $stop.attr('class',"btn btn-primary btn-block disabled");
-                        $stop.attr('name'," ");
-                        $stop.attr('value',"Stop");
+                            $td = $td.next();
+                            $stop = $td.children('button').first();
+                            $stop.attr('class',"btn btn-primary btn-block");
+                            $stop.attr('class',"btn btn-primary btn-block disabled");
+                            $stop.attr('name'," ");
+                            $stop.attr('value',"Stop");
+                        }
+                    }else if(data['status'] == "error2"){
+                        alert(data['message']);
+                    }else{
+                        alert("Error:"+data[message]+
+                              "Code:"+data['code']+
+                              "Payload:"+data[code]);
                     }
-               }});
-  };
+                }});
+        };
 
 
 
@@ -232,12 +240,32 @@ var $showallprocess = function(){
                                     }
 
                                     //buttons
-                                     if( $state==20 ){
-                                        $tr_p.append('<td><button class="btn btn-primary btn-block act" name="/node/'+nodename+'/process/'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'/restart" value="Restart">Restart</button></td><td><button class="btn btn-primary btn-block act" name="/node/'+nodename+'/process/'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'/stop" value="Stop">Stop</button> </td>');
+                                    if( $state==20 ){
+                                        $tr_p.append('<td></td>');
+                                        $td_p = $tr_p.children('td').last();
+                                        $td_p.append('<button class="btn btn-primary btn-block act" name="/node/'+nodename+'/process/'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'/restart" value="Restart">Restart</button>');
+                                        $btn_restart = $td_p.children('button').first();
+                                        $btn_restart.click($actc);
+
+                                        $tr_p.append('<td></td>');
+                                        $td_p = $tr_p.children('td').last();
+                                        $td_p.append('<button class="btn btn-primary btn-block act" name="/node/'+nodename+'/process/'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'/stop" value="Stop">Stop</button>');
+                                        $btn_stop = $td_p.children('button').first();
+                                        $btn_stop.click($actc);
                                     }else if($state==0){
-                                        $tr_p.append('<td><button class="btn btn-primary btn-block act" name="/node/'+nodename+'/process/'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'/start" value="Start">Start</button></td><td><button class="btn btn-primary btn-block disabled act" value="Stop">Stop</button> </td>');
+                                        $tr_p.append('<td></td>');
+                                        $td_p = $tr_p.children('td').last();;
+                                        $td_p.append('<button class="btn btn-primary btn-block act" name="/node/'+nodename+'/process/'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'/start" value="Start">Start</button>');
+                                        $btn_restart = $td_p.children('button').first();
+                                        $btn_restart.click($actc);
+
+                                        $tr_p.append('<td></td>');
+                                        $td_p = $tr_p.children('td').last();
+                                        $td_p.append('<button class="btn btn-primary btn-block disabled act" value="Stop">Stop</button>');
+                                        $btn_stop = $td_p.children('button').first();
+                                        $btn_stop.click($actc);
                                     }
-$(".act").click($actc)
+
                                 }
                         }
                 });

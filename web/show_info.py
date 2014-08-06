@@ -57,6 +57,7 @@ def login():
 @app.route('/logout', methods = ['GET', 'POST'])
 def logout():
     session['logged_in'] = False
+    session['usertype']= " "
     return redirect(url_for('login'))
 
 # Dashboard
@@ -107,7 +108,8 @@ def json_restart(node_name, process_name):
             except xmlrpclib.Fault as err:
                 return JsonValue(process_name, node_name, "restart").error(err.faultCode, err.faultString)
         else:
-            return "You are not authorized for this action"
+            return jsonify(status = "error2",
+                           message = "You are not authorized this action" )
     else:
         return redirect(url_for('login'))
 
@@ -124,7 +126,8 @@ def json_start(node_name, process_name):
             except xmlrpclib.Fault as err:
                 return JsonValue(process_name, node_name, "start").error(err.faultCode, err.faultString)
         else:   
-            return "You are not authorized for this action"
+            return jsonify(status = "error2",
+                           message = "You are not authorized this action" )
     else:
         return redirect(url_for('login'))
 
@@ -141,7 +144,8 @@ def json_stop(node_name, process_name):
             except xmlrpclib.Fault as err:
                 return JsonValue(process_name, node_name, "stop").error(err.faultCode, err.faultString)
         else:
-            return "You are not authorized for this action"
+            return jsonify(status = "error2",
+                           message = "You are not authorized this action" )
     else:
         return redirect(url_for('login'))
 

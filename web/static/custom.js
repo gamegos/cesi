@@ -1,3 +1,32 @@
+var $adduser= function(){
+    $link = "/add/user";
+    $.ajax({
+        url: $link,
+        dataType: 'json',
+        success: function(data){
+            if(data['status'] == 'success'){
+                $maindiv = $('#maindiv');
+                $maindiv.empty();
+                $maindiv.append(' <div class="login-panel panel panel-default"></div>');
+                $login_panel = $maindiv.children('div').first();
+                $login_panel.append('<div class="panel-heading"> <h3 class="panel-title">Please Enter User Information </h3>  </div>');
+                $login_panel.append('<div class="add_user panel-body"></div>');
+                $panel_body =$('.add_user');
+                $panel_body.append('<form role="form" method="post" action="{{ url_for(\'adduserhandler\') }}">');
+                $form = $panel_body.children('form').first();
+                $form.append('<fieldset></fieldset>');
+                $fieldset= $form.children('fieldset').first();
+                $fieldset.append('<div class="form-group"> <input class="form-control" placeholder="Username" name="username"  autofocus> </div>');
+                $fieldset.append('<div class="form-group"> <input class="form-control" placeholder="Password" name="password" type="password" value=""> </div>');
+                $fieldset.append('<div class="form-group"> <select class="form-control" name="usertype"> <option selected>Please select a user type</option> <option>Admin</option> <option>Standart User</option> <option>Only Log</option> <option>Read Only</option> </select> </div>');
+                $fieldset.append('<button class="btn btn-lg btn-success btn-block"> Save </button>');
+            }else{
+                alert("Only admin can add user");
+            }
+        }
+    });
+}
+
 var $actc = function(){
         var $tr = $(this).parent().parent();
         var $td = $tr.children('td').first();
@@ -221,4 +250,5 @@ $( document ).ready(function() {
     $(".showall").click($showallprocess);
     $(".ajax2").click($select);
     $(".act").click($actc);
+    $(".adduser").click($adduser);
 });

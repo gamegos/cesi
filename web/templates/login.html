@@ -28,9 +28,6 @@
                     </div>
                     <div class="panel-body">
                         <form role="form" method="post" action="{{ url_for('control') }}">
-                            {% for message in get_flashed_messages() %}
-                            <div class=flash>{{ message }}</div>
-                            {% endfor %}
                             <fieldset>
                                 <div class="form-group">
                                     <input class="form-control" placeholder="E-mail" name="email" autofocus>

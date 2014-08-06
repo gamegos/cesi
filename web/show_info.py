@@ -171,9 +171,9 @@ def readlog(node_name, process_name):
 def add_user():
     if session.get('logged_in'):
         if session['usertype'] == 'Admin':
-            return render_template('adduser.html')
+            return jsonify(status = 'success')
         else:
-            return "Only admin can add user"
+            return jsonify(status = 'error')
 
 # Writes new user information to database
 @app.route('/add/user/handler', methods = ['GET', 'POST'])
@@ -186,10 +186,8 @@ def adduserhandler():
     if not cur.fetchall():
         cur.execute("insert into userinfo values(?, ?, ?)", (username, password, usertype,))
         get_db().commit()
-        flash('User added succesfully')
         return redirect(url_for('showMain'))
     else:
-        flash('Username in use')
         return redirect(url_for('add_user'))
 
 # Delete user method for only admin type user

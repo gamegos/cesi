@@ -12,6 +12,7 @@ var $readlog = function(){
 var $delete_user = function(){
     $username = $(this).attr('name')
     $link = "/delete/user/"+$username
+    alert("Are you sure delete this user?");
     $.ajax({
         url: $link,
         dataType: 'json',

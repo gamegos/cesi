@@ -9,6 +9,22 @@ var $readlog = function(){
     }); 
 }
 
+var $delete_user = function(){
+    $username = $(this).attr('name')
+    $link = "/delete/user/"+$username
+    $.ajax({
+        url: $link,
+        dataType: 'json',
+        success: function(data){
+            if(data['status'] == 'success'){
+                $("."+$username).remove();
+            }else{
+                alert(data['message'])
+            }
+        }
+    });
+}
+
 var $adduser= function(){
     $link = "/add/user";
     $.ajax({
@@ -35,6 +51,36 @@ var $adduser= function(){
                 alert("Only admin can add user");
             }
         }
+    });
+}
+
+var $deluser = function(){
+    $link = "/delete/user";
+    $.ajax({
+        url: $link,
+        dataType: 'json',
+        success: function(data){
+            if(data['status'] == "success"){
+                $maindiv = $('#maindiv');
+                $maindiv.empty();
+                $maindiv.append('<div class="panel-body"></div>');
+                $panel = $maindiv.children('div').first();
+                $panel.append('<div class="table-responsive"></div>');
+                $tablediv = $panel.children('div').first();
+                $tablediv.append('<table class="table table-striped table-bordered table-hover" id="dataTables-example">');
+                $table = $tablediv.children('table').first();
+                $table.append('<tr><th>Username</th><th>Usertype</th><th></th></tr>');
+                for(var i=0; i<data['names'].length; i++){
+                    $table.append('<tr class="'+data['names'][i]+'"></tr>');
+                    $maintr = $table.find('tr').last();
+                    $maintr.append('<td>'+data['names'][i]+'</td> <td>'+data['types'][i]+'</td><td><button name="'+data['names'][i]+'" class="glyphicon glyphicon-trash btn btn-sm btn-success btn-block delete"></button></td>');
+                    $delbtn =$maintr.find('button').last();
+                    $delbtn.click($delete_user);
+                }
+            }else{
+                alert("Only admin can delete user");
+            }
+        } 
     });
 }
 
@@ -296,4 +342,5 @@ $( document ).ready(function() {
     $(".ajax2").click($select);
     $(".act").click($actc);
     $(".adduser").click($adduser);
+    $(".deluser").click($deluser);
 });

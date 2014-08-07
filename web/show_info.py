@@ -184,6 +184,33 @@ def add_user():
         else:
             return jsonify(status = 'error')
 
+
+# Delete user method for only admin type user
+@app.route('/delete/user')
+def del_user():
+    if session.get('logged_in'):
+        if session['usertype'] == 'Admin':
+            cur = get_db().cursor()
+            cur.execute("select username from userinfo")
+            usernames = cur.fetchall();
+            usernamelist =[str(element[0]) for element in usernames]
+            cur.execute("select type from userinfo")
+            usertypes = cur.fetchall();
+            usertypelist =[str(element[0]) for element in usertypes]
+            return jsonify(status = 'success',
+                           names = usernamelist,
+                           types = usertypelist)
+        else:
+            return jsonify(status = 'error')
+
+@app.route('/delete/user/<username>')
+def del_user_handler(username):
+    cur = get_db().cursor()
+    cur.execute("delete from userinfo where username=?",[username])
+    get_db().commit()
+    return jsonify(status = "success")
+
+
 # Writes new user information to database
 @app.route('/add/user/handler', methods = ['GET', 'POST'])
 def adduserhandler():
@@ -198,11 +225,6 @@ def adduserhandler():
         return redirect(url_for('showMain'))
     else:
         return redirect(url_for('add_user'))
-
-# Delete user method for only admin type user
-@app.route('/delete/user')
-def del_user():
-    return render_template('deluser.html')
 
 @app.errorhandler(404)
 def page_not_found(error):

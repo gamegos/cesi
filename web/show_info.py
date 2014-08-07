@@ -40,6 +40,7 @@ def control():
         else:
             cur.execute("select * from userinfo where username=?",(username,))
             if password == cur.fetchall()[0][1]:
+                session['username'] = username
                 session['logged_in'] = True
                 cur.execute("select * from userinfo where username=?",(username,))
                 session['usertype'] = cur.fetchall()[0][2]
@@ -58,6 +59,7 @@ def login():
 def logout():
     session['logged_in'] = False
     session['usertype']= " "
+    session['username'] = "undefined"
     return redirect(url_for('login'))
 
 # Dashboard
@@ -82,7 +84,7 @@ def showMain():
                 if process.state==0:
                     stopped_process_count = stopped_process_count + 1
 
-        return render_template('index.html', all_process_count =all_process_count, running_process_count =running_process_count, stopped_process_count =stopped_process_count, node_count =node_count, node_name_list = node_name_list)
+        return render_template('index.html', all_process_count =all_process_count, running_process_count =running_process_count, stopped_process_count =stopped_process_count, node_count =node_count, node_name_list = node_name_list, username = session['username'], usertype = session['usertype'])
     else:
         return redirect(url_for('login'))
 

@@ -226,6 +226,24 @@ def adduserhandler():
     else:
         return redirect(url_for('add_user'))
 
+@app.route('/change/password/<username>')
+def changepassword(username):
+    return jsonify(status = "success")
+
+
+@app.route('/change/password/<username>/handler', methods=['GET', 'POST'])
+def changepasswordhandler(username):
+    cur = get_db().cursor()
+    cur.execute("select password from userinfo where username=?",(username,))
+    ar=[str(r[0]) for r in cur.fetchall()]
+    if request.form['old'] == ar[0]:
+        if request.form['new'] == request.form['confirm']:
+            cur.execute("update userinfo set password=? where username=?",[request.form['new'], username])
+            get_db().commit()
+            return jsonify(status = "success")
+        return jsonify(status = "error", message = "Passwords do not match")
+    return jsonify(status = "error", message = "Old password is wrong")
+
 @app.errorhandler(404)
 def page_not_found(error):
     return render_template('page_not_found.html'), 404

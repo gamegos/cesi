@@ -85,6 +85,51 @@ var $deluser = function(){
     });
 }
 
+var $changepassword = function(){
+    $username = $(this).attr('name');
+    $link = "/change/password/"+$username;
+    $.ajax({
+        url: $link,
+        dataType: 'json',
+        success: function(data){
+            if(data['status'] == "success"){
+                $maindiv = $('#maindiv');
+                $maindiv.empty();
+                $maindiv.append('<div class="login-panel panel panel-default"></div>'); 
+                $panel= $maindiv.children('div').first();
+                $panel.append('<div class="panel-heading"><h3 class="panel-title">Change Password</h3></div>');
+                $panel.append('<div class="panel-body"><form role="form" method="post" ><fieldset></fieldset></form></div>');
+                $fieldset =$maindiv.find('fieldset');
+                $fieldset.append('<div class="form-group"><input class="form-control" placeholder="Old password" name="old" type="password" autofocus></div>');
+                $fieldset.append('<div class="form-group"><input class="form-control" placeholder="New Password" name="new" type="password"></div>');
+                $fieldset.append('<div class="form-group"><input class="form-control" placeholder="Confirm Password" name="confirm" type="password"></div>');
+                $fieldset.append('<button class="btn btn-lg btn-success btn-block"> Save </button>');
+
+                var $passwordhandler = function(){
+                    $url2 = "/change/password/"+$username+"/handler";
+                    $.ajax({
+                        url: $url2,
+                        type: 'POST',
+                        dataType: 'json',
+                        success: function(data2){
+                            if(data2['status']=="success"){
+                                alert("Password changed");
+                            }else{
+                                alert(data2['message']);
+                            }
+                        }
+                    });
+                }
+
+              $button = $fieldset.find('button').first();
+              $button.click($passwordhandler);
+            }else{
+                alert ("Unsuccesfull");
+            }
+        }
+    }); 
+}
+
 var $actc = function(){
         var $tr = $(this).parent().parent();
         var $td = $tr.children('td').first();
@@ -344,4 +389,5 @@ $( document ).ready(function() {
     $(".act").click($actc);
     $(".adduser").click($adduser);
     $(".deluser").click($deluser);
+    $(".changepassword").click($changepassword);
 });

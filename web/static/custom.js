@@ -1,3 +1,14 @@
+var $readlog = function(){
+    $link = $(this).attr('name');
+    $.ajax({
+        url: $link,
+        dataType: 'json',
+        success: function(data){
+            alert(data['log']);
+        }
+    }); 
+}
+
 var $adduser= function(){
     $link = "/add/user";
     $.ajax({
@@ -180,7 +191,9 @@ var $select = function(){
                                         $btn_stop.click($actc);
                                     }
                                    //Readlog
-                                   $tr_p.append('<td><button class="btn btn-primary btn-block act" onclick="/node/'+$node_name+'/process/'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'/readlog"> Readlog </button></td>');
+                                   $tr_p.append('<td><button class="btn btn-primary btn-block act" name="/node/'+$node_name+'/process/'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'/readlog"> Readlog </button></td>');
+                                   $readlog = $tr_p.children('td').last().children('button').first();
+                                   $readlog.click($readlog);
                                     
                                 }
                         }  
@@ -265,6 +278,10 @@ var $showallprocess = function(){
                                         $btn_stop = $td_p.children('button').first();
                                         $btn_stop.click($actc);
                                     }
+                                   //Readlog
+                                   $tr_p.append('<td><button class="btn btn-primary btn-block act" name="/node/'+nodename+'/process/'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'/readlog"> Readlog </button></td>');
+                                   $readlog = $tr_p.children('td').last().children('button').first();
+                                   $readlog.click($readlog);
 
                                 }
                         }

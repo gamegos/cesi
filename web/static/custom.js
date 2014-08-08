@@ -98,12 +98,12 @@ var $changepassword = function(){
                 $maindiv.append('<div class="login-panel panel panel-default"></div>'); 
                 $panel= $maindiv.children('div').first();
                 $panel.append('<div class="panel-heading"><h3 class="panel-title">Change Password</h3></div>');
-                $panel.append('<div class="panel-body"><form role="form" method="post" ><fieldset></fieldset></form></div>');
+                $panel.append('<div class="panel-body"><form role="form" method="post" action="/change/password/'+$username+'/handler" ><fieldset></fieldset></form></div>');
                 $fieldset =$maindiv.find('fieldset');
                 $fieldset.append('<div class="form-group"><input class="form-control" placeholder="Old password" name="old" type="password" autofocus></div>');
                 $fieldset.append('<div class="form-group"><input class="form-control" placeholder="New Password" name="new" type="password"></div>');
                 $fieldset.append('<div class="form-group"><input class="form-control" placeholder="Confirm Password" name="confirm" type="password"></div>');
-                $fieldset.append('<button class="btn btn-lg btn-success btn-block"> Save </button>');
+                $fieldset.append('<button type="submit" class="btn btn-lg btn-success btn-block"> Save </button>');
 
                 var $passwordhandler = function(){
                     $url2 = "/change/password/"+$username+"/handler";

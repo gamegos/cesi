@@ -98,37 +98,41 @@ var $changepassword = function(){
                 $maindiv.append('<div class="login-panel panel panel-default"></div>'); 
                 $panel= $maindiv.children('div').first();
                 $panel.append('<div class="panel-heading"><h3 class="panel-title">Change Password</h3></div>');
-                $panel.append('<div class="panel-body"><form role="form" method="post" action="/change/password/'+$username+'/handler" ><fieldset></fieldset></form></div>');
+                $panel.append('<div class="panel-body"><form method="post" action="/change/password/'+$username+'/handler"><fieldset></fieldset></form></div>');
                 $fieldset =$maindiv.find('fieldset');
                 $fieldset.append('<div class="form-group"><input class="form-control" placeholder="Old password" name="old" type="password" autofocus></div>');
                 $fieldset.append('<div class="form-group"><input class="form-control" placeholder="New Password" name="new" type="password"></div>');
                 $fieldset.append('<div class="form-group"><input class="form-control" placeholder="Confirm Password" name="confirm" type="password"></div>');
-                $fieldset.append('<button type="submit" class="btn btn-lg btn-success btn-block"> Save </button>');
-
-                var $passwordhandler = function(){
-                    $url2 = "/change/password/"+$username+"/handler";
-                    $.ajax({
-                        url: $url2,
-                        type: 'POST',
-                        dataType: 'json',
-                        success: function(data2){
-                            if(data2['status']=="success"){
-                                alert("Password changed");
-                            }else{
-                                alert(data2['message']);
-                            }
-                        }
-                    });
-                }
-
-              $button = $fieldset.find('button').first();
-              $button.click($passwordhandler);
+                $fieldset.append('<input name="'+$username+'" class="btn btn-lg btn-success btn-block" value="Save">');
+                $btn = $panel.find('input').last();
+                console.log($btn);
+                $btn.click($passwordhandler);
             }else{
                 alert ("Unsuccesfull");
             }
         }
     }); 
 }
+
+var $passwordhandler = function(e){
+    $username=$(this).attr('name');
+    $url2 = "/change/password/"+$username+"/handler";
+    console.log($url2);
+    $.ajax({
+        url: $url2,
+        dataType: 'json',
+        type: 'post',
+        data: $(this).parent().parent().serialize(),
+        success: function(data){
+            if(data['status']=="success"){
+                alert("Password changed");
+            }else{
+                alert(data['message']);
+            }
+        }
+   });
+}
+
 
 var $actc = function(){
         var $tr = $(this).parent().parent();

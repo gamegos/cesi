@@ -168,11 +168,9 @@ def getlist():
 def readlog(node_name, process_name):
     node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
     node = Node(node_config)
-    log_file_path = node.process_dict2[process_name].stdout_logfile
-    file_object = open(log_file_path, "r")
-    log_file = file_object.readline()
-    print log_file
-    return jsonify(log = log_file)
+    log = node.connection.supervisor.tailProcessStdoutLog(process_name, 0, 10000)[0]
+    return render_template('log.html', log = log)
+     
     
 
 # Add user method for only admin type user

@@ -1,14 +1,3 @@
-var $readlog = function(){
-    $link = $(this).attr('name');
-    $.ajax({
-        url: $link,
-        dataType: 'json',
-        success: function(data){
-            alert(data['log']);
-        }
-    }); 
-}
-
 var $delete_user = function(){
     $username = $(this).attr('name')
     $link = "/delete/user/"+$username
@@ -287,7 +276,7 @@ var $select = function(){
                                         $btn_stop.click($actc);
                                     }
                                    //Readlog
-                                   $tr_p.append('<td><button class="btn btn-primary btn-block act" name="/node/'+$node_name+'/process/'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'/readlog"> Readlog </button></td>');
+                                   $tr_p.append('<td><a class="btn btn-primary btn-block act" href="/node/'+$node_name+'/process/'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'/readlog" target="_blank"> Readlog </a></td>');
                                    $readlog = $tr_p.children('td').last().children('button').first();
                                    $readlog.click($readlog);
                                     
@@ -375,7 +364,7 @@ var $showallprocess = function(){
                                         $btn_stop.click($actc);
                                     }
                                    //Readlog
-                                   $tr_p.append('<td><button class="btn btn-primary btn-block act" name="/node/'+nodename+'/process/'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'/readlog"> Readlog </button></td>');
+                                   $tr_p.append('<td><a class="btn btn-primary btn-block act" href="/node/'+nodename+'/process/'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'/readlog" target="_blank"> Readlog </a></td>');
                                    $readlog = $tr_p.children('td').last().children('button').first();
                                    $readlog.click($readlog);
 

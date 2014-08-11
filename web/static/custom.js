@@ -280,21 +280,37 @@ var $select = function(){
                                    //Readlog
                                    $tr_p.append('<td><a class="btn btn-primary btn-block act" name="/node/'+$node_name+'/process/'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'/readlog"> Readlog </a></td>');
                                    $readlog = $tr_p.children('td').last().children('a').first();
-                                   $dialogstr = '<div class="'+$node_name+'_'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'">Yes I am a log </div>' 
+                                   $dialogstr = '<div class="'+$node_name+'_'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'"></div>' 
+                                    
+                                    $logname=$node_name+'_'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name'];
+                                    $logurl = '/node/'+$node_name+'/process/'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'/readlog'
                                     $readlog.click(function(){
                                         $logdiv.append($dialogstr);
-                                        $dia = $logdiv.children('div').last()
-                                        $dia.dialog({
-                                                dialogClass:'dialog_style1',
-                                                show: {
-                                                    effect: "blind",
-                                                    duration: 1000
-                                                },
-                                                hide: {
-                                                    effect: "explode",
-                                                    duration: 1000
-                                                }
+                                        $dia = $logdiv.children('div').last();
+                                        $.ajax({
+                                            url: $logurl,
+                                            dataType: 'json',
+                                            success: function(log){
+                                                $dia.append('<p>'+log['log']+'</p>');
+                                            }
+
                                         });
+                                        $dia.dialog({ 
+                                            title: $logname,
+                                            maxWidth: 600,
+                                            maxHeight: 600,
+                                            width: 500,
+                                            show: {
+                                                effect: "blind",
+                                                duration: 500
+                                            },
+                                            hide: {
+                                                effect: "clip",
+                                                duration: 500
+                                            }
+                                            
+                                        });
+                                        
                                     });
                                     
                                 }
@@ -386,26 +402,35 @@ var $showallprocess = function(){
                                    //Readlog
                                    $tr_p.append('<td><a class="btn btn-primary btn-block act" name="/node/'+nodename+'/process/'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'/readlog"> Readlog </a></td>');
                                    $readlog = $tr_p.children('td').last().children('a').first();
-                                   $dialogstr = '<div class="'+$node_name+'_'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'">Yes I am a log aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</div>' 
+                                   $dialogstr = '<div class="'+nodename+'_'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'"></div>' 
+                                    $logname=nodename+'_'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name'];
+                                    $logurl = '/node/'+nodename+'/process/'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'/readlog'
                                     $readlog.click(function(){
                                         $logdiv.append($dialogstr);
-                                        $dia = $logdiv.children('div').last()
-                                        $dia.dialog({
-                                                width: 600,
-                                                heigth: 800,
-                                                resizable: true,
-                                                show: {
-                                                    effect: "blind",
-                                                    duration: 1000
-                                                },
-                                                hide: {
-                                                    effect: "explode",
-                                                    duration: 1000
-                                                }
+                                        $dia = $logdiv.children('div').last();
+                                        $.ajax({
+                                            url: $logurl,
+                                            dataType: 'json',
+                                            success: function(log){
+                                                $dia.append('<p>'+log['log']+'</p>');
+                                            }
+
                                         });
-                                       $(function() {
-                                            $dia.draggable();
-                                       });
+                                        $dia.dialog({ 
+                                            title: $logname,
+                                            maxWidth: 600,
+                                            maxHeight: 600,
+                                            width: 500,
+                                            show: {
+                                                effect: "blind",
+                                                duration: 500
+                                            },
+                                            hide: {
+                                                effect: "clip",
+                                                duration: 500
+                                            }
+                                        });
+                                        
                                     });
                                 }
                         }

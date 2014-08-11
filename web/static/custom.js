@@ -199,6 +199,8 @@ var $actc = function(){
 var $select = function(){
         var $maindiv = $("#maindiv");
         $maindiv.empty();
+        $logdiv = $("#dialog");
+        $logdiv.empty();
         $checkbox = $(this).children('input').first();
         var ischecked = $checkbox.is(":checked");
         if(ischecked){
@@ -276,11 +278,29 @@ var $select = function(){
                                         $btn_stop.click($actc);
                                     }
                                    //Readlog
-                                   $tr_p.append('<td><a class="btn btn-primary btn-block act" href="/node/'+$node_name+'/process/'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'/readlog" target="_blank"> Readlog </a></td>');
-                                   $readlog = $tr_p.children('td').last().children('button').first();
-                                   $readlog.click($readlog);
+                                   $tr_p.append('<td><a class="btn btn-primary btn-block act" name="/node/'+$node_name+'/process/'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'/readlog"> Readlog </a></td>');
+                                   $readlog = $tr_p.children('td').last().children('a').first();
+                                   $logdiv.append('<div class="'+$node_name+'_'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'">aaaaaaaaaaaaaaaaaaaa</div>');
+                                   $dia = $logdiv.children('div').last()
+                                   $dia.dialog({
+                                            dialogClass:'dialog_style1',
+                                            autoOpen: false,
+                                            show: {
+                                                effect: "blind",
+                                                duration: 1000
+                                            },
+                                            hide: {
+                                                effect: "explode",
+                                                duration: 1000
+                                        }
+                                    });
+                                   
+                                $readlog.click(function(){
+                                     $dia.dialog( "open" );
+                                });
                                     
                                 }
+                
                         }  
                 });
          });
@@ -289,6 +309,8 @@ var $select = function(){
 var $showallprocess = function(){
     var $maindiv = $("#maindiv");
     $maindiv.empty();
+    $logdiv = $("#dialog");
+    $logdiv.empty();
     var $node_name = $(this).find('a').attr('value');
     var $url = "/node/name/list"
     $.ajax({
@@ -364,16 +386,52 @@ var $showallprocess = function(){
                                         $btn_stop.click($actc);
                                     }
                                    //Readlog
-                                   $tr_p.append('<td><a class="btn btn-primary btn-block act" href="/node/'+nodename+'/process/'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'/readlog" target="_blank"> Readlog </a></td>');
-                                   $readlog = $tr_p.children('td').last().children('button').first();
-                                   $readlog.click($readlog);
-
+                                   $tr_p.append('<td><a class="btn btn-primary btn-block act" name="/node/'+nodename+'/process/'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'/readlog"> Readlog </a></td>');
+                                   $readlog = $tr_p.children('td').last().children('a').first();
+                                   $logdiv.append('<div class="'+nodename+'_'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'">ssssssssssssssssssssssssssssssssssssssssssss</div>');
+                                   $dia = $logdiv.children('div').last()
+                                  
+                                   $dia.dialog({
+                                            dialogClass:'dialog_style1',
+                                            autoOpen: false,
+                                            show: {
+                                                effect: "blind",
+                                                duration: 1000
+                                            },
+                                            hide: {
+                                                effect: "explode",
+                                                duration: 1000
+                                        }
+                                    });
+                                
+                                    $readlog.click(function(){
+                                        $dia.dialog( "open" );
+                                    });
                                 }
                         }
                 });
             });
         }
    });
+}
+
+
+var $readloghandler = function(){
+    $link = $(this).attr('name');
+    console.log($link);
+    $.ajax({
+        url: $link,
+        dataType: 'json',
+        success: function(data){
+
+//            var win=window.open(data['url']);
+//            with(win.document){
+//                open();
+//                write(data['log']);
+//                close();
+//            }
+        }
+    });
 }
 
 $( document ).ready(function() {

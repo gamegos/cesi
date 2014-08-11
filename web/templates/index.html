@@ -21,7 +21,6 @@
 
     <!-- Table links -->
     <link rel=stylesheet type=text/css href="{{ url_for('static', filename='custom.css') }}">
-
 </head>
 
 <body>
@@ -330,18 +329,21 @@
                                     <h4>Stopped</h4>
                                     <h3>{{stopped_process_count}}</h3>
                                 </div>
+
                             </div>
                         </div><!-- ./col -->
                     </div><!-- /.row -->
                 </div>
                 <!-- End collg-12 -->
+                </div>
             </div>
             <!-- /.row -->
         </div>
         <!-- /#page-wrapper -->
     </div>
     <!-- /#wrapper -->
-
+        <div id="dialog">
+        </div>
     <script language="JavaScript" type="text/javascript" src="{{ url_for('static', filename='jquery-1.11.1.min.js') }}"></script>
     <script language="JavaScript" type="text/javascript" src="{{ url_for('static', filename='js/ui/jquery-ui-1.11.0/jquery-ui.js') }}"></script>
     <!-- Core Scripts - Include with every page -->

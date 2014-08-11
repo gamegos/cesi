@@ -169,7 +169,7 @@ def readlog(node_name, process_name):
     node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
     node = Node(node_config)
     log = node.connection.supervisor.tailProcessStdoutLog(process_name, 0, 10000)[0]
-    return render_template('log.html', log = log)
+    return jsonify(url="node/"+node_name+"/process/"+process_name+"/read" , log=log)
      
     
 

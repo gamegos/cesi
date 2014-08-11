@@ -2,6 +2,12 @@
     margin-bottom: 10px;
 }
 
+.dialog_style1{
+  background: #5C7DDE;
+  color: #000;
+}
+
+
 #selectable .ui-selected { background: #D1FFD1; }
 
 /* Background colors */

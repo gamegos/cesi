@@ -222,38 +222,59 @@ def del_user_handler(username):
 # Writes new user information to database
 @app.route('/add/user/handler', methods = ['GET', 'POST'])
 def adduserhandler():
-    username = request.form['username']
-    password = request.form['password']
-    usertype = request.form['usertype']
-    cur = get_db().cursor()
-    cur.execute("select * from userinfo where username=?",(username,))
-    if not cur.fetchall():
-        cur.execute("insert into userinfo values(?, ?, ?)", (username, password, usertype,))
-        get_db().commit()
-        return redirect(url_for('showMain'))
+    if session.get('logged_in'):
+        if session['usertype'] == 'Admin':
+            username = request.form['username']
+            password = request.form['password']
+            usertype = request.form['usertype']
+            cur = get_db().cursor()
+            cur.execute("select * from userinfo where username=?",(username,))
+            if not cur.fetchall():
+                cur.execute("insert into userinfo values(?, ?, ?)", (username, password, usertype,))
+                get_db().commit()
+                return redirect(url_for('showMain'))
+            else:
+                return redirect(url_for('add_user'))
+        else:
+            return jsonify(status = "error",
+                           message = "Only Admin can delete a user")
     else:
-        return redirect(url_for('add_user'))
+        return redirect(url_for('login'))
+
 
 @app.route('/change/password/<username>')
 def changepassword(username):
-    return jsonify(status = "success")
-
-
-@app.route('/change/password/<username>/handler', methods=['GET', 'POST'])
-def changepasswordhandler(username):
-    if request.method == 'POST':
-        cur = get_db().cursor()
-        cur.execute("select password from userinfo where username=?",(username,))
-        ar=[str(r[0]) for r in cur.fetchall()]
-        if request.form['old'] == ar[0]:
-            if request.form['new'] == request.form['confirm']:
-                cur.execute("update userinfo set password=? where username=?",[request.form['new'], username])
-                get_db().commit()
-                return jsonify(status = "success")
-            return jsonify(status = "error", message = "Passwords do not match")
-        return jsonify(status = "error", message = "Old password is wrong")
+    if session.get('logged_in'):
+        if session['username'] == username:
+            return jsonify(status = "success")
+        else:
+            return jsonify(status = "error",
+                           message = "You can only change own password.")
     else:
-        return "  "
+        return redirect(url_for('login'))
+
+
+
+@app.route('/change/password/<username>/handler', methods=['POST'])
+def changepasswordhandler(username):
+    if session.get('logged_in'):
+        if session['username'] == username:
+            cur = get_db().cursor()
+            cur.execute("select password from userinfo where username=?",(username,))
+            ar=[str(r[0]) for r in cur.fetchall()]
+            if request.form['old'] == ar[0]:
+                if request.form['new'] == request.form['confirm']:
+                    cur.execute("update userinfo set password=? where username=?",[request.form['new'], username])
+                    get_db().commit()
+                    return jsonify(status = "success")
+                else:
+                    return jsonify(status = "error", message = "Passwords do not match")
+            else:
+                return jsonify(status = "error", message = "Old password is wrong")
+        else:
+            return jsonify(status = "error", message = "You can only change own password.")
+    else:
+        return redirect(url_for('login'))
 
 @app.errorhandler(404)
 def page_not_found(error):

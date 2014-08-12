@@ -278,28 +278,32 @@ var $select = function(){
                                         $btn_stop.click($actc);
                                     }
                                    //Readlog
-                                   $tr_p.append('<td><a class="btn btn-primary btn-block act" name="/node/'+$node_name+'/process/'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'/readlog"> Readlog </a></td>');
+                                   $tr_p.append('<td><a class="btn btn-primary btn-block act" nodename="'+$node_name+'" processgroup="'+result['process_info'][$counter]['group']+'" processname="'+result['process_info'][$counter]['name']+'" url="/node/'+$node_name+'/process/'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'/readlog"> Readlog </a></td>');
                                    $readlog = $tr_p.children('td').last().children('a').first();
-                                   $dialogstr = '<div class="'+$node_name+'_'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'"></div>' 
                                     
-                                    $logname=$node_name+'_'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name'];
-                                    $logurl = '/node/'+$node_name+'/process/'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'/readlog'
-                                    $readlog.click(function(){
-                                        $logdiv.append($dialogstr);
-                                        $dia = $logdiv.children('div').last();
+                                   $readlog.click(function(){
+                                        nodename=$(this).attr('nodename');
+                                        processname=$(this).attr('processname');
+                                        processgroup=$(this).attr('processgroup');
+                                        classname = nodename+"_"+processgroup+"_"+processname
+                                        $dia = $("."+classname);
+                                        
+                                        if($dia.length==0){
+                                            $logdiv.append('<div class="'+classname+'"></div>');
+                                            $dia = $("."+classname);
+                                        }
                                         $.ajax({
-                                            url: $logurl,
+                                            url: $(this).attr('url'),
                                             dataType: 'json',
                                             success: function(log){
-                                                $dia.append('<p>'+log['log']+'</p>');
+                                                $dia.html('<p>'+log['log']+'</p>');
                                             }
 
                                         });
                                         $dia.dialog({ 
-                                            title: $logname,
+                                            title: classname,
                                             maxWidth: 600,
-                                            maxHeight: 600,
-                                            width: 500,
+                                            maxHeight: 300,
                                             show: {
                                                 effect: "blind",
                                                 duration: 500
@@ -310,7 +314,7 @@ var $select = function(){
                                             }
                                             
                                         });
-                                        
+                                      
                                     });
                                     
                                 }
@@ -400,27 +404,31 @@ var $showallprocess = function(){
                                         $btn_stop.click($actc);
                                     }
                                    //Readlog
-                                   $tr_p.append('<td><a class="btn btn-primary btn-block act" name="/node/'+nodename+'/process/'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'/readlog"> Readlog </a></td>');
+                                   $tr_p.append('<td><a class="btn btn-primary btn-block act" nodename="'+nodename+'" processgroup="'+result['process_info'][$counter]['group']+'" processname="'+result['process_info'][$counter]['name']+'" url="/node/'+nodename+'/process/'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'/readlog"> Readlog </a></td>');
                                    $readlog = $tr_p.children('td').last().children('a').first();
-                                   $dialogstr = '<div class="'+nodename+'_'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'"></div>' 
-                                    $logname=nodename+'_'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name'];
-                                    $logurl = '/node/'+nodename+'/process/'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'/readlog'
-                                    $readlog.click(function(){
-                                        $logdiv.append($dialogstr);
-                                        $dia = $logdiv.children('div').last();
+                                   $readlog.click(function(){
+                                        nodename=$(this).attr('nodename');
+                                        processname=$(this).attr('processname');
+                                        processgroup=$(this).attr('processgroup');
+                                        classname = nodename+"_"+processgroup+"_"+processname
+                                        $dia = $("."+classname);
+                                        
+                                        if($dia.length==0){
+                                            $logdiv.append('<div class="'+classname+'"></div>');
+                                            $dia = $("."+classname);
+                                        }
                                         $.ajax({
-                                            url: $logurl,
+                                            url: $(this).attr('url'),
                                             dataType: 'json',
                                             success: function(log){
-                                                $dia.append('<p>'+log['log']+'</p>');
+                                                $dia.html('<p>'+log['log']+'</p>');
                                             }
 
                                         });
                                         $dia.dialog({ 
-                                            title: $logname,
+                                            title: classname,
                                             maxWidth: 600,
-                                            maxHeight: 600,
-                                            width: 500,
+                                            maxHeight: 300,
                                             show: {
                                                 effect: "blind",
                                                 duration: 500
@@ -429,8 +437,9 @@ var $showallprocess = function(){
                                                 effect: "clip",
                                                 duration: 500
                                             }
+
                                         });
-                                        
+
                                     });
                                 }
                         }

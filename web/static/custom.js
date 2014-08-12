@@ -1,18 +1,19 @@
 var $delete_user = function(){
     var $username = $(this).attr('name')
     var $link = "/delete/user/"+$username
-    alert("Are you sure delete this user?");
-    $.ajax({
-        url: $link,
-        dataType: 'json',
-        success: function(data){
-            if(data['status'] == 'success'){
-                $("."+$username).remove();
-            }else{
-                alert(data['message'])
+    if( confirm("Are you sure delete this user?") ){
+        $.ajax({
+            url: $link,
+            dataType: 'json',
+            success: function(data){
+                if(data['status'] == 'success'){
+                    $("."+$username).remove();
+                }else{
+                    alert(data['message'])
+                }
             }
-        }
-    });
+        });
+    }
 }
 
 var $adduser= function(){

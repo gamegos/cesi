@@ -1,9 +1,11 @@
 var $delete_user = function(){
     var $username = $(this).attr('name')
-    var $link = "/delete/user/"+$username
-    if( confirm("Are you sure delete this user?") ){
+    var $url = "/delete/user/"+$username
+    if($url=="/delete/user/admin"){
+        alert("Admin can't delete");
+    }else if( confirm("Are you sure delete this user?") ){
         $.ajax({
-            url: $link,
+            url: $url,
             dataType: 'json',
             success: function(data){
                 if(data['status'] == 'success'){
@@ -49,7 +51,7 @@ var $adduser= function(){
     });
 }
 
-var $deluser = function(){
+var $showdeluserpage = function(){
     var $link = "/delete/user";
     $.ajax({
         url: $link,
@@ -69,7 +71,7 @@ var $deluser = function(){
                 var $table = $tablediv.children('table').first();
                 $table.append('<tr><th>Username</th><th>Usertype</th><th></th></tr>');
 
-                for(var i=0; i<data['names'].length; i++){
+                for(var i=1; i<data['names'].length; i++){
                     $table.append('<tr class="'+data['names'][i]+'"></tr>');
 
                     var $maintr = $table.find('tr').last();
@@ -469,7 +471,6 @@ var $showallprocess = function(){
                                     },1000);
                                 },
                                 close: function(){
-                                    console.log("kapandiii");
                                     clearInterval(timer);
                                 },
                                 title: classname,
@@ -498,6 +499,6 @@ $( document ).ready(function() {
     $(".ajax2").click($selectnode);
     $(".act").click($buttonactions);
     $(".adduser").click($adduser);
-    $(".deluser").click($deluser);
+    $(".deluser").click($showdeluserpage);
     $(".changepassword").click($changepassword);
 });

@@ -203,11 +203,21 @@ def del_user():
 
 @app.route('/delete/user/<username>')
 def del_user_handler(username):
-    cur = get_db().cursor()
-    cur.execute("delete from userinfo where username=?",[username])
-    get_db().commit()
-    return jsonify(status = "success")
-
+    if session.get('logged_in'):
+        if session['usertype'] == 'Admin':
+            if username != "admin":
+                cur = get_db().cursor()
+                cur.execute("delete from userinfo where username=?",[username])
+                get_db().commit()
+                return jsonify(status = "success")
+            else:
+                return jsonify(status = "error",
+                               message= "Admin can't delete")
+        else:
+            return jsonify(status = "error",
+                           message = "Only Admin can delete a user")
+    else:
+        return redirect(url_for('login'))
 
 # Writes new user information to database
 @app.route('/add/user/handler', methods = ['GET', 'POST'])

@@ -279,39 +279,41 @@ var $select = function(){
                                     }
                                    //Readlog
                                    $tr_p.append('<td><a class="btn btn-primary btn-block act" nodename="'+$node_name+'" processgroup="'+result['process_info'][$counter]['group']+'" processname="'+result['process_info'][$counter]['name']+'" url="/node/'+$node_name+'/process/'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'/readlog"> Readlog </a></td>');
-                                   $readlog = $tr_p.children('td').last().children('a').first();
+                                    var $readlog = $tr_p.children('td').last().children('a').first();
+                                   
+
                                    $readlog.click(function(){
-                                        url=$(this).attr('url');
-                                        nodename=$(this).attr('nodename');
-                                        processname=$(this).attr('processname');
-                                        processgroup=$(this).attr('processgroup');
-                                        classname = nodename+"_"+processgroup+"_"+processname
-                                        $dia = $("."+classname);
-                                        var timer;
+                                       var url=$(this).attr('url');
+                                       var nodename=$(this).attr('nodename');
+                                       var processname=$(this).attr('processname');
+                                       var processgroup=$(this).attr('processgroup');
+                                       var classname = nodename+"_"+processgroup+"_"+processname
+                                       var $dia = $("."+classname);
+                                       var timer;
 
-                                        if($dia.length==0){
-                                            $logdiv.append('<div class="'+classname+'"></div>');
-                                            $dia = $("."+classname);
-                                        }
-                                        $.ajax({
-                                            url: url,
-                                            dataType: 'json',
-                                            success: function(log){
-                                                $dia.html('<p>'+log['log']+'</p>');
-                                            }
+                                       if($dia.length==0){
+                                           $logdiv.append('<div class="'+classname+'"></div>');
+                                           $dia = $("."+classname);
+                                       }
+                                       $.ajax({
+                                           url: url,
+                                           dataType: 'json',
+                                           success: function(log){
+                                               $dia.html('<p>'+log['log']+'</p>');
+                                           }
 
-                                        });
-                                        $dia.dialog({
-                                            open: function(){
-                                                    timer = setInterval(function () {
+                                       });
+                                       $dia.dialog({
+                                           open: function(){
+                                               timer = setInterval(function () {
                                                     $.ajax({
                                                         url: url,
                                                         dataType: 'json',
                                                         success: function(log){
-                                                            $dia.html('<p>'+log['log']+'</p>');
+                                                        $dia.html('<p>'+log['log']+'</p>');
                                                         }
                                                     });
-                                                    },1000);
+                                               },1000);
                                             },
                                             close: function(){
                                                 console.log("kapandiii");
@@ -328,14 +330,9 @@ var $select = function(){
                                                 effect: "clip",
                                                 duration: 500,
                                             }
-
                                         });
-
                                     });
-                                    
-                                    
                                 }
-                
                         }  
                 });
          });
@@ -422,14 +419,14 @@ var $showallprocess = function(){
                                     }
                                    //Readlog
                                    $tr_p.append('<td><a class="btn btn-primary btn-block act" nodename="'+nodename+'" processgroup="'+result['process_info'][$counter]['group']+'" processname="'+result['process_info'][$counter]['name']+'" url="/node/'+nodename+'/process/'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'/readlog"> Readlog </a></td>');
-                                   $readlog = $tr_p.children('td').last().children('a').first();
+                                   var $readlog = $tr_p.children('td').last().children('a').first();
                                    $readlog.click(function(){
-                                        url=$(this).attr('url');
-                                        nodename=$(this).attr('nodename');
-                                        processname=$(this).attr('processname');
-                                        processgroup=$(this).attr('processgroup');
-                                        classname = nodename+"_"+processgroup+"_"+processname
-                                        $dia = $("."+classname);
+                                        var url=$(this).attr('url');
+                                        var nodename=$(this).attr('nodename');
+                                        var processname=$(this).attr('processname');
+                                        var processgroup=$(this).attr('processgroup');
+                                        var classname = nodename+"_"+processgroup+"_"+processname
+                                        var $dia = $("."+classname);
                                         var timer;
                                         
                                         if($dia.length==0){

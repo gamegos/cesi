@@ -280,42 +280,59 @@ var $select = function(){
                                    //Readlog
                                    $tr_p.append('<td><a class="btn btn-primary btn-block act" nodename="'+$node_name+'" processgroup="'+result['process_info'][$counter]['group']+'" processname="'+result['process_info'][$counter]['name']+'" url="/node/'+$node_name+'/process/'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'/readlog"> Readlog </a></td>');
                                    $readlog = $tr_p.children('td').last().children('a').first();
-                                    
                                    $readlog.click(function(){
+                                        url=$(this).attr('url');
                                         nodename=$(this).attr('nodename');
                                         processname=$(this).attr('processname');
                                         processgroup=$(this).attr('processgroup');
                                         classname = nodename+"_"+processgroup+"_"+processname
                                         $dia = $("."+classname);
-                                        
+                                        var timer;
+
                                         if($dia.length==0){
                                             $logdiv.append('<div class="'+classname+'"></div>');
                                             $dia = $("."+classname);
                                         }
                                         $.ajax({
-                                            url: $(this).attr('url'),
+                                            url: url,
                                             dataType: 'json',
                                             success: function(log){
                                                 $dia.html('<p>'+log['log']+'</p>');
                                             }
 
                                         });
-                                        $dia.dialog({ 
+                                        $dia.dialog({
+                                            open: function(){
+                                                    timer = setInterval(function () {
+                                                    $.ajax({
+                                                        url: url,
+                                                        dataType: 'json',
+                                                        success: function(log){
+                                                            $dia.html('<p>'+log['log']+'</p>');
+                                                        }
+                                                    });
+                                                    },1000);
+                                            },
+                                            close: function(){
+                                                console.log("kapandiii");
+                                                clearInterval(timer);
+                                            },
                                             title: classname,
                                             maxWidth: 600,
-                                            maxHeight: 300,
+                                            maxHeight: 500,
                                             show: {
                                                 effect: "blind",
                                                 duration: 500
                                             },
                                             hide: {
                                                 effect: "clip",
-                                                duration: 500
+                                                duration: 500,
                                             }
-                                            
+
                                         });
-                                      
+
                                     });
+                                    
                                     
                                 }
                 
@@ -407,35 +424,52 @@ var $showallprocess = function(){
                                    $tr_p.append('<td><a class="btn btn-primary btn-block act" nodename="'+nodename+'" processgroup="'+result['process_info'][$counter]['group']+'" processname="'+result['process_info'][$counter]['name']+'" url="/node/'+nodename+'/process/'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'/readlog"> Readlog </a></td>');
                                    $readlog = $tr_p.children('td').last().children('a').first();
                                    $readlog.click(function(){
+                                        url=$(this).attr('url');
                                         nodename=$(this).attr('nodename');
                                         processname=$(this).attr('processname');
                                         processgroup=$(this).attr('processgroup');
                                         classname = nodename+"_"+processgroup+"_"+processname
                                         $dia = $("."+classname);
+                                        var timer;
                                         
                                         if($dia.length==0){
                                             $logdiv.append('<div class="'+classname+'"></div>');
                                             $dia = $("."+classname);
                                         }
                                         $.ajax({
-                                            url: $(this).attr('url'),
+                                            url: url,
                                             dataType: 'json',
                                             success: function(log){
                                                 $dia.html('<p>'+log['log']+'</p>');
                                             }
 
                                         });
-                                        $dia.dialog({ 
+                                        $dia.dialog({
+                                            open: function(){
+                                                    timer = setInterval(function () {
+                                                    $.ajax({
+                                                        url: url,
+                                                        dataType: 'json',
+                                                        success: function(log){
+                                                            $dia.html('<p>'+log['log']+'</p>');
+                                                        }
+                                                    });
+                                                    },1000);
+                                            },
+                                            close: function(){
+                                                console.log("kapandiii");
+                                                clearInterval(timer);
+                                            },
                                             title: classname,
                                             maxWidth: 600,
-                                            maxHeight: 300,
+                                            maxHeight: 500,
                                             show: {
                                                 effect: "blind",
                                                 duration: 500
                                             },
                                             hide: {
                                                 effect: "clip",
-                                                duration: 500
+                                                duration: 500,
                                             }
 
                                         });
@@ -475,4 +509,6 @@ $( document ).ready(function() {
     $(".adduser").click($adduser);
     $(".deluser").click($deluser);
     $(".changepassword").click($changepassword);
+
+
 });

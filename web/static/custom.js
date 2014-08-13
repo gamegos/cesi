@@ -236,8 +236,10 @@ var $selectnode = function(){
         $olduncheckednodelist.push( $(this).attr('value') );
     });
 
-// List of cheked unchecked node list after clik event    
     if( $(this).attr('class')=="showall" ){
+        $( "li > input:not(:checked)" ).each(function() {
+            $(this).prop("checked", true);
+        });
         $newuncheckednodelist=[];
         $.ajax({
             url: "/node/name/list",

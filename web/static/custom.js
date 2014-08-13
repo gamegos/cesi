@@ -27,7 +27,7 @@ var $adduser= function(){
             if(data['status'] == 'success'){
                 var $maindiv = $('#maindiv');
                 $maindiv.empty();
-                $maindiv.append(' <div class="login-panel panel panel-default addauser"></div>');
+                $maindiv.prepend(' <div class="login-panel panel panel-default addauser"></div>');
                 var $login_panel = $maindiv.children('div').first();
                 $login_panel.append('<div class="panel-heading"> <h3 class="panel-title">Please Enter User Information </h3>  </div>');
                 $login_panel.append('<div class="add_user panel-body"></div>');
@@ -41,7 +41,7 @@ var $adduser= function(){
                 var $fieldset= $form.children('fieldset').first();
                 $fieldset.append('<div class="form-group"> <input class="form-control" placeholder="Username" name="username"  autofocus> </div>');
                 $fieldset.append('<div class="form-group"> <input class="form-control" placeholder="Password" name="password" type="password" value=""> </div>');
-                $fieldset.append('<div class="form-group"> <select class="form-control" name="usertype"> <option selected>Please select a user type</option> <option>Admin</option> <option>Standart User</option> <option>Only Log</option> <option>Read Only</option> </select> </div>');
+                $fieldset.append('<div class="form-group"> <select class="form-control" name="usertype"> <option selected>Standart User</option> <option>Admin</option> <option>Only Log</option> <option>Read Only</option> </select> </div>');
                 $fieldset.append('<button class="btn btn-lg btn-success btn-block"> Save </button>');
             }else{
                 alert("Only admin can add user");
@@ -59,7 +59,7 @@ var $showdeluserpage = function(){
             if(data['status'] == "success"){
                 var $maindiv = $('#maindiv');
                 $maindiv.empty();
-                $maindiv.append('<div class="panel-body deleteuser"></div>');
+                $maindiv.prepend('<div class="panel-body deleteuser"></div>');
 
                 var $panel = $maindiv.children('div').first();
                 $panel.append('<div class="table-responsive"></div>');
@@ -96,7 +96,7 @@ var $changepassword = function(){
             if(data['status'] == "success"){
                 var $maindiv = $('#maindiv');
                 $maindiv.empty();
-                $maindiv.append('<div class="login-panel panel panel-default changepassword"></div>'); 
+                $maindiv.prepend('<div class="login-panel panel panel-default changepassword"></div>'); 
 
                 var $panel= $maindiv.children('div').first();
                 $panel.append('<div class="panel-heading"><h3 class="panel-title">Change Password</h3></div>');

@@ -212,26 +212,81 @@ var $buttonactions = function(){
 
 var $selectnode = function(){
     var $maindiv = $("#maindiv");
-    $maindiv.empty();
-
+    var $dashboardiv = $(".dash");
+    $dashboardiv.empty();
+    
     var $logdiv = $("#dialog");
     $logdiv.empty();
+
     var $checkbox = $(this).children('input').first();
     var ischecked = $checkbox.is(":checked");
+    $oldcheckednodelist=[];
+    $newcheckednodelist=[];
+    $olduncheckednodelist=[];
+    $newuncheckednodelist=[];
+    $appendlist=[];
+    $removelist=[];
 
-    if(ischecked){
-        $checkbox.prop("checked", false);
+    if( $(this).attr('class')=="showall" ){
+        $newuncheckednodelist=[];
+        $.ajax({
+            url: "/node/name/list",
+            dataType: 'json',
+            success: function(nodenames){
+                $newcheckednodelist = nodenames['node_name_list'];
+            }
+        });
+        console.log($newcheckednodelist);
     }else{
-        $checkbox.prop("checked", true);
+// List of cheked unchecked node list before clik event    
+        $( "li > input:checked" ).each(function() {
+            $oldcheckednodelist.push( $(this).attr('value') );
+        });
+
+        $( "li > input:not(:checked)" ).each(function() {
+            $olduncheckednodelist.push( $(this).attr('value') );
+        });
+
+        if(ischecked){
+            $checkbox.prop("checked", false);
+        }else{
+            $checkbox.prop("checked", true);
+        }
+
+    // List of cheked unchecked node list after clik event    
+        $( "li > input:checked" ).each(function() {
+            $newcheckednodelist.push( $(this).attr('value') );
+        });
+
+        $( "li > input:not(:checked)" ).each(function() {
+            $newuncheckednodelist.push( $(this).attr('value') );
+        });
     }
-    $( "input:checked" ).each(function() { 
-        var nodename = $(this).attr('value');
+
+    $newcheckednodelist.forEach(function(item){
+        if( $olduncheckednodelist.indexOf(item) != -1 ){
+            $appendlist.push(item);
+        }
+    });
+
+    $newuncheckednodelist.forEach(function(item){
+        if( $oldcheckednodelist.indexOf(item) != -1 ){
+            $removelist.push(item);
+        }
+    });
+
+    $removelist.forEach(function(nodename){
+        var $panel = $("#panel"+nodename);
+        $panel.remove();
+    });
+
+    $appendlist.forEach(function(nodename) { 
         var $url = "/node/"+nodename
         $.ajax({
             url: $url,
             dataType: 'json',
             success: function(result){
-                $maindiv.append('<div class="panel panel-primary panel-custom" id="panel'+nodename+'"></div>');
+                $maindiv.prepend('<div class="panel panel-primary panel-custom" id="panel'+nodename+'"></div>');
                 var $panel = $("#panel"+nodename);
                 $panel.append('<div class="panel-heading"><span class="glyphicon glyphicon-th-list"></span> '+ nodename +'</div>');
                 $panel.append('<table class="table table-bordered" id="table'+nodename+'" ></table>');
@@ -353,149 +408,8 @@ var $selectnode = function(){
     });
 }
 
-var $showallprocess = function(){
-    var $maindiv = $("#maindiv");
-    $maindiv.empty();
-
-    var $logdiv = $("#dialog");
-    $logdiv.empty();
-
-    var $url = "/node/name/list"
-    $.ajax({
-        url: $url,
-        dataType: 'json',
-        success: function(nodenames){
-            nodenames['node_name_list'].forEach(function(nodename){
-            var $nodeurl = "/node/"+nodename
-            $.ajax({
-                url: $nodeurl,
-                dataType: 'json',
-                success: function(result){
-                    $maindiv.append('<div class="panel panel-primary panel-custom" id="panel'+nodename+'"></div>');
-                    var $panel = $("#panel"+nodename);
-                    $panel.append('<div class="panel-heading"><span class="glyphicon glyphicon-th-list"></span> '+ nodename +'</div>');
-                    $panel.append('<table class="table table-bordered" id="table'+nodename+'" ></table>');
-                    var $table = $("#table"+nodename);
-                    $table = $table.append('<tr class="active"> <th>Pid</th> <th>Name</th> <th>Group</th> <th>Uptime</th> <th>State name</th> <th></th> <th></th> </tr>');
-                    for (var $counter = 0; $counter < result['process_info'].length; $counter++){
-                        $table = $table.append('<tr class="process_info" id="'+nodename+$counter+'"></tr>');
-                        var $tr_p = $('#'+nodename+$counter);
-                       
-                        //pid
-                        if( result['process_info'][$counter]['pid'] == 0 ){
-                            $tr_p.append('<td> - </td>');
-                        }else{
-                            $tr_p.append('<td>'+ result['process_info'][$counter]['pid'] + '</td>');
-                        }
-
-                        //name
-                        $tr_p.append('<td>'+ result['process_info'][$counter]['name'] + '</td>')
-
-                        //group
-                        $tr_p.append('<td>'+ result['process_info'][$counter]['group'] + '</td>');
-
-                        //uptime
-                        var $uptime = result['process_info'][$counter]['description'].substring(17,25)
-                        $tr_p.append('<td>'+ $uptime + '</td>');
- 
-                        //statename
-                        var $state = result['process_info'][$counter]['state'];
-                        if( $state==0 || $state==40 || $state==100 || $state==200 ){
-                            $tr_p.append('<td class="alert alert-danger">'+ result['process_info'][$counter]['statename'] + '</td>');
-                        }else if($state==10 || $state==20){
-                            $tr_p.append('<td class="alert alert-success">'+ result['process_info'][$counter]['statename'] + '</td>');
-                        }else{
-                            $tr_p.append('<td class="alert alert-warning">'+ result['process_info'][$counter]['statename'] + '</td>');
-                        }
-
-                        //buttons
-                        if( $state==20 ){
-                            $tr_p.append('<td></td>');
-                            var $td_p = $tr_p.children('td').last();
-                            $td_p.append('<button class="btn btn-primary btn-block act" name="/node/'+nodename+'/process/'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'/restart" value="Restart">Restart</button>');
-                            var $btn_restart = $td_p.children('button').first();
-                            $btn_restart.click($buttonactions);
-
-                            $tr_p.append('<td></td>');
-                            var $td_p = $tr_p.children('td').last();
-                            $td_p.append('<button class="btn btn-primary btn-block act" name="/node/'+nodename+'/process/'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'/stop" value="Stop">Stop</button>');
-                            var $btn_stop = $td_p.children('button').first();
-                            $btn_stop.click($buttonactions);
-                        }else if($state==0){
-                            $tr_p.append('<td></td>');
-                            var $td_p = $tr_p.children('td').last();;
-                            $td_p.append('<button class="btn btn-primary btn-block act" name="/node/'+nodename+'/process/'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'/start" value="Start">Start</button>');
-                            var $btn_restart = $td_p.children('button').first();
-                            $btn_restart.click($buttonactions);
-                            
-                            $tr_p.append('<td></td>');
-                            var $td_p = $tr_p.children('td').last();
-                            $td_p.append('<button class="btn btn-primary btn-block disabled act" value="Stop">Stop</button>');
-                            var $btn_stop = $td_p.children('button').first();
-                            $btn_stop.click($buttonactions);
-                        }
-                        //Readlog
-                        $tr_p.append('<td><a class="btn btn-primary btn-block act" nodename="'+nodename+'" processgroup="'+result['process_info'][$counter]['group']+'" processname="'+result['process_info'][$counter]['name']+'" url="/node/'+nodename+'/process/'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'/readlog"> Readlog </a></td>');
-                        var $readlog = $tr_p.children('td').last().children('a').first();
-                        $readlog.click(function(){
-                            var url=$(this).attr('url');
-                            var nodename=$(this).attr('nodename');
-                            var processname=$(this).attr('processname');
-                            var processgroup=$(this).attr('processgroup');
-                            var classname = nodename+"_"+processgroup+"_"+processname
-                            var $dia = $("."+classname);
-                            var timer;
-                                       
-                            if($dia.length==0){
-                                $logdiv.append('<div class="'+classname+'"></div>');
-                                $dia = $("."+classname);
-                            }
-                            $.ajax({
-                                url: url,
-                                dataType: 'json',
-                                success: function(log){
-                                    $dia.html('<p>'+log['log']+'</p>');
-                                }
-
-                            });
-                            $dia.dialog({
-                                open: function(){
-                                    timer = setInterval(function () {
-                                        $.ajax({
-                                            url: url,
-                                            dataType: 'json',
-                                            success: function(log){
-                                                $dia.html('<p>'+log['log']+'</p>');
-                                            }
-                                        });
-                                    },1000);
-                                },
-                                close: function(){
-                                    clearInterval(timer);
-                                },
-                                title: classname,
-                                maxWidth: 600,
-                                maxHeight: 500,
-                                show: {
-                                    effect: "blind",
-                                    duration: 500
-                                },
-                                hide: {
-                                    effect: "clip",
-                                    duration: 500,
-                                }
-                              });
-                            });
-                        }
-                    }
-                });
-            });
-        }
-    });
-}
-
 $( document ).ready(function() {
-    $(".showall").click($showallprocess);
+    $(".showall").click($selectnode);
     $(".ajax2").click($selectnode);
     $(".act").click($buttonactions);
     $(".adduser").click($adduser);

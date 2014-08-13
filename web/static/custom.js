@@ -220,40 +220,40 @@ var $selectnode = function(){
 
     var $checkbox = $(this).children('input').first();
     var ischecked = $checkbox.is(":checked");
-    $oldcheckednodelist=[];
-    $newcheckednodelist=[];
-    $olduncheckednodelist=[];
-    $newuncheckednodelist=[];
-    $appendlist=[];
-    $removelist=[];
+    var $oldcheckednodelist=[];
+    var $newcheckednodelist=[];
+    var $olduncheckednodelist=[];
+    var $newuncheckednodelist=[];
+    var $appendlist=[];
+    var $removelist=[];
 
+// List of cheked unchecked node list before clik event    
+    $( "li > input:checked" ).each(function() {
+        $oldcheckednodelist.push( $(this).attr('value') );
+    });
+
+    $( "li > input:not(:checked)" ).each(function() {
+        $olduncheckednodelist.push( $(this).attr('value') );
+    });
+
+// List of cheked unchecked node list after clik event    
     if( $(this).attr('class')=="showall" ){
         $newuncheckednodelist=[];
         $.ajax({
             url: "/node/name/list",
             dataType: 'json',
+            async: false,
             success: function(nodenames){
                 $newcheckednodelist = nodenames['node_name_list'];
             }
         });
-        console.log($newcheckednodelist);
     }else{
-// List of cheked unchecked node list before clik event    
-        $( "li > input:checked" ).each(function() {
-            $oldcheckednodelist.push( $(this).attr('value') );
-        });
-
-        $( "li > input:not(:checked)" ).each(function() {
-            $olduncheckednodelist.push( $(this).attr('value') );
-        });
-
         if(ischecked){
             $checkbox.prop("checked", false);
         }else{
             $checkbox.prop("checked", true);
         }
 
-    // List of cheked unchecked node list after clik event    
         $( "li > input:checked" ).each(function() {
             $newcheckednodelist.push( $(this).attr('value') );
         });
@@ -400,6 +400,11 @@ var $selectnode = function(){
                                 effect: "clip",
                                 duration: 500,
                             }
+                        }).parent().resizable({
+                            containment: "#page-wrapper"
+                        }).draggable({
+                            containment: "#page-wrapper",
+                            opacity: 0.70
                         });
                     });
                 }

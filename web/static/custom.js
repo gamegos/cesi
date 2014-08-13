@@ -27,8 +27,7 @@ var $adduser= function(){
             if(data['status'] == 'success'){
                 var $maindiv = $('#maindiv');
                 $maindiv.empty();
-                $maindiv.append(' <div class="login-panel panel panel-default"></div>');
-
+                $maindiv.append(' <div class="login-panel panel panel-default addauser"></div>');
                 var $login_panel = $maindiv.children('div').first();
                 $login_panel.append('<div class="panel-heading"> <h3 class="panel-title">Please Enter User Information </h3>  </div>');
                 $login_panel.append('<div class="add_user panel-body"></div>');
@@ -60,7 +59,7 @@ var $showdeluserpage = function(){
             if(data['status'] == "success"){
                 var $maindiv = $('#maindiv');
                 $maindiv.empty();
-                $maindiv.append('<div class="panel-body"></div>');
+                $maindiv.append('<div class="panel-body deleteuser"></div>');
 
                 var $panel = $maindiv.children('div').first();
                 $panel.append('<div class="table-responsive"></div>');
@@ -97,7 +96,7 @@ var $changepassword = function(){
             if(data['status'] == "success"){
                 var $maindiv = $('#maindiv');
                 $maindiv.empty();
-                $maindiv.append('<div class="login-panel panel panel-default"></div>'); 
+                $maindiv.append('<div class="login-panel panel panel-default changepassword"></div>'); 
 
                 var $panel= $maindiv.children('div').first();
                 $panel.append('<div class="panel-heading"><h3 class="panel-title">Change Password</h3></div>');
@@ -217,6 +216,15 @@ var $selectnode = function(){
     
     var $logdiv = $("#dialog");
     $logdiv.empty();
+
+    var $adduserdiv = $(".addauser");
+    $adduserdiv.empty();
+
+    var $deluserdiv = $(".deleteuser");
+    $deluserdiv.empty();
+
+    var $changepassworddiv = $(".changepassword");
+    $changepassworddiv.empty();
 
     var $checkbox = $(this).children('input').first();
     var ischecked = $checkbox.is(":checked");

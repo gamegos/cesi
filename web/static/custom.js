@@ -25,6 +25,10 @@ var $adduser= function(){
         dataType: 'json',
         success: function(data){
             if(data['status'] == 'success'){
+                $( "li > input:checked" ).each(function() {
+                    $(this).prop( "checked",false );
+                });
+                
                 var $maindiv = $('#maindiv');
                 $maindiv.empty();
                 $maindiv.prepend(' <div class="login-panel panel panel-default addauser"></div>');
@@ -33,7 +37,7 @@ var $adduser= function(){
                 $login_panel.append('<div class="add_user panel-body"></div>');
 
                 var $panel_body =$('.add_user');
-                $panel_body.append('<form role="form" method="post" action="/add/user/handler">');
+                $panel_body.append('<form method="post" action="/add/user/handler">');
 
                 var $form = $panel_body.children('form').first();
                 $form.append('<fieldset></fieldset>');
@@ -42,13 +46,29 @@ var $adduser= function(){
                 $fieldset.append('<div class="form-group"> <input class="form-control" placeholder="Username" name="username"  autofocus> </div>');
                 $fieldset.append('<div class="form-group"> <input class="form-control" placeholder="Password" name="password" type="password" value=""> </div>');
                 $fieldset.append('<div class="form-group"> <select class="form-control" name="usertype"> <option selected>Standart User</option> <option>Admin</option> <option>Only Log</option> <option>Read Only</option> </select> </div>');
-                $fieldset.append('<button class="btn btn-lg btn-success btn-block"> Save </button>');
+                $fieldset.append('<input class="btn btn-lg btn-success btn-block save" value="Save">');
+
+                $(".save").click($adduserhandler);
             }else{
                 alert("Only admin can add user");
             }
         }
     });
 }
+
+var $adduserhandler = function(){
+    var $url = "/add/user/handler";
+    $.ajax({
+        url: $url,
+        dataType: 'json',
+        type: 'post',
+        data: $(this).parent().parent().serialize(),
+        success: function(data){
+            alert(data['message']);
+        }
+    });
+}
+
 
 var $showdeluserpage = function(){
     var $link = "/delete/user";
@@ -57,6 +77,10 @@ var $showdeluserpage = function(){
         dataType: 'json',
         success: function(data){
             if(data['status'] == "success"){
+                $( "li > input:checked" ).each(function() {
+                    $(this).prop( "checked",false );
+                });
+
                 var $maindiv = $('#maindiv');
                 $maindiv.empty();
                 $maindiv.prepend('<div class="panel-body deleteuser"></div>');
@@ -71,10 +95,21 @@ var $showdeluserpage = function(){
                 $table.append('<tr><th>Username</th><th>Usertype</th><th></th></tr>');
 
                 for(var i=1; i<data['names'].length; i++){
-                    $table.append('<tr class="'+data['names'][i]+'"></tr>');
+                    username = data['names'][i];
+                    if(data['types'][i] == 0){
+                        usertype = "Admin";
+                    }else if(data['types'][i] == 1){
+                        usertype = "Standart User";
+                    }else if(data['types'][i] == 2){
+                        usertype = "Only Log";
+                    }else if(data['types'][i] == 3){
+                        usertype = "Read Only";
+                    }
+
+                    $table.append('<tr class="'+username+'"></tr>');
 
                     var $maintr = $table.find('tr').last();
-                    $maintr.append('<td>'+data['names'][i]+'</td> <td>'+data['types'][i]+'</td><td><button name="'+data['names'][i]+'" class="glyphicon glyphicon-trash btn btn-sm btn-success btn-block delete"></button></td>');
+                    $maintr.append('<td>'+username+'</td> <td>'+usertype+'</td><td><button name="'+data['names'][i]+'" class="glyphicon glyphicon-trash btn btn-sm btn-success btn-block delete"></button></td>');
 
                     var $delbtn =$maintr.find('button').last();
                     $delbtn.click($delete_user);
@@ -94,9 +129,13 @@ var $changepassword = function(){
         dataType: 'json',
         success: function(data){
             if(data['status'] == "success"){
+                $( "li > input:checked" ).each(function() {
+                    $(this).prop( "checked",false );
+                });
+
                 var $maindiv = $('#maindiv');
                 $maindiv.empty();
-                $maindiv.prepend('<div class="login-panel panel panel-default changepassword"></div>'); 
+                $maindiv.prepend('<div class="login-panel panel panel-default changepassworddiv"></div>'); 
 
                 var $panel= $maindiv.children('div').first();
                 $panel.append('<div class="panel-heading"><h3 class="panel-title">Change Password</h3></div>');
@@ -223,7 +262,7 @@ var $selectnode = function(){
     var $deluserdiv = $(".deleteuser");
     $deluserdiv.empty();
 
-    var $changepassworddiv = $(".changepassword");
+    var $changepassworddiv = $(".changepassworddiv");
     $changepassworddiv.empty();
 
     var $checkbox = $(this).children('input').first();
@@ -380,41 +419,45 @@ var $selectnode = function(){
                             url: url,
                             dataType: 'json',
                             success: function(log){
-                                $dia.html('<p>'+log['log']+'</p>');
-                            }
-                        });
-                        $dia.dialog({
-                            open: function(){
-                                timer = setInterval(function () {
-                                    $.ajax({
-                                        url: url,
-                                        dataType: 'json',
-                                        success: function(log){
-                                            $dia.html('<p>'+log['log']+'</p>');
+                                if (log['status']=="success"){
+                                    $dia.html('<p>'+log['log']+'</p>');
+                                    $dia.dialog({
+                                        open: function(){
+                                            timer = setInterval(function () {
+                                                $.ajax({
+                                                    url: url,
+                                                    dataType: 'json',
+                                                    success: function(log){
+                                                        $dia.html('<p>'+log['log']+'</p>');
+                                                    }
+                                                });
+                                            },1000);
+                                        },
+                                        close: function(){
+                                            console.log("kapandiii");
+                                            clearInterval(timer);
+                                        },
+                                        title: classname,
+                                        maxWidth: 600,
+                                        maxHeight: 500,
+                                        show: {
+                                            effect: "blind",
+                                            duration: 500
+                                        },
+                                        hide: {
+                                            effect: "clip",
+                                            duration: 500,
                                         }
+                                    }).parent().resizable({
+                                        containment: "#page-wrapper"
+                                    }).draggable({
+                                        containment: "#page-wrapper",
+                                        opacity: 0.70
                                     });
-                                },1000);
-                            },
-                            close: function(){
-                                console.log("kapandiii");
-                                clearInterval(timer);
-                            },
-                            title: classname,
-                            maxWidth: 600,
-                            maxHeight: 500,
-                            show: {
-                                effect: "blind",
-                                duration: 500
-                            },
-                            hide: {
-                                effect: "clip",
-                                duration: 500,
+                                }else{
+                                    alert(log['message']);
+                                }
                             }
-                        }).parent().resizable({
-                            containment: "#page-wrapper"
-                        }).draggable({
-                            containment: "#page-wrapper",
-                            opacity: 0.70
                         });
                     });
                 }

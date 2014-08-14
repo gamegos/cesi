@@ -59,7 +59,7 @@ def login():
 def logout():
     session['logged_in'] = False
     session['usertype']= " "
-    session['username'] = "undefined"
+    session['username'] = " "
     return redirect(url_for('login'))
 
 # Dashboard
@@ -100,7 +100,7 @@ def showNode(node_name):
 @app.route('/node/<node_name>/process/<process_name>/restart')
 def json_restart(node_name, process_name):
     if session.get('logged_in'):
-        if session['usertype'] == 'Admin' or session['usertype'] == 'Standart User':
+        if session['usertype'] == 0 or session['usertype'] == 1:
             try:
                 node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
                 node = Node(node_config)
@@ -119,7 +119,7 @@ def json_restart(node_name, process_name):
 @app.route('/node/<node_name>/process/<process_name>/start')
 def json_start(node_name, process_name):
     if session.get('logged_in'):
-        if session['usertype'] == 'Admin' or session['usertype'] == 'Standart User':
+        if session['usertype'] == 0 or session['usertype'] == 1:
             try:
                 node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
                 node = Node(node_config)
@@ -137,7 +137,7 @@ def json_start(node_name, process_name):
 @app.route('/node/<node_name>/process/<process_name>/stop')
 def json_stop(node_name, process_name):
     if session.get('logged_in'):
-        if session['usertype'] == 'Admin' or session['usertype'] == 'Standart User':
+        if session['usertype'] == 0 or session['usertype'] == 1:
             try:
                 node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
                 node = Node(node_config)
@@ -166,18 +166,22 @@ def getlist():
 # Show log for process
 @app.route('/node/<node_name>/process/<process_name>/readlog')
 def readlog(node_name, process_name):
-    node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
-    node = Node(node_config)
-    log = node.connection.supervisor.tailProcessStdoutLog(process_name, 0, 500)[0]
-    return jsonify(url="node/"+node_name+"/process/"+process_name+"/read" , log=log)
-     
-    
+    if session.get('logged_in'):
+        if session['usertype'] == 0 or session['usertype'] == 1 or session['usertype'] == 2:
+            node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
+            node = Node(node_config)
+            log = node.connection.supervisor.tailProcessStdoutLog(process_name, 0, 500)[0]
+            return jsonify( status = "success", url="node/"+node_name+"/process/"+process_name+"/read" , log=log)
+        else:
+            return jsonify( status = "error", message= "You are not authorized for this action")
+    else:
+        return jsonify( status = "error", message= "First login please")
 
 # Add user method for only admin type user
 @app.route('/add/user')
 def add_user():
     if session.get('logged_in'):
-        if session['usertype'] == 'Admin':
+        if session['usertype'] == 0:
             return jsonify(status = 'success')
         else:
             return jsonify(status = 'error')
@@ -187,7 +191,7 @@ def add_user():
 @app.route('/delete/user')
 def del_user():
     if session.get('logged_in'):
-        if session['usertype'] == 'Admin':
+        if session['usertype'] == 0:
             cur = get_db().cursor()
             cur.execute("select username from userinfo")
             usernames = cur.fetchall();
@@ -204,7 +208,7 @@ def del_user():
 @app.route('/delete/user/<username>')
 def del_user_handler(username):
     if session.get('logged_in'):
-        if session['usertype'] == 'Admin':
+        if session['usertype'] == 0:
             if username != "admin":
                 cur = get_db().cursor()
                 cur.execute("delete from userinfo where username=?",[username])
@@ -223,23 +227,36 @@ def del_user_handler(username):
 @app.route('/add/user/handler', methods = ['GET', 'POST'])
 def adduserhandler():
     if session.get('logged_in'):
-        if session['usertype'] == 'Admin':
+        if session['usertype'] == 0:
             username = request.form['username']
             password = request.form['password']
-            usertype = request.form['usertype']
+
+            if request.form['usertype'] == "Admin":
+                usertype = 0
+            elif request.form['usertype'] == "Standart User":
+                usertype = 1
+            elif request.form['usertype'] == "Only Log":
+                usertype = 2
+            elif request.form['usertype'] == "Read Only":
+                usertype = 3
+
             cur = get_db().cursor()
             cur.execute("select * from userinfo where username=?",(username,))
             if not cur.fetchall():
                 cur.execute("insert into userinfo values(?, ?, ?)", (username, password, usertype,))
                 get_db().commit()
-                return redirect(url_for('showMain'))
+                return jsonify(status = "success",
+                               message ="User added")
             else:
-                return redirect(url_for('add_user'))
+                return jsonify(status = "error",
+                               message ="Username is avaible. Please select different username")
         else:
             return jsonify(status = "error",
                            message = "Only Admin can delete a user")
     else:
-        return redirect(url_for('login'))
+        return jsonify(status = "error",
+                       message = "First login please")
+
 
 
 @app.route('/change/password/<username>')

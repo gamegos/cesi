@@ -1,23 +1,3 @@
-var $delete_user = function(){
-    var $username = $(this).attr('name')
-    var $url = "/delete/user/"+$username
-    if($url=="/delete/user/admin"){
-        alert("Admin can't delete");
-    }else if( confirm("Are you sure delete this user?") ){
-        $.ajax({
-            url: $url,
-            dataType: 'json',
-            success: function(data){
-                if(data['status'] == 'success'){
-                    $("."+$username).remove();
-                }else{
-                    alert(data['message'])
-                }
-            }
-        });
-    }
-}
-
 var $adduser= function(){
     var $link = "/add/user";
     $.ajax({
@@ -31,13 +11,17 @@ var $adduser= function(){
                 
                 var $maindiv = $('#maindiv');
                 $maindiv.empty();
-                $maindiv.prepend(' <div class="login-panel panel panel-default addauser"></div>');
-                var $login_panel = $maindiv.children('div').first();
+                $maindiv.append('<div class="col-lg-4"></div>');
+                $maindiv.append('<div class="col-lg-4 use"></div>');
+                $maindiv.append('<div class="col-lg-4"></div>');
+                $middlegrid = $(".use");
+                $middlegrid.prepend(' <div class="login-panel panel panel-default addauser"></div>');
+                var $login_panel = $middlegrid.children('div').first();
                 $login_panel.append('<div class="panel-heading"> <h3 class="panel-title">Please Enter User Information </h3>  </div>');
                 $login_panel.append('<div class="add_user panel-body"></div>');
 
                 var $panel_body =$('.add_user');
-                $panel_body.append('<form method="post" action="/add/user/handler">');
+                $panel_body.append('<form class="adduserform" method="post" action="/add/user/handler">');
 
                 var $form = $panel_body.children('form').first();
                 $form.append('<fieldset></fieldset>');
@@ -45,8 +29,9 @@ var $adduser= function(){
                 var $fieldset= $form.children('fieldset').first();
                 $fieldset.append('<div class="form-group"> <input class="form-control" placeholder="Username" name="username"  autofocus> </div>');
                 $fieldset.append('<div class="form-group"> <input class="form-control" placeholder="Password" name="password" type="password" value=""> </div>');
+                $fieldset.append('<div class="form-group"> <input class="form-control" placeholder="Confirm Password" name="confirmpassword" type="password" value=""> </div>');
                 $fieldset.append('<div class="form-group"> <select class="form-control" name="usertype"> <option selected>Standart User</option> <option>Admin</option> <option>Only Log</option> <option>Read Only</option> </select> </div>');
-                $fieldset.append('<input class="btn btn-lg btn-success btn-block save" value="Save">');
+                $fieldset.append('<a class="btn btn-lg btn-success btn-block save" >Save</a>');
 
                 $(".save").click($adduserhandler);
             }else{
@@ -67,8 +52,11 @@ var $adduserhandler = function(){
             alert(data['message']);
         }
     });
+    
+    $(".adduserform").find('input').each(function(){
+        $(this).val("");
+    });
 }
-
 
 var $showdeluserpage = function(){
     var $link = "/delete/user";
@@ -83,12 +71,17 @@ var $showdeluserpage = function(){
 
                 var $maindiv = $('#maindiv');
                 $maindiv.empty();
-                $maindiv.prepend('<div class="panel-body deleteuser"></div>');
-
+                $maindiv.prepend('<div class="login-panel panel panel-default deleteuser"></div>');
+                
                 var $panel = $maindiv.children('div').first();
-                $panel.append('<div class="table-responsive"></div>');
+                $panel.append('<div class="panel-heading"> <h3 class="panel-title">Delete User </h3>  </div>');
+                $panel.append('<div class="panel-body"></div>');
 
-                var $tablediv = $panel.children('div').first();
+                $addtable = $panel.children('div').last();
+
+                $addtable.append('<div class="table-responsive"></div>');
+
+                var $tablediv = $addtable.children('div').first();
                 $tablediv.append('<table class="table table-striped table-bordered table-hover" id="dataTables-example">');
 
                 var $table = $tablediv.children('table').first();
@@ -121,6 +114,26 @@ var $showdeluserpage = function(){
     });
 }
 
+var $delete_user = function(){
+    var $username = $(this).attr('name')
+    var $url = "/delete/user/"+$username
+    if($url=="/delete/user/admin"){
+        alert("Admin can't delete");
+    }else if( confirm("Are you sure delete this user?") ){
+        $.ajax({
+            url: $url,
+            dataType: 'json',
+            success: function(data){
+                if(data['status'] == 'success'){
+                    $("."+$username).remove();
+                }else{
+                    alert(data['message'])
+                }
+            }
+        });
+    }
+}
+
 var $changepassword = function(){
     $username = $(this).attr('name');
     $link = "/change/password/"+$username;
@@ -135,19 +148,25 @@ var $changepassword = function(){
 
                 var $maindiv = $('#maindiv');
                 $maindiv.empty();
-                $maindiv.prepend('<div class="login-panel panel panel-default changepassworddiv"></div>'); 
 
-                var $panel= $maindiv.children('div').first();
+                $maindiv.append('<div class="col-md-4"></div>');
+                $maindiv.append('<div class="col-md-4 use"></div>');
+                $maindiv.append('<div class="col-md-4"></div>');
+                $middlegrid = $(".use");
+
+                $middlegrid.prepend('<div class="login-panel panel panel-default changepassworddiv"></div>'); 
+
+                var $panel= $middlegrid.children('div').first();
                 $panel.append('<div class="panel-heading"><h3 class="panel-title">Change Password</h3></div>');
-                $panel.append('<div class="panel-body"><form method="post" action="/change/password/'+$username+'/handler"><fieldset></fieldset></form></div>');
+                $panel.append('<div class="panel-body"><form class="changepasswordform" method="post" action="/change/password/'+$username+'/handler"><fieldset></fieldset></form></div>');
 
-                var $fieldset =$maindiv.find('fieldset');
+                var $fieldset =$middlegrid.find('fieldset');
                 $fieldset.append('<div class="form-group"><input class="form-control" placeholder="Old password" name="old" type="password" autofocus></div>');
                 $fieldset.append('<div class="form-group"><input class="form-control" placeholder="New Password" name="new" type="password"></div>');
                 $fieldset.append('<div class="form-group"><input class="form-control" placeholder="Confirm Password" name="confirm" type="password"></div>');
-                $fieldset.append('<input name="'+$username+'" class="btn btn-lg btn-success btn-block" value="Save">');
+                $fieldset.append('<a name="'+$username+'" class="btn btn-lg btn-success btn-block"> Save </a>');
 
-                var $btn = $panel.find('input').last();
+                var $btn = $panel.find('a').last();
                 $btn.click($passwordhandler);
             }else{
                 alert ("Unsuccesfull");
@@ -172,6 +191,10 @@ var $passwordhandler = function(){
             }
         }
    });
+
+    $(".changepasswordform").find('input').each(function(){
+        $(this).val("");
+    });
 }
 
 

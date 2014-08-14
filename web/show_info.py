@@ -66,6 +66,16 @@ def logout():
 @app.route('/')
 def showMain():
     if session.get('logged_in'):
+
+        if session['usertype']==0:
+            usertype = "Admin"
+        elif session['usertype']==1:
+            usertype = "Standart User"
+        elif session['usertype']==2:
+            usertype = "Only Log"
+        elif session['usertype']==3:
+            usertype = "Read Only"
+            
         all_process_count = 0
         running_process_count = 0
         stopped_process_count = 0
@@ -84,7 +94,7 @@ def showMain():
                 if process.state==0:
                     stopped_process_count = stopped_process_count + 1
 
-        return render_template('index.html', all_process_count =all_process_count, running_process_count =running_process_count, stopped_process_count =stopped_process_count, node_count =node_count, node_name_list = node_name_list, username = session['username'], usertype = session['usertype'])
+        return render_template('index.html', all_process_count =all_process_count, running_process_count =running_process_count, stopped_process_count =stopped_process_count, node_count =node_count, node_name_list = node_name_list, username = session['username'], usertype = usertype)
     else:
         return redirect(url_for('login'))
 
@@ -230,6 +240,7 @@ def adduserhandler():
         if session['usertype'] == 0:
             username = request.form['username']
             password = request.form['password']
+            confirmpassword = request.form['confirmpassword']
 
             if request.form['usertype'] == "Admin":
                 usertype = 0
@@ -243,10 +254,14 @@ def adduserhandler():
             cur = get_db().cursor()
             cur.execute("select * from userinfo where username=?",(username,))
             if not cur.fetchall():
-                cur.execute("insert into userinfo values(?, ?, ?)", (username, password, usertype,))
-                get_db().commit()
-                return jsonify(status = "success",
-                               message ="User added")
+                if password == confirmpassword:
+                    cur.execute("insert into userinfo values(?, ?, ?)", (username, password, usertype,))
+                    get_db().commit()
+                    return jsonify(status = "success",
+                                   message ="User added")
+                else:
+                    return jsonify(status = "error",
+                                   message ="Passwords didn't match")
             else:
                 return jsonify(status = "error",
                                message ="Username is avaible. Please select different username")

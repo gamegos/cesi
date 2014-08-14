@@ -34,8 +34,7 @@ def control():
         cur.execute("select * from userinfo where username=?",(username,))
 #if query returns an empty list
         if not cur.fetchall():
-            session['logged_in'] = False
-            session['usertype'] = " "
+            session.clear()
             return "Username is not available"
         else:
             cur.execute("select * from userinfo where username=?",(username,))
@@ -46,7 +45,7 @@ def control():
                 session['usertype'] = cur.fetchall()[0][2]
                 return redirect(url_for('showMain'))
             else:
-                session['logged_in'] = False
+                session.clear()
                 return "Invalid password"
 
 # Render login page
@@ -57,9 +56,7 @@ def login():
 # Logout action
 @app.route('/logout', methods = ['GET', 'POST'])
 def logout():
-    session['logged_in'] = False
-    session['usertype']= " "
-    session['username'] = " "
+    session.clear()
     return redirect(url_for('login'))
 
 # Dashboard

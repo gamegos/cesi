@@ -35,7 +35,10 @@ var $adduser= function(){
 
                 $(".save").click($adduserhandler);
             }else{
-                alert("Only admin can add user");
+                noty({
+                    text: 'Only can admin add a user.',
+                    type: 'error'
+                });
             }
         }
     });
@@ -49,7 +52,18 @@ var $adduserhandler = function(){
         type: 'post',
         data: $(this).parent().parent().serialize(),
         success: function(data){
-            alert(data['message']);
+            if(data['status']=="success"){
+                noty({
+                    text: data['message'],
+                    type: 'success'
+                });
+            }else{
+                noty({
+                    text: data['message'],
+                    type: 'error'
+                });
+
+            }
         }
     });
     
@@ -108,7 +122,10 @@ var $showdeluserpage = function(){
                     $delbtn.click($delete_user);
                 }
             }else{
-                alert("Only admin can delete user");
+                noty({
+                    text: 'Only admin can delete user',
+                    type: 'error'
+                });
             }
         } 
     });
@@ -118,7 +135,11 @@ var $delete_user = function(){
     var $username = $(this).attr('name')
     var $url = "/delete/user/"+$username
     if($url=="/delete/user/admin"){
-        alert("Admin can't delete");
+        noty({
+            text: 'Admin can not be delete',
+            type: 'error'
+        });
+
     }else if( confirm("Are you sure delete this user?") ){
         $.ajax({
             url: $url,
@@ -127,7 +148,10 @@ var $delete_user = function(){
                 if(data['status'] == 'success'){
                     $("."+$username).remove();
                 }else{
-                    alert(data['message'])
+                    noty({
+                        text: data['message'],
+                        type: 'error'
+                    });
                 }
             }
         });
@@ -169,7 +193,11 @@ var $changepassword = function(){
                 var $btn = $panel.find('a').last();
                 $btn.click($passwordhandler);
             }else{
-                alert ("Unsuccesfull");
+                noty({
+                    text: 'Unsuccesfull',
+                    type: 'error'
+                });
+
             }
         }
     }); 
@@ -185,9 +213,16 @@ var $passwordhandler = function(){
         data: $(this).parent().parent().serialize(),
         success: function(data){
             if(data['status']=="success"){
-                alert("Password changed");
+                noty({
+                    text: 'Password changed',
+                    type: 'success'
+                });
+
             }else{
-                alert(data['message']);
+                noty({
+                    text: data['message'],
+                    type: 'error'
+                });
             }
         }
    });
@@ -259,11 +294,16 @@ var $buttonactions = function(){
                         $stop.attr('value',"Stop");
                     }
                 }else if(data['status'] == "error2"){
-                    alert(data['message']);
+                    noty({
+                        text: data['message'],
+                        type: 'error'
+                    });
+
                 }else{
-                    alert("Error:"+data[message]+
-                          "Code:"+data['code']+
-                          "Payload:"+data[code]);
+                    noty({
+                        text: "Error:"+data[message]+"  Code:"+data['code']+"  Payload:"+data[code],
+                        type: 'error'
+                     });
                 }
         }
     });
@@ -478,7 +518,11 @@ var $selectnode = function(){
                                         opacity: 0.70
                                     });
                                 }else{
-                                    alert(log['message']);
+                                    noty({
+                                        text: log['message'],
+                                        type: 'warning'
+                                    });
+
                                 }
                             }
                         });

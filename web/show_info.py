@@ -77,11 +77,9 @@ def showMain():
         running_process_count = 0
         stopped_process_count = 0
         node_count = 0
-        node_name_list = []
-        for nodename in Config(CONFIG_FILE).getAllNodeNames():
+        node_name_list =Config(CONFIG_FILE).getAllNodeNames()
+        for nodename in node_name_list:
             node_count = node_count + 1
-            nodename = nodename[5:]
-            node_name_list.append(nodename)
             nodeconfig = Config(CONFIG_FILE).getNodeConfig(nodename)
             node = Node(nodeconfig)
             for process in node.process_list:
@@ -162,10 +160,7 @@ def json_stop(node_name, process_name):
 @app.route('/node/name/list')
 def getlist():
     if session.get('logged_in'):
-        node_name_list = []
-        node_names = Config(CONFIG_FILE).getAllNodeNames()
-        for node_name in node_names:
-            node_name_list.append(node_name[5:])
+        node_name_list = Config(CONFIG_FILE).getAllNodeNames()
         return jsonify( node_name_list = node_name_list )
     else:
         return redirect(url_for('login'))

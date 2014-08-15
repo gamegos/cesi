@@ -22,8 +22,18 @@ class Config:
         return self.node_config
 
     def getAllNodeNames(self):
-        self.node_list = self.cfg.sections()
+        self.node_list = []
+        for name in self.cfg.sections():
+            if name[:4] == 'node':
+                self.node_list.append(name[5:])
         return self.node_list
+
+    def getAllEnvironmentNames(self):
+        self.environment_list = []
+        for name in self.cfg.sections():
+            if name[:11] == 'environment':
+                self.node_list.append(name[12:])
+        return self.environment_list
 
 class NodeConfig:
 

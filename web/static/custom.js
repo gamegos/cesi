@@ -5,7 +5,7 @@ var $adduser= function(){
         dataType: 'json',
         success: function(data){
             if(data['status'] == 'success'){
-                $( "li > input:checked" ).each(function() {
+                $( "a > input:checked" ).each(function() {
                     $(this).prop( "checked",false );
                 });
                 
@@ -79,7 +79,7 @@ var $showdeluserpage = function(){
         dataType: 'json',
         success: function(data){
             if(data['status'] == "success"){
-                $( "li > input:checked" ).each(function() {
+                $( "a > input:checked" ).each(function() {
                     $(this).prop( "checked",false );
                 });
 
@@ -166,7 +166,7 @@ var $changepassword = function(){
         dataType: 'json',
         success: function(data){
             if(data['status'] == "success"){
-                $( "li > input:checked" ).each(function() {
+                $( "a > input:checked" ).each(function() {
                     $(this).prop( "checked",false );
                 });
 
@@ -328,7 +328,7 @@ var $selectnode = function(){
     var $changepassworddiv = $(".changepassworddiv");
     $changepassworddiv.empty();
 
-    var $checkbox = $(this).children('label').first().children('input').first();
+    var $checkbox = $(this).children('a').first().children('input').first();
     var ischecked = $checkbox.is(":checked");
     var $oldcheckednodelist=[];
     var $newcheckednodelist=[];
@@ -338,16 +338,16 @@ var $selectnode = function(){
     var $removelist=[];
 
 // List of cheked unchecked node list before clik event    
-    $( "li > label > input:checked" ).each(function() {
+    $( "li > a > input:checked" ).each(function() {
         $oldcheckednodelist.push( $(this).attr('value') );
     });
 
-    $( "li > label > input:not(:checked)" ).each(function() {
+    $( "li > a > input:not(:checked)" ).each(function() {
         $olduncheckednodelist.push( $(this).attr('value') );
     });
 
     if( $(this).attr('class')=="showall" ){
-        $( "li > label > input:not(:checked)" ).each(function() {
+        $( "li > a > input:not(:checked)" ).each(function() {
             $(this).prop("checked", true);
         });
         $newuncheckednodelist=[];
@@ -366,11 +366,11 @@ var $selectnode = function(){
             $checkbox.prop("checked", true);
         }
 
-        $( "li > label > input:checked" ).each(function() {
+        $( "li > a > input:checked" ).each(function() {
             $newcheckednodelist.push( $(this).attr('value') );
         });
 
-        $( "li > label > input:not(:checked)" ).each(function() {
+        $( "li > a > input:not(:checked)" ).each(function() {
             $newuncheckednodelist.push( $(this).attr('value') );
         });
     }

@@ -339,11 +339,17 @@ var $selectnode = function(){
 
 // List of cheked unchecked node list before clik event    
     $( "li > a > input:checked" ).each(function() {
-        $oldcheckednodelist.push( $(this).attr('value') );
+        var name = $(this).attr('value')
+        if( $oldcheckednodelist.indexOf(name) == -1 ){
+            $oldcheckednodelist.push(name);
+        }
     });
 
     $( "li > a > input:not(:checked)" ).each(function() {
-        $olduncheckednodelist.push( $(this).attr('value') );
+        var name = $(this).attr('value')
+        if( $olduncheckednodelist.indexOf(name) == -1 ){
+            $olduncheckednodelist.push(name);
+        }
     });
 
     if( $(this).attr('class')=="showall" ){
@@ -361,17 +367,27 @@ var $selectnode = function(){
         });
     }else{
         if(ischecked){
-            $checkbox.prop("checked", false);
+            $(" a input[value='"+$checkbox.attr('value')+"']").each(function(){
+                $(this).prop("checked", false);
+            });
         }else{
-            $checkbox.prop("checked", true);
+            $(" a input[value='"+$checkbox.attr('value')+"']").each(function(){
+                $(this).prop("checked", true);
+            });
         }
 
         $( "li > a > input:checked" ).each(function() {
-            $newcheckednodelist.push( $(this).attr('value') );
+            var name = $(this).attr('value')
+            if( $newcheckednodelist.indexOf(name) == -1 ){
+                $newcheckednodelist.push(name);
+            }
         });
 
         $( "li > a > input:not(:checked)" ).each(function() {
-            $newuncheckednodelist.push( $(this).attr('value') );
+            var name = $(this).attr('value')
+            if( $newuncheckednodelist.indexOf(name) == -1 ){
+                $newuncheckednodelist.push(name);
+             }
         });
     }
 

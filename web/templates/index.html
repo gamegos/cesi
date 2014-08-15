@@ -123,15 +123,34 @@
                             <a href="#" class="showall"><i class="glyphicon glyphicon-th-list"></i> Show All</a>
                         </li>
                         <li>
-                            <a href="#"><i class="glyphicon glyphicon-th-list"></i> Environments<span class="fa arrow"></span></a>
+                            <a href="#"><i class="glyphicon glyphicon-th-list"></i> Nodes<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
-                            {% for environment_name in environment_list %}
+                            {% for node_name in node_name_list %}
                                 <li class="ajax2" value="{{node_name}}">
-                                   <label> <input type="checkbox" class="ajax" value="{{ node_name  }}" disabled="true"> {{ environment_name  }} </label>
+                                   <label> <input type="checkbox" class="ajax" value="{{ node_name  }}" disabled="true"> {{ node_name  }} </label>
                                 </li>
                             {% endfor %}
                             </ul>
                             <!-- /.nav-second-level -->
+                        </li>
+                        <li>
+                            <a href="#"><i class="glyphicon glyphicon-th-list"></i> Environments<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                            {% for environment_name in environment_list %}
+                                <li class="ajax3" value="{{environment_name}}">
+                                   <a href="#"><i class="glyphicon glyphicon-import"></i> {{ environment_name }}<span class="fa arrow"></span></a>
+                                   <ul class="nav nav-third-level">
+                                    {% for member in environment_name %}
+                                        <li class="ajax4" value="member {{member}}">
+                                            <a href="#"><i class="glyphicon glyphicon-asterisk"></i> {{ member }}<span class="fa arrow"></span></a>
+                                        </li>
+                                    {% endfor %}
+                                   </ul>
+                                </li>
+                            {% endfor %}
+                            </ul>
+                            <!-- /.nav-second-level -->
+
                         </li>
                     </ul>
                     <!-- /#side-menu -->

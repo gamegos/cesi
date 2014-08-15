@@ -63,7 +63,6 @@ def logout():
 @app.route('/')
 def showMain():
     if session.get('logged_in'):
-
         if session['usertype']==0:
             usertype = "Admin"
         elif session['usertype']==1:
@@ -77,8 +76,8 @@ def showMain():
         running_process_count = 0
         stopped_process_count = 0
         node_count = 0
-        node_name_list = Config(CONFIG_FILE).getAllNodeNames()
-        environment_list = Config(CONFIG_FILE).getAllEnvironmentNames()
+        node_name_list = Config(CONFIG_FILE).node_list
+        environment_list = Config(CONFIG_FILE).environment_list
         for nodename in node_name_list:
             node_count = node_count + 1
             nodeconfig = Config(CONFIG_FILE).getNodeConfig(nodename)
@@ -161,7 +160,7 @@ def json_stop(node_name, process_name):
 @app.route('/node/name/list')
 def getlist():
     if session.get('logged_in'):
-        node_name_list = Config(CONFIG_FILE).getAllNodeNames()
+        node_name_list = Config(CONFIG_FILE).node_list
         return jsonify( node_name_list = node_name_list )
     else:
         return redirect(url_for('login'))

@@ -11,6 +11,16 @@ class Config:
         self.CFILE = CONFIG_FILE
         self.cfg = ConfigParser.ConfigParser()
         self.cfg.read(self.CFILE)
+
+        self.node_list = []
+        for name in self.cfg.sections():
+            if name[:4] == 'node':
+                self.node_list.append(name[5:])
+
+        self.environment_list = []
+        for name in self.cfg.sections():
+            if name[:11] == 'environment':
+                self.environment_list.append(name[12:])
         
     def getNodeConfig(self, node_name):
         self.node_name = "node:%s" % (node_name)
@@ -21,19 +31,12 @@ class Config:
         self.node_config = NodeConfig(self.node_name, self.host, self.port, self.username, self.password)
         return self.node_config
 
-    def getAllNodeNames(self):
-        self.node_list = []
-        for name in self.cfg.sections():
-            if name[:4] == 'node':
-                self.node_list.append(name[5:])
-        return self.node_list
+    def getMemberNames(self, environment_name):
+        self.environment_name = "environment:%s" % (environment_name)
+        self.member_list = self.cfg.get(self.environment_name, 'members')
+        self.member_list = self.member_list.split(', ')
+        return self.member_list
 
-    def getAllEnvironmentNames(self):
-        self.environment_list = []
-        for name in self.cfg.sections():
-            if name[:11] == 'environment':
-                self.environment_list.append(name[12:])
-        return self.environment_list
 
 class NodeConfig:
 

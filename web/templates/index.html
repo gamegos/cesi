@@ -134,15 +134,15 @@
                             <!-- /.nav-second-level -->
                         </li>
                         <li>
-                            <a href="#"><i class="glyphicon glyphicon-th-large"></i> Environments<span class="fa arrow"></span></a>
+                            <a><i class="glyphicon glyphicon-th-large"></i> Environments<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                             {% for memberlist in environment_list %}
-                                <li class="ajax3" value="{{environment_name}}">
-                                   <a href="#"><i class="glyphicon glyphicon-import"></i>{{environment_name_list[loop.index-1]}}<span class="fa arrow"></span></a>
+                                <li>
+                                   <a><i class="glyphicon glyphicon-tag"></i> {{ environment_name_list[ loop.index-1 ] }}<span class="fa arrow"></span></a>
                                    <ul class="nav nav-third-level">
                                     {% for member in memberlist %}
-                                        <li class="ajax4" value="member {{member}}">
-                                            <a href="#"><i class="glyphicon glyphicon-asterisk"></i> {{ member }}<span class="fa arrow"></span></a>
+                                        <li class="ajax2" value="member {{member}}">
+                                            <a><input type="checkbox" class="ajax" value="{{ member }}" disabled="true"> {{ member }}</a>
                                         </li>
                                     {% endfor %}
                                    </ul>

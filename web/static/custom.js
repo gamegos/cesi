@@ -377,7 +377,9 @@ var $selectnode = function(){
 
     $newcheckednodelist.forEach(function(item){
         if( $olduncheckednodelist.indexOf(item) != -1 ){
-            $appendlist.push(item);
+            if( $appendlist.indexOf(item) == -1 ){
+                $appendlist.push(item);
+            }
         }
     });
 

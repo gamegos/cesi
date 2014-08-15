@@ -4,11 +4,12 @@ from datetime import datetime, timedelta
 from flask import jsonify
 
 CONFIG_FILE = "/etc/supervisor-centralized.conf"
+CONFIG_FILE2 = "/etc/supervisor/supervisord.conf"
 
 class Config:
     
     def __init__(self, CFILE):
-        self.CFILE = CONFIG_FILE
+        self.CFILE = CFILE
         self.cfg = ConfigParser.ConfigParser()
         self.cfg.read(self.CFILE)
 
@@ -21,6 +22,12 @@ class Config:
         for name in self.cfg.sections():
             if name[:11] == 'environment':
                 self.environment_list.append(name[12:])
+
+        self.group_list = []
+        for name in self.cfg.sections():
+            if name[:5] == 'group':
+                self.group_list.append(name[6:])
+
         
     def getNodeConfig(self, node_name):
         self.node_name = "node:%s" % (node_name)

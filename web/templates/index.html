@@ -152,6 +152,16 @@
                             <!-- /.nav-second-level -->
 
                         </li>
+                        <li>
+                            <a href="#" class="groups"><i class="glyphicon glyphicon-th"></i> Groups <span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                            {% for group_name in group_list  %}
+                                <li>
+                                    <a><i class="glyphicon glyphicon-paperclip"></i> {{ group_name }} <span class="fa arrow"> </a>
+                                </li>
+                            {% endfor %}
+                            </ul>
+                        </li>
                     </ul>
                     <!-- /#side-menu -->
                 </div>

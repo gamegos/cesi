@@ -77,9 +77,11 @@ def showMain():
         stopped_process_count = 0
         node_count = 0
         node_name_list = Config(CONFIG_FILE).node_list
-        environment_list = Config(CONFIG_FILE).environment_list
+        node_count = len(node_name_list)
+        environment_name_list = Config(CONFIG_FILE).environment_list
+        member_names = []
+        environment_list = []
         for nodename in node_name_list:
-            node_count = node_count + 1
             nodeconfig = Config(CONFIG_FILE).getNodeConfig(nodename)
             node = Node(nodeconfig)
             for process in node.process_list:
@@ -89,7 +91,11 @@ def showMain():
                 if process.state==0:
                     stopped_process_count = stopped_process_count + 1
 
-        return render_template('index.html', all_process_count =all_process_count, running_process_count =running_process_count, stopped_process_count =stopped_process_count, node_count =node_count, node_name_list = node_name_list, environment_list = environment_list, username = session['username'], usertype = usertype)
+        for env_name in environment_name_list:
+            env_name = Config(CONFIG_FILE).getMemberNames(env_name)
+            environment_list.append(env_name)
+
+        return render_template('index.html', all_process_count =all_process_count, running_process_count =running_process_count, stopped_process_count =stopped_process_count, node_count =node_count, node_name_list = node_name_list, environment_list = environment_list, environment_name_list = environment_name_list, username = session['username'], usertype = usertype)
     else:
         return redirect(url_for('login'))
 

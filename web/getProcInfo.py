@@ -32,7 +32,7 @@ class Config:
         self.environment_list = []
         for name in self.cfg.sections():
             if name[:11] == 'environment':
-                self.node_list.append(name[12:])
+                self.environment_list.append(name[12:])
         return self.environment_list
 
 class NodeConfig:

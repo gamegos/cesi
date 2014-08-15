@@ -77,7 +77,8 @@ def showMain():
         running_process_count = 0
         stopped_process_count = 0
         node_count = 0
-        node_name_list =Config(CONFIG_FILE).getAllNodeNames()
+        node_name_list = Config(CONFIG_FILE).getAllNodeNames()
+        environment_list = Config(CONFIG_FILE).getAllEnvironmentNames()
         for nodename in node_name_list:
             node_count = node_count + 1
             nodeconfig = Config(CONFIG_FILE).getNodeConfig(nodename)
@@ -89,7 +90,7 @@ def showMain():
                 if process.state==0:
                     stopped_process_count = stopped_process_count + 1
 
-        return render_template('index.html', all_process_count =all_process_count, running_process_count =running_process_count, stopped_process_count =stopped_process_count, node_count =node_count, node_name_list = node_name_list, username = session['username'], usertype = usertype)
+        return render_template('index.html', all_process_count =all_process_count, running_process_count =running_process_count, stopped_process_count =stopped_process_count, node_count =node_count, node_name_list = node_name_list, environment_list = environment_list, username = session['username'], usertype = usertype)
     else:
         return redirect(url_for('login'))
 

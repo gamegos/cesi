@@ -123,11 +123,11 @@
                             <a href="#" class="showall"><i class="glyphicon glyphicon-th-list"></i> Show All</a>
                         </li>
                         <li>
-                            <a href="#"><i class="glyphicon glyphicon-th-list"></i> Nodes<span class="fa arrow"></span></a>
+                            <a href="#"><i class="glyphicon glyphicon-th-list"></i> Environments<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
-                            {% for node_name in node_name_list %}
+                            {% for environment_name in environment_list %}
                                 <li class="ajax2" value="{{node_name}}">
-                                   <label> <input type="checkbox" class="ajax" value="{{ node_name  }}" disabled="true"> {{ node_name  }} </label>
+                                   <label> <input type="checkbox" class="ajax" value="{{ node_name  }}" disabled="true"> {{ environment_name  }} </label>
                                 </li>
                             {% endfor %}
                             </ul>

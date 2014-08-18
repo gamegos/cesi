@@ -78,6 +78,7 @@ def showMain():
         stopped_process_count = 0
         member_names = []
         environment_list = []
+        group_list = []
 
         node_name_list = Config(CONFIG_FILE).node_list
         node_count = len(node_name_list)
@@ -86,6 +87,12 @@ def showMain():
         for nodename in node_name_list:
             nodeconfig = Config(CONFIG_FILE).getNodeConfig(nodename)
             node = Node(nodeconfig)
+
+            for i in node.process_dict2.keys():
+                if i.split(':')[0] != i.split(':')[1]:
+                    if not i.split(':')[0] in group_list:
+                        group_list.append(i.split(':')[0])
+
             for process in node.process_list:
                 all_process_count = all_process_count + 1
                 if process.state==20:
@@ -106,6 +113,7 @@ def showMain():
                                 node_name_list = node_name_list,
                                 environment_list = environment_list,
                                 environment_name_list = environment_name_list,
+                                group_list = group_list,
                                 username = session['username'],
                                 usertype = usertype)
     else:

@@ -169,18 +169,11 @@
                             <ul class="nav nav-second-level">
                             {% for index in range(group_list|length) %}
                                 <li>
-                                    <a><i class="glyphicon glyphicon-paperclip"></i>{{ group_list[index] }} <span class="fa arrow"> </a>
+                                    <a><i class="glyphicon glyphicon-paperclip"></i> {{ group_list[index] }} <span class="fa arrow"> </a>
                                         <ul class="nav nav-third-level">
                                         {% for env_name in g_environment_list[index] %}
                                             <li>
-                                                <a> {{ env_name }} <span class="fa arrow"> </a>
-                                                <ul class="nav nav-third-level">
-                                                    {% for node_name in g_node_list[index]  %}
-                                                    <li>
-                                                        <a><input type="checkbox"  disabled="true"> {{ node_name }}</a>
-                                                    </li>
-                                                    {% endfor %}
-                                                </ul>
+                                                <a><input type="checkbox"> {{ env_name }} </a>
                                             </li>
                                         {% endfor %}
                                         </ul>

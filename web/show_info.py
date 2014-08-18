@@ -140,7 +140,6 @@ def showMain():
                                 environment_list = environment_list,
                                 environment_name_list = environment_name_list,
                                 group_list = group_list,
-                                g_node_list = g_node_list,
                                 g_environment_list = g_environment_list,
                                 username = session['username'],
                                 usertype = usertype)

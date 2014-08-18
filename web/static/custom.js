@@ -309,7 +309,39 @@ var $buttonactions = function(){
     });
 };
 
+var $selectgroupenv = function(){
+    var $maindiv = $("#maindiv");
+    var $dashboardiv = $(".dash");
+    $dashboardiv.empty();
 
+    var $logdiv = $("#dialog");
+    $logdiv.empty();
+
+    var $adduserdiv = $(".addauser");
+    $adduserdiv.empty();
+
+    var $deluserdiv = $(".deleteuser");
+    $deluserdiv.empty();
+
+    var $changepassworddiv = $(".changepassworddiv");
+    $changepassworddiv.empty();
+
+    var $groupenv = $(".groupdiv");
+    $groupenv.empty();
+
+    var $checkbox = $(this).children('a').first().children('input').first();
+    var ischecked = $checkbox.is(":checked");
+    if(ischecked){
+        $(" a input[value='"+$checkbox.attr('value')+"']").each(function(){
+            $(this).prop("checked", false);
+        });
+    }else{
+        $(" a input[value='"+$checkbox.attr('value')+"']").each(function(){
+             $(this).prop("checked", true);
+        });
+    }
+    
+}
 
 var $selectnode = function(){
     var $maindiv = $("#maindiv");
@@ -328,6 +360,9 @@ var $selectnode = function(){
     var $changepassworddiv = $(".changepassworddiv");
     $changepassworddiv.empty();
 
+    var $groupenv = $(".groupdiv");
+    $groupenv.empty();
+
     var $checkbox = $(this).children('a').first().children('input').first();
     var ischecked = $checkbox.is(":checked");
     var $oldcheckednodelist=[];
@@ -338,14 +373,14 @@ var $selectnode = function(){
     var $removelist=[];
 
 // List of cheked unchecked node list before clik event    
-    $( "li > a > input:checked" ).each(function() {
+    $( ".ajax2 > a > input:checked" ).each(function() {
         var name = $(this).attr('value')
         if( $oldcheckednodelist.indexOf(name) == -1 ){
             $oldcheckednodelist.push(name);
         }
     });
 
-    $( "li > a > input:not(:checked)" ).each(function() {
+    $( ".ajax2 > a > input:not(:checked)" ).each(function() {
         var name = $(this).attr('value')
         if( $olduncheckednodelist.indexOf(name) == -1 ){
             $olduncheckednodelist.push(name);
@@ -353,7 +388,7 @@ var $selectnode = function(){
     });
 
     if( $(this).attr('class')=="showall" ){
-        $( "li > a > input:not(:checked)" ).each(function() {
+        $( ".ajax2 > a > input:not(:checked)" ).each(function() {
             $(this).prop("checked", true);
         });
         $newuncheckednodelist=[];
@@ -376,14 +411,14 @@ var $selectnode = function(){
             });
         }
 
-        $( "li > a > input:checked" ).each(function() {
+        $( ".ajax2 > a > input:checked" ).each(function() {
             var name = $(this).attr('value')
             if( $newcheckednodelist.indexOf(name) == -1 ){
                 $newcheckednodelist.push(name);
             }
         });
 
-        $( "li > a > input:not(:checked)" ).each(function() {
+        $( ".ajax2 > a > input:not(:checked)" ).each(function() {
             var name = $(this).attr('value')
             if( $newuncheckednodelist.indexOf(name) == -1 ){
                 $newuncheckednodelist.push(name);
@@ -558,4 +593,5 @@ $( document ).ready(function() {
     $(".adduser").click($adduser);
     $(".deluser").click($showdeluserpage);
     $(".changepassword").click($changepassword);
+    $(".ajax3").click($selectgroupenv);
 });

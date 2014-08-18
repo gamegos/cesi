@@ -78,20 +78,30 @@ def showMain():
         stopped_process_count = 0
         member_names = []
         environment_list = []
+        g_node_list = []
+        g_process_list = []
+        g_environment_list = []
         group_list = []
 
         node_name_list = Config(CONFIG_FILE).node_list
         node_count = len(node_name_list)
         environment_name_list = Config(CONFIG_FILE).environment_list
         
+        # get environment list 
+        for env_name in environment_name_list:
+            env_name = Config(CONFIG_FILE).getMemberNames(env_name)
+            environment_list.append(env_name)
+
         for nodename in node_name_list:
             nodeconfig = Config(CONFIG_FILE).getNodeConfig(nodename)
             node = Node(nodeconfig)
 
-            for i in node.process_dict2.keys():
-                if i.split(':')[0] != i.split(':')[1]:
-                    if not i.split(':')[0] in group_list:
-                        group_list.append(i.split(':')[0])
+            for name in node.process_dict2.keys():
+                p_group = name.split(':')[0]
+                p_name = name.split(':')[1]
+                if p_group != p_name:
+                    if not p_group in group_list:
+                        group_list.append(p_group)
 
             for process in node.process_list:
                 all_process_count = all_process_count + 1
@@ -100,10 +110,26 @@ def showMain():
                 if process.state==0:
                     stopped_process_count = stopped_process_count + 1
 
-        # get environment list 
-        for env_name in environment_name_list:
-            env_name = Config(CONFIG_FILE).getMemberNames(env_name)
-            environment_list.append(env_name)
+        for g_name in group_list:
+            tmp= []
+            for nodename in node_name_list:
+                nodeconfig = Config(CONFIG_FILE).getNodeConfig(nodename)
+                node = Node(nodeconfig)
+                for name in node.process_dict2.keys():
+                    group_name = name.split(':')[0]
+                    if group_name == g_name:
+                        if not nodename in tmp:
+                            tmp.append(nodename)
+            g_node_list.append(tmp)
+
+        for sublist in g_node_list:
+            tmp = []
+            for name in sublist:
+                for env_name in environment_name_list:
+                    if name in Config(CONFIG_FILE).getMemberNames(env_name):
+                        if not env_name in tmp:
+                            tmp.append(env_name)
+            g_environment_list.append(tmp)
 
         return render_template('index.html',
                                 all_process_count =all_process_count,
@@ -114,6 +140,8 @@ def showMain():
                                 environment_list = environment_list,
                                 environment_name_list = environment_name_list,
                                 group_list = group_list,
+                                g_node_list = g_node_list,
+                                g_environment_list = g_environment_list,
                                 username = session['username'],
                                 usertype = usertype)
     else:

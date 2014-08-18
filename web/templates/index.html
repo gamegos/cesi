@@ -116,15 +116,21 @@
             <div class="navbar-default navbar-static-side" role="navigation">
                 <div class="sidebar-collapse">
                     <ul class="nav" id="side-menu">
+                        <!-- Navbar Dashboard -->
                         <li>
                             <a href="/" class="dashboard"><i class="glyphicon glyphicon-dashboard"></i> Dashboard</a>
                         </li>
+
+                        <!--Navbar showall-->
                         <li>
                             <a href="#" class="showall"><i class="glyphicon glyphicon-list"></i> Show All</a>
                         </li>
+
+                        <!--Navbar Nodes-->
                         <li>
                             <a href="#"><i class="glyphicon glyphicon-th-list"></i> Nodes<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
+                                <!--Node names-->
                             {% for node_name in node_name_list %}
                                 <li class="ajax2" value="{{node_name}}">
                                    <a> <input type="checkbox" class="ajax" value="{{ node_name  }}" disabled="true"> {{ node_name  }} </a>
@@ -133,13 +139,17 @@
                             </ul>
                             <!-- /.nav-second-level -->
                         </li>
+
+                        <!--Navbar Environments-->
                         <li>
                             <a><i class="glyphicon glyphicon-th-large"></i> Environments<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
+                                <!--Environment names-->
                             {% for memberlist in environment_list %}
                                 <li>
                                    <a><i class="glyphicon glyphicon-tag"></i> {{ environment_name_list[ loop.index-1 ] }}<span class="fa arrow"></span></a>
                                    <ul class="nav nav-third-level">
+                                    <!--Environment's node names-->
                                     {% for member in memberlist %}
                                         <li class="ajax2" value="member {{member}}">
                                             <a><input type="checkbox" class="ajax" value="{{ member }}" disabled="true"> {{ member }}</a>
@@ -152,6 +162,8 @@
                             <!-- /.nav-second-level -->
 
                         </li>
+
+                        <!--Navbar groups-->
                         <li>
                             <a href="#" class="groups"><i class="glyphicon glyphicon-th"></i> Groups <span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">

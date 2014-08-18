@@ -98,11 +98,17 @@ def showMain():
             env_name = Config(CONFIG_FILE).getMemberNames(env_name)
             environment_list.append(env_name)
 
-        # get group names
-        group_list = Config(CONFIG_FILE2).group_list
-
-
-        return render_template('index.html', all_process_count =all_process_count, running_process_count =running_process_count, stopped_process_count =stopped_process_count, node_count =node_count, node_name_list = node_name_list, environment_list = environment_list, environment_name_list = environment_name_list, group_list = group_list, username = session['username'], usertype = usertype)
+        return render_template('index.html',
+                                all_process_count =all_process_count,
+                                running_process_count =running_process_count,
+                                stopped_process_count =stopped_process_count,
+                                node_count =node_count,
+                                node_name_list = node_name_list,
+                                environment_list = environment_list,
+                                environment_name_list = environment_name_list,
+                                group_list = group_list,
+                                username = session['username'],
+                                usertype = usertype)
     else:
         return redirect(url_for('login'))
 

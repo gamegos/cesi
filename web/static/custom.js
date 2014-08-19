@@ -238,6 +238,7 @@ var $buttonactions = function(){
     var $td = $tr.children('td').first();
     var $url = $(this).attr('name');
     var $place = $(this).attr('place');
+    var $environment = $(this).attr('env');
     $.ajax({
         url: $url,
         dataType: 'json',
@@ -252,6 +253,9 @@ var $buttonactions = function(){
                         $td = $td.next();
                         $td.html(data['data']['group']);
                     }else{
+                        $td = $td.next();
+                        $td.html($environment);
+                        
                         $td = $td.next();
                         $td.html(data['nodename']);
                         
@@ -376,7 +380,7 @@ var $selectgroupenv = function(){
             $panel.append('<div class="panel-heading"><span class="glyphicon glyphicon-th-list"></span> '+ $group_name +' </div>');
             $panel.append('<table class="table table-bordered"></table>');
             $table = $panel.find('table');
-            $table.append('<tr class="active"> <th>Pid</th> <th>Node name</th> <th>Name</th> <th>Uptime</th> <th>State name</th> <th></th> <th></th> </tr>');
+            $table.append('<tr class="active"> <th>Pid</th> <th>Environment</th> <th>Node name</th> <th>Name</th> <th>Uptime</th> <th>State name</th> <th></th> <th></th> </tr>');
     
 
             var $url = "/group/"+$group_name+"/environment/"+$environment_name
@@ -402,6 +406,9 @@ var $selectgroupenv = function(){
                         }else{
                             $tr.append('<td>'+$pid+'</td>');
                         }
+
+                        //environment
+                        $tr.append('<td>'+$environment_name+'</td>');
         
                         // nodename
                         $tr.append('<td>'+$nodename+'</td>');
@@ -425,19 +432,19 @@ var $selectgroupenv = function(){
                         if( $state==20 ){
                             $tr.append('<td></td>');
                             $td = $tr.children('td').last();
-                            $td.append('<button place="group" class="btn btn-primary btn-block act" name="/node/'+$nodename+'/process/'+$group_name+':'+$name+'/restart" value="Restart">Restart</button>');
+                            $td.append('<button place="group" class="btn btn-primary btn-block act" env="'+$environment_name+'" name="/node/'+$nodename+'/process/'+$group_name+':'+$name+'/restart" value="Restart">Restart</button>');
                             var $btn_restart = $td.children('button').first();
                             $btn_restart.click($buttonactions);
         
                             $tr.append('<td></td>');
                             var $td = $tr.children('td').last();
-                            $td.append('<button place="group" class="btn btn-primary btn-block act" name="/node/'+$nodename+'/process/'+$group_name+':'+$name+'/stop" value="Stop">Stop</button>');
+                            $td.append('<button place="group" class="btn btn-primary btn-block act" env="'+$environment_name+'" name="/node/'+$nodename+'/process/'+$group_name+':'+$name+'/stop" value="Stop">Stop</button>');
                             var $btn_stop = $td.children('button').first();
                             $btn_stop.click($buttonactions);
                         }else if($state==0){
                             $tr.append('<td></td>');
                             var $td= $tr.children('td').last();;
-                            $td.append('<button place="group" class="btn btn-primary btn-block act" name="/node/'+$nodename+'/process/'+$group_name+':'+$name+'/start" value="Start">Start</button>');
+                            $td.append('<button place="group" class="btn btn-primary btn-block act" env="'+$environment_name+'" name="/node/'+$nodename+'/process/'+$group_name+':'+$name+'/start" value="Start">Start</button>');
                             var $btn_restart = $td.children('button').first();
                             $btn_restart.click($buttonactions);
     

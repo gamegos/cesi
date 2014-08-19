@@ -155,6 +155,30 @@ def showNode(node_name):
     else:
         return redirect(url_for('login'))
 
+@app.route('/group/<group_name>/environment/<environment_name>')
+def showGroup(group_name, environment_name):
+    if session.get('logged_in'):
+        env_memberlist = Config(CONFIG_FILE).getMemberNames(environment_name)
+        process_list = []
+        for nodename in env_memberlist:
+            node_config = Config(CONFIG_FILE).getNodeConfig(nodename)
+            node = Node(node_config)
+            p_list = node.process_dict2.keys()
+            for name in p_list:
+                if name.split(':')[0] == group_name:
+                    tmp = []
+                    tmp.append(node.process_dict2[name].pid)
+                    tmp.append(name.split(':')[1])
+                    tmp.append(nodename)
+                    tmp.append(node.process_dict2[name].uptime)
+                    tmp.append(node.process_dict2[name].state)
+                    tmp.append(node.process_dict2[name].statename)
+                    process_list.append(tmp)
+        return jsonify(process_list = process_list)
+    else:
+        return redirect(url_for('login'))
+
+
 @app.route('/node/<node_name>/process/<process_name>/restart')
 def json_restart(node_name, process_name):
     if session.get('logged_in'):

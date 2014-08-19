@@ -173,7 +173,7 @@
                                         <ul class="nav nav-third-level">
                                         {% for env_name in g_environment_list[index] %}
                                             <li class="ajax3">
-                                                <a><input type="checkbox" value="{{ group_list[index]+env_name }}" disabled="true"> {{ env_name }} </a>
+                                                <a><input type="checkbox" group="{{ group_list[index] }}" env="{{ env_name }}"  disabled="true"> {{ env_name }} </a>
                                             </li>
                                         {% endfor %}
                                         </ul>

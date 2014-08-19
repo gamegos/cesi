@@ -350,20 +350,30 @@ var $selectgroupenv = function(){
     var $group_name = $(this).find('input').attr('group');
     var $environment_name = $(this).find('input').attr('env');
 
-    
+    var $emptycontrol = 0;
+
     if(ischecked){
         $checkbox.prop("checked", false);
         
         if($( "#group"+$group_name ).length!=0){
-            $( "#group"+$group_name ).remove();
+            $(this).parent().parent().find('input').each(function(){
+                if($(this).prop('checked') == true){
+                   $emptycontrol = 1;
+                }
+            });
+
+            if($emptycontrol == 0){   
+                $( "#group"+$group_name ).remove();
+            }
         }
+
     }else{
         $checkbox.prop("checked", true);
          
         if($( "#group"+$group_name ).length == 0){
             $maindiv.prepend('<div class="panel panel-primary panel-custom" id="group'+$group_name+'"></div>'); 
             $panel = $maindiv.children('div').first();
-            $panel.append('<div class="panel-heading"><span class="glyphicon glyphicon-th-list"></span>'+ $group_name +' </div>');
+            $panel.append('<div class="panel-heading"><span class="glyphicon glyphicon-th-list"></span> '+ $group_name +' </div>');
             $panel.append('<table class="table table-bordered"></table>');
             $table = $panel.find('table');
             $table.append('<tr class="active"> <th>Pid</th> <th>Node name</th> <th>Name</th> <th>Uptime</th> <th>State name</th> <th></th> <th></th> </tr>');
@@ -383,11 +393,11 @@ var $selectgroupenv = function(){
                         var $statename = result['process_list'][$counter][5];
                         var $uptime = result['process_list'][$counter][3];
                 
-                        $table.append('<tr class="'+result['process_list'][$counter][2]+'x'+$group_name+'x'+result['process_list'][$counter][1]+'"></tr>');
-                        $tr = $('.'+result['process_list'][$counter][2]+'x'+$group_name+'x'+result['process_list'][$counter][1]);
+                        $table.append('<tr class="'+$nodename+'x'+$group_name+'x'+$name+'"></tr>');
+                        $tr = $('.'+$nodename+'x'+$group_name+'x'+$name);
 
                         //pid
-                        if(result['process_list'][$counter][0] == 0){
+                        if($pid == 0){
                             $tr.append('<td> - </td>');
                         }else{
                             $tr.append('<td>'+$pid+'</td>');

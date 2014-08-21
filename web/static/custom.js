@@ -370,7 +370,21 @@ var $selectgroupenv = function(){
         if($checkcount == 0){   
             $( "#group"+$group_name ).remove();
         }else{
-            $("tr[class$='"+$environment_name+"']").remove();
+            var $tr_u = $("tr[class*='"+$environment_name+"']");
+            if($tr_u.length > 0){
+                $tr_u.each(function(){
+                    var $oldenv = $(this).children('td').first().next().text();
+                    $oldenv = $oldenv.split(',');
+                    if($oldenv.length > 1){
+                        var $index = $oldenv.indexOf($environment_name)-1
+                        $oldenv = $oldenv.splice($index,1);
+                        var $newenv = $oldenv.join();
+                        $(this).children('td').first().next().text($newenv);
+                    }else{
+                        $(this).remove();
+                    }
+                });
+            }
         }
 
     }else{
@@ -546,8 +560,10 @@ var $selectgroupenv = function(){
 
                         if( $("tr[class^='"+$nodename+"x"+$group_name+"x"+$name+"']").length > 0 ){
                             $tr = $("tr[class^='"+$nodename+"x"+$group_name+"x"+$name+"']");
+                            $newclass = $tr.attr('class')+"x"+$environment_name;
+                            $tr.attr('class', $newclass);
                             var $oldenv = $tr.children('td').first().next().text();
-                            $tr.children('td').first().next().text($oldenv+", "+$environment_name);
+                            $tr.children('td').first().next().text($oldenv+","+$environment_name);
                         }else{
                         
                             $grouptable.append('<tr class="'+$nodename+'x'+$group_name+'x'+$name+'x'+$environment_name+'"></tr>');

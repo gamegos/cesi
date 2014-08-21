@@ -405,8 +405,9 @@ var $selectgroupenv = function(){
             $panel.append('<div class="panel-heading"><span class="glyphicon glyphicon-th-list"></span> '+ $group_name +'<div style="float:right;"><button class="btn btn-warning btn-sm" >Restart</button><button class="btn btn-warning btn-sm" >Start</button><button class="btn btn-warning btn-sm" >Stop</button></div> </div>');
             $panel.append('<table class="table table-bordered"></table>');
             $table = $panel.find('table');
-            $table.append('<tr class="active"><th><input type="checkbox"></th><th>Pid</th> <th>Environment</th> <th>Node name</th> <th>Name</th> <th>Uptime</th> <th>State name</th> <th></th> <th></th> </tr>');
-    
+            $table.append('<tr class="active"><th><input type="checkbox" class="multiple"></th><th>Pid</th> <th>Environment</th> <th>Node name</th> <th>Name</th> <th>Uptime</th> <th>State name</th> <th></th> <th></th> </tr>');
+             
+            $table.find("input[class='multiple']").change($multiplecheckbox);
 
             $.ajax({
                 url: $url,
@@ -426,7 +427,7 @@ var $selectgroupenv = function(){
             
                         
                         //check
-                        $tr.append('<td> <input type="checkbox"> </td>');                        
+                        $tr.append('<td> <input type="checkbox" class="single"> </td>');                        
 
                         //pid
                         if($pid == 0){
@@ -580,7 +581,7 @@ var $selectgroupenv = function(){
                         
                             
                             //check
-                            $tr.append('<td> <input type="checkbox"> </td>');
+                            $tr.append('<td> <input type="checkbox" class="single"> </td>');
                                                 
                             //pid
                             if($pid == 0){
@@ -823,13 +824,15 @@ var $selectnode = function(){
                 $panel.append('<div class="panel-heading"><span class="glyphicon glyphicon-th-list"></span> '+ nodename +'<div style="float:right;"><button class="btn btn-warning btn-sm" >Restart</button><button class="btn btn-warning btn-sm" >Start</button><button class="btn btn-warning btn-sm" >Stop</button></div></div>');
                 $panel.append('<table class="table table-bordered" id="table'+nodename+'" ></table>');
                 var $table = $("#table"+nodename);
-                $table = $table.append('<tr class="active"><th><input type="checkbox"></th> <th>Pid</th> <th>Name</th> <th>Group</th> <th>Uptime</th> <th>State name</th> <th></th> <th></th> </tr>');
+                $table = $table.append('<tr class="active"><th><input type="checkbox" class="multiple"></th> <th>Pid</th> <th>Name</th> <th>Group</th> <th>Uptime</th> <th>State name</th> <th></th> <th></th> </tr>');
+
+                $table.find("input[class='multiple']").change($multiplecheckbox);
                 for(var $counter = 0; $counter < result['process_info'].length; $counter++){
                     $table = $table.append('<tr class="process_info" id="'+nodename+$counter+'"></tr>');
                     var $tr_p = $('#'+nodename+$counter);
 
                     //check
-                    $tr_p.append('<td> <input type="checkbox"> </td>');
+                    $tr_p.append('<td> <input type="checkbox" class="single"> </td>');
 
                     //pid
                     if( result['process_info'][$counter]['pid'] == 0 ){
@@ -953,6 +956,15 @@ var $selectnode = function(){
                 }
             }  
         });
+    });
+}
+
+var $multiplecheckbox = function(){
+    var $checkstatus = $(this).prop('checked');
+    $table = $(this).parent().parent().parent();
+
+    $table.find("input[class='single']").each(function(){
+        $(this).prop('checked', $checkstatus);
     });
 }
 

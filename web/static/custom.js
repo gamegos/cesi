@@ -427,7 +427,7 @@ var $selectgroupenv = function(){
             
                         
                         //check
-                        $tr.append('<td> <input type="checkbox" class="single"> </td>');                        
+                        $tr.append('<td> <input type="checkbox" class="single" node="'+$nodename+'" procname="'+$group_name+':'+$name+'"> </td>');                        
 
                         //pid
                         if($pid == 0){
@@ -581,7 +581,7 @@ var $selectgroupenv = function(){
                         
                             
                             //check
-                            $tr.append('<td> <input type="checkbox" class="single"> </td>');
+                            $tr.append('<td> <input type="checkbox" class="single" node="'+$nodename+'" procname="'+$group_name+':'+$name+'"> </td>');
                                                 
                             //pid
                             if($pid == 0){
@@ -830,54 +830,58 @@ var $selectnode = function(){
                 for(var $counter = 0; $counter < result['process_info'].length; $counter++){
                     $table = $table.append('<tr class="process_info" id="'+nodename+$counter+'"></tr>');
                     var $tr_p = $('#'+nodename+$counter);
+                    var $pid = result['process_info'][$counter]['pid'];
+                    var $name = result['process_info'][$counter]['name'];
+                    var $group = result['process_info'][$counter]['group'];
+                    var $uptime = result['process_info'][$counter]['description'].substring(17,24);
+                    var $state = result['process_info'][$counter]['state'];
+                    var $statename = result['process_info'][$counter]['statename'];
 
                     //check
-                    $tr_p.append('<td> <input type="checkbox" class="single"> </td>');
+                    $tr_p.append('<td> <input type="checkbox" class="single" node="'+nodename+'" procname="'+$group+':'+$name+'"> </td>');
 
                     //pid
-                    if( result['process_info'][$counter]['pid'] == 0 ){
+                    if( $pid == 0 ){
                         $tr_p.append('<td> - </td>');
                     }else{
-                        $tr_p.append('<td>'+ result['process_info'][$counter]['pid'] + '</td>');
+                        $tr_p.append('<td>'+ $pid + '</td>');
                     }
 
                    //name
-                   $tr_p.append('<td>'+ result['process_info'][$counter]['name'] + '</td>')
+                   $tr_p.append('<td>'+ $name + '</td>')
 
                    //group
-                   $tr_p.append('<td>'+ result['process_info'][$counter]['group'] + '</td>');
+                   $tr_p.append('<td>'+ $group + '</td>');
 
                    //uptime
-                   var $uptime = result['process_info'][$counter]['description'].substring(17,24)
                    $tr_p.append('<td>'+ $uptime + '</td>');
 
                    //statename
-                   var $state = result['process_info'][$counter]['state'];
                    if( $state==0 || $state==40 || $state==100 || $state==200 ){
-                       $tr_p.append('<td class="alert alert-danger">'+ result['process_info'][$counter]['statename'] + '</td>');
+                       $tr_p.append('<td class="alert alert-danger">'+ $statename + '</td>');
                    }else if($state==10 || $state==20){
-                       $tr_p.append('<td class="alert alert-success">'+ result['process_info'][$counter]['statename'] + '</td>');
+                       $tr_p.append('<td class="alert alert-success">'+ $statename + '</td>');
                    }else{
-                       $tr_p.append('<td class="alert alert-warning">'+ result['process_info'][$counter]['statename'] + '</td>');
+                       $tr_p.append('<td class="alert alert-warning">'+ $statename + '</td>');
                    }
 
                    //buttons
                    if( $state==20 ){
                        $tr_p.append('<td></td>');
                        $td_p = $tr_p.children('td').last();
-                       $td_p.append('<button place="node" class="btn btn-primary btn-block act" name="/node/'+nodename+'/process/'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'/restart" value="Restart">Restart</button>');
+                       $td_p.append('<button place="node" class="btn btn-primary btn-block act" name="/node/'+nodename+'/process/'+$group+':'+$name+'/restart" value="Restart">Restart</button>');
                        var $btn_restart = $td_p.children('button').first();
                        $btn_restart.click($buttonactions);
 
                        $tr_p.append('<td></td>');
                        var $td_p = $tr_p.children('td').last();
-                       $td_p.append('<button place="node" class="btn btn-primary btn-block act" name="/node/'+nodename+'/process/'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'/stop" value="Stop">Stop</button>');
+                       $td_p.append('<button place="node" class="btn btn-primary btn-block act" name="/node/'+nodename+'/process/'+$group+':'+$name+'/stop" value="Stop">Stop</button>');
                        var $btn_stop = $td_p.children('button').first();
                        $btn_stop.click($buttonactions);
                     }else if($state==0){
                        $tr_p.append('<td></td>');
                        var $td_p = $tr_p.children('td').last();;
-                       $td_p.append('<button place="node" class="btn btn-primary btn-block act" name="/node/'+nodename+'/process/'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'/start" value="Start">Start</button>');
+                       $td_p.append('<button place="node" class="btn btn-primary btn-block act" name="/node/'+nodename+'/process/'+$group+':'+$name+'/start" value="Start">Start</button>');
                        var $btn_restart = $td_p.children('button').first();
                        $btn_restart.click($buttonactions);
 
@@ -888,7 +892,7 @@ var $selectnode = function(){
                        $btn_stop.click($buttonactions);
                     }
                     //Readlog
-                    $tr_p.append('<td><a class="btn btn-primary btn-block act" nodename="'+nodename+'" processgroup="'+result['process_info'][$counter]['group']+'" processname="'+result['process_info'][$counter]['name']+'" url="/node/'+nodename+'/process/'+result['process_info'][$counter]['group']+':'+result['process_info'][$counter]['name']+'/readlog"> Readlog </a></td>');
+                    $tr_p.append('<td><a class="btn btn-primary btn-block act" nodename="'+nodename+'" processgroup="'+$group+'" processname="'+$name+'" url="/node/'+nodename+'/process/'+$group+':'+$name+'/readlog"> Readlog </a></td>');
                     var $readlog = $tr_p.children('td').last().children('a').first();
 
                     $readlog.click(function(){

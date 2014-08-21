@@ -376,8 +376,8 @@ var $selectgroupenv = function(){
                     var $oldenv = $(this).children('td').first().next().text();
                     $oldenv = $oldenv.split(',');
                     if($oldenv.length > 1){
-                        var $index = $oldenv.indexOf($environment_name)-1
-                        $oldenv = $oldenv.splice($index,1);
+                        var $index = $oldenv.indexOf($environment_name);
+                        $oldenv.splice($index,1);
                         var $newenv = $oldenv.join();
                         $(this).children('td').first().next().text($newenv);
                         $(this).children('td').first().next().next().next().next().next().next().find('button').first().attr('env', $newenv);

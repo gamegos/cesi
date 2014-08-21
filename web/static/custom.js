@@ -235,7 +235,7 @@ var $passwordhandler = function(){
 
 var $buttonactions = function(){
     var $tr = $(this).parent().parent();
-    var $td = $tr.children('td').first();
+    var $td = $tr.children('td').first().next();
     var $url = $(this).attr('name');
     var $place = $(this).attr('place');
     var $environment = $(this).attr('env');
@@ -373,15 +373,15 @@ var $selectgroupenv = function(){
             var $tr_u = $("tr[class*='"+$environment_name+"']");
             if($tr_u.length > 0){
                 $tr_u.each(function(){
-                    var $oldenv = $(this).children('td').first().next().text();
+                    var $oldenv = $(this).children('td').first().next().next().text();
                     $oldenv = $oldenv.split(',');
                     if($oldenv.length > 1){
                         var $index = $oldenv.indexOf($environment_name);
                         $oldenv.splice($index,1);
                         var $newenv = $oldenv.join();
-                        $(this).children('td').first().next().text($newenv);
-                        $(this).children('td').first().next().next().next().next().next().next().find('button').first().attr('env', $newenv);
+                        $(this).children('td').first().next().next().text($newenv);
                         $(this).children('td').first().next().next().next().next().next().next().next().find('button').first().attr('env', $newenv);
+                        $(this).children('td').first().next().next().next().next().next().next().next().next().find('button').first().attr('env', $newenv);
                     }else{
                         $(this).remove();
                     }
@@ -402,10 +402,10 @@ var $selectgroupenv = function(){
  
             $maindiv.prepend('<div class="panel panel-primary panel-custom" id="group'+$group_name+'"></div>'); 
             $panel = $maindiv.children('div').first();
-            $panel.append('<div class="panel-heading"><span class="glyphicon glyphicon-th-list"></span> '+ $group_name +' </div>');
+            $panel.append('<div class="panel-heading"><span class="glyphicon glyphicon-th-list"></span> '+ $group_name +'<div style="float:right;"><button class="btn btn-warning btn-sm" >Restart</button><button class="btn btn-warning btn-sm" >Start</button><button class="btn btn-warning btn-sm" >Stop</button></div> </div>');
             $panel.append('<table class="table table-bordered"></table>');
             $table = $panel.find('table');
-            $table.append('<tr class="active"> <th>Pid</th> <th>Environment</th> <th>Node name</th> <th>Name</th> <th>Uptime</th> <th>State name</th> <th></th> <th></th> </tr>');
+            $table.append('<tr class="active"><th><input type="checkbox"></th><th>Pid</th> <th>Environment</th> <th>Node name</th> <th>Name</th> <th>Uptime</th> <th>State name</th> <th></th> <th></th> </tr>');
     
 
             $.ajax({
@@ -423,6 +423,10 @@ var $selectgroupenv = function(){
                 
                         $table.append('<tr class="'+$nodename+'x'+$group_name+'x'+$name+'x'+$environment_name+'"></tr>');
                         $tr = $('.'+$nodename+'x'+$group_name+'x'+$name+'x'+$environment_name);
+            
+                        
+                        //check
+                        $tr.append('<td> <input type="checkbox"> </td>');                        
 
                         //pid
                         if($pid == 0){
@@ -564,16 +568,20 @@ var $selectgroupenv = function(){
                             $tr = $("tr[class^='"+$nodename+"x"+$group_name+"x"+$name+"']");
                             $newclass = $tr.attr('class')+"x"+$environment_name;
                             $tr.attr('class', $newclass);
-                            var $oldenv = $tr.children('td').first().next().text();
+                            var $oldenv = $tr.children('td').first().next().next().text();
                             var $newenv = $oldenv+","+$environment_name;
-                            $tr.children('td').first().next().text($newenv);
-                            $tr.children('td').first().next().next().next().next().next().next().find('button').first().attr('env', $newenv);
+                            $tr.children('td').first().next().next().text($newenv);
                             $tr.children('td').first().next().next().next().next().next().next().next().find('button').first().attr('env', $newenv);
+                            $tr.children('td').first().next().next().next().next().next().next().next().next().find('button').first().attr('env', $newenv);
                         }else{
                         
                             $grouptable.append('<tr class="'+$nodename+'x'+$group_name+'x'+$name+'x'+$environment_name+'"></tr>');
                             $tr = $('.'+$nodename+'x'+$group_name+'x'+$name+'x'+$environment_name);
+                        
                             
+                            //check
+                            $tr.append('<td> <input type="checkbox"> </td>');
+                                                
                             //pid
                             if($pid == 0){
                                 $tr.append('<td> - </td>');
@@ -812,13 +820,16 @@ var $selectnode = function(){
             success: function(result){
                 $maindiv.prepend('<div class="panel panel-primary panel-custom" id="panel'+nodename+'"></div>');
                 var $panel = $("#panel"+nodename);
-                $panel.append('<div class="panel-heading"><span class="glyphicon glyphicon-th-list"></span> '+ nodename +'</div>');
+                $panel.append('<div class="panel-heading"><span class="glyphicon glyphicon-th-list"></span> '+ nodename +'<div style="float:right;"><button class="btn btn-warning btn-sm" >Restart</button><button class="btn btn-warning btn-sm" >Start</button><button class="btn btn-warning btn-sm" >Stop</button></div></div>');
                 $panel.append('<table class="table table-bordered" id="table'+nodename+'" ></table>');
                 var $table = $("#table"+nodename);
-                $table = $table.append('<tr class="active"> <th>Pid</th> <th>Name</th> <th>Group</th> <th>Uptime</th> <th>State name</th> <th></th> <th></th> </tr>');
+                $table = $table.append('<tr class="active"><th><input type="checkbox"></th> <th>Pid</th> <th>Name</th> <th>Group</th> <th>Uptime</th> <th>State name</th> <th></th> <th></th> </tr>');
                 for(var $counter = 0; $counter < result['process_info'].length; $counter++){
                     $table = $table.append('<tr class="process_info" id="'+nodename+$counter+'"></tr>');
                     var $tr_p = $('#'+nodename+$counter);
+
+                    //check
+                    $tr_p.append('<td> <input type="checkbox"> </td>');
 
                     //pid
                     if( result['process_info'][$counter]['pid'] == 0 ){

@@ -380,6 +380,8 @@ var $selectgroupenv = function(){
                         $oldenv = $oldenv.splice($index,1);
                         var $newenv = $oldenv.join();
                         $(this).children('td').first().next().text($newenv);
+                        $(this).children('td').first().next().next().next().next().next().next().find('button').first().attr('env', $newenv);
+                        $(this).children('td').first().next().next().next().next().next().next().next().find('button').first().attr('env', $newenv);
                     }else{
                         $(this).remove();
                     }
@@ -563,7 +565,10 @@ var $selectgroupenv = function(){
                             $newclass = $tr.attr('class')+"x"+$environment_name;
                             $tr.attr('class', $newclass);
                             var $oldenv = $tr.children('td').first().next().text();
-                            $tr.children('td').first().next().text($oldenv+","+$environment_name);
+                            var $newenv = $oldenv+","+$environment_name;
+                            $tr.children('td').first().next().text($newenv);
+                            $tr.children('td').first().next().next().next().next().next().next().find('button').first().attr('env', $newenv);
+                            $tr.children('td').first().next().next().next().next().next().next().next().find('button').first().attr('env', $newenv);
                         }else{
                         
                             $grouptable.append('<tr class="'+$nodename+'x'+$group_name+'x'+$name+'x'+$environment_name+'"></tr>');

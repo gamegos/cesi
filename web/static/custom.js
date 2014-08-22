@@ -402,8 +402,13 @@ var $selectgroupenv = function(){
  
             $maindiv.prepend('<div class="panel panel-primary panel-custom" id="group'+$group_name+'"></div>'); 
             $panel = $maindiv.children('div').first();
-            $panel.append('<div class="panel-heading"><span class="glyphicon glyphicon-th-list"></span> '+ $group_name +'<div style="float:right;"><button class="btn btn-warning btn-sm" >Restart</button><button class="btn btn-warning btn-sm" >Start</button><button class="btn btn-warning btn-sm" >Stop</button></div> </div>');
+            $panel.append('<div class="panel-heading"><span class="glyphicon glyphicon-th-list"></span> '+ $group_name +'<div style="float:right;"><button class="btn btn-warning btn-sm multibtn" name="restart" >Restart</button><button class="btn btn-warning btn-sm multibtn" name="start" >Start</button><button class="btn btn-warning btn-sm multibtn" name="stop" >Stop</button></div> </div>');
             $panel.append('<table class="table table-bordered"></table>');
+
+            $panel.find("button[class~='multibtn']").each(function(){
+                $(this).click($multievent);
+            });
+
             $table = $panel.find('table');
             $table.append('<tr class="active"><th><input type="checkbox" class="multiple"></th><th>Pid</th> <th>Environment</th> <th>Node name</th> <th>Name</th> <th>Uptime</th> <th>State name</th> <th></th> <th></th> </tr>');
              
@@ -821,7 +826,12 @@ var $selectnode = function(){
             success: function(result){
                 $maindiv.prepend('<div class="panel panel-primary panel-custom" id="panel'+nodename+'"></div>');
                 var $panel = $("#panel"+nodename);
-                $panel.append('<div class="panel-heading"><span class="glyphicon glyphicon-th-list"></span> '+ nodename +'<div style="float:right;"><button class="btn btn-warning btn-sm" >Restart</button><button class="btn btn-warning btn-sm" >Start</button><button class="btn btn-warning btn-sm" >Stop</button></div></div>');
+                $panel.append('<div class="panel-heading"><span class="glyphicon glyphicon-th-list"></span> '+ nodename +'<div style="float:right;"><button class="btn btn-warning btn-sm multibtn" name="restart" >Restart</button><button class="btn btn-warning btn-sm multibtn" name="start" >Start</button><button class="btn btn-warning btn-sm multibtn" name="stop" >Stop</button></div></div>');
+                
+                $panel.find("button[class~='multibtn']").each(function(){
+                    $(this).click($multievent);
+                });
+                
                 $panel.append('<table class="table table-bordered" id="table'+nodename+'" ></table>');
                 var $table = $("#table"+nodename);
                 $table = $table.append('<tr class="active"><th><input type="checkbox" class="multiple"></th> <th>Pid</th> <th>Name</th> <th>Group</th> <th>Uptime</th> <th>State name</th> <th></th> <th></th> </tr>');
@@ -971,6 +981,104 @@ var $multiplecheckbox = function(){
         $(this).prop('checked', $checkstatus);
     });
 }
+
+var $multievent = function(){
+    var actlist = [];
+    $actname = $(this).attr('name');
+    $table = $(this).parent().parent().parent().children('table').first().find('input.single');
+    $table.each(function(){
+        if($(this).prop("checked")== true){
+            var $nodename = $(this).attr('node');
+            var $procname = $(this).attr('procname');
+            var $td = $(this).parent().first().next();
+            var $place = $(this).parent().first().next().next().next().next().next().next().find('button').attr('place');
+            var $environment = $(this).parent().first().next().next().next().next().next().next().find('button').attr('env');
+            $.ajax({
+                url: "/node/"+$nodename+"/process/"+$procname+"/"+$actname,
+                dataType: 'json',
+                success: function(data){
+                    if(data['status'] == "Success"){
+                        if (data['data']['pid'] == 0 ){ $td.html("-"); }else{ $td.html(data['data']['pid']); }
+    
+                            if( $place == "node" ){
+                                $td = $td.next();
+                                $td.html(data['data']['name']);
+        
+                                $td = $td.next();
+                                $td.html(data['data']['group']);
+                            }else{
+                                $td = $td.next();
+                                $td.html($environment);
+
+                                $td = $td.next();
+                                $td.html(data['nodename']);
+
+                                $td = $td.next();
+                                $td.html(data['data']['name']);
+                            }
+
+                            $td = $td.next();
+                            $td.html(data['data']['description'].substring(17,24));
+
+                            $td = $td.next();
+                            if( data['data']['state']==0 || data['data']['state']==40 || data['data']['state']==100 || data['data']['state']==200 ){
+                                $td.attr('class', "alert alert-danger");
+                            }else if( data['data']['state']==10 || data['data']['state']==20 ){
+                                $td.attr('class', "alert alert-success");
+                            }else{
+                                $td.attr('class', "alert alert-warning");
+                            }
+                            $td.html(data['data']['statename']);
+    
+                            $td = $td.next();
+                            if( data['data']['state']==20){
+                                $restart = $td.children('button').first();
+                                $restart.attr('class',"btn btn-primary btn-block");
+                                $name = "/node/"+data['nodename'] + "/process/" + data['data']['group'] + ":" + data['data']['name'] + "/restart";
+                                $restart.attr('name',$name );
+                                $restart.attr('value',"Restart");
+                                $restart.html("Restart");
+    
+                                $td = $td.next();
+                                $stop = $td.children('button').first();
+                                $stop.attr('class',"btn btn-primary btn-block");
+                                $name2 = "/node/"+data['nodename'] + "/process/" + data['data']['group'] + ":" + data['data']['name'] + "/stop";
+                                $stop.attr('name',$name2 );
+                                $stop.attr('value',"Stop");
+                                $stop.html("Stop");
+                            }else if(data['data']['state']==0){
+                                $start = $td.children('button');
+                                $start.attr('class',"btn btn-primary btn-block");
+                                $name = "/node/"+data['nodename'] + "/process/" + data['data']['group'] + ":" + data['data']['name'] + "/start";
+                                $start.attr('name',$name );
+                                $start.attr('value',"Start");
+                                $start.html("Start");
+                                $td = $td.next();
+                                $stop = $td.children('button').first();
+                                $stop.attr('class',"btn btn-primary btn-block");
+                                $stop.attr('class',"btn btn-primary btn-block disabled");
+                                $stop.attr('name'," ");
+                                $stop.attr('value',"Stop");
+                            }
+                        
+                        noty({
+                            text: data['message'],
+                            type: 'success',
+                            closeWith: ['hover'],
+                        });
+                    }else{
+                        noty({
+                            text: data['message'],
+                            type: 'error',
+                            closeWith: ['hover']
+                        });
+                    }
+                }
+            }); 
+        }
+    });
+}
+
 
 $( document ).ready(function() {
     $(".showall").click($selectnode);

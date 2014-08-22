@@ -36,6 +36,7 @@ var $adduser= function(){
                 $(".save").click($adduserhandler);
             }else{
                 noty({
+                    layout: 'bottom',
                     text: 'Only can admin add a user.',
                     type: 'error'
                 });
@@ -54,11 +55,13 @@ var $adduserhandler = function(){
         success: function(data){
             if(data['status']=="success"){
                 noty({
+                    layout: 'bottom',
                     text: data['message'],
                     type: 'success'
                 });
             }else{
                 noty({
+                    layout: 'bottom',
                     text: data['message'],
                     type: 'error'
                 });
@@ -123,6 +126,7 @@ var $showdeluserpage = function(){
                 }
             }else{
                 noty({
+                    layout: 'bottom',
                     text: 'Only admin can delete user',
                     type: 'error'
                 });
@@ -136,6 +140,7 @@ var $delete_user = function(){
     var $url = "/delete/user/"+$username
     if($url=="/delete/user/admin"){
         noty({
+            layout: 'bottom',
             text: 'Admin can not be delete',
             type: 'error'
         });
@@ -149,6 +154,7 @@ var $delete_user = function(){
                     $("."+$username).remove();
                 }else{
                     noty({
+                        layout: 'bottom',
                         text: data['message'],
                         type: 'error'
                     });
@@ -194,6 +200,7 @@ var $changepassword = function(){
                 $btn.click($passwordhandler);
             }else{
                 noty({
+                    layout: 'bottom',
                     text: 'Unsuccesfull',
                     type: 'error'
                 });
@@ -214,12 +221,14 @@ var $passwordhandler = function(){
         success: function(data){
             if(data['status']=="success"){
                 noty({
+                    layout: 'bottom',
                     text: 'Password changed',
                     type: 'success'
                 });
 
             }else{
                 noty({
+                    layout: 'bottom',
                     text: data['message'],
                     type: 'error'
                 });
@@ -316,12 +325,14 @@ var $buttonactions = function(){
                     }
                 }else if(data['status'] == "error2"){
                     noty({
+                        layout: 'bottom',
                         text: data['message'],
                         type: 'error'
                     });
 
                 }else{
                     noty({
+                        layout: 'bottom',
                         text: "Error:"+data['message']+"  Code:"+data['code']+"  Payload:"+data['code'],
                         type: 'error'
                      });
@@ -554,6 +565,7 @@ var $selectgroupenv = function(){
                                         });
                                     }else{
                                         noty({
+                                            layout: 'bottom',
                                             text: log['message'],
                                             type: 'warning'
                                         });
@@ -704,6 +716,7 @@ var $selectgroupenv = function(){
                                             });
                                         }else{
                                             noty({
+                                                layout: 'bottom',
                                                 text: log['message'],
                                                 type: 'warning'
                                             });
@@ -967,6 +980,7 @@ var $selectnode = function(){
                                     });
                                 }else{
                                     noty({
+                                        layout: 'bottom',
                                         text: log['message'],
                                         type: 'warning'
                                     });
@@ -1070,12 +1084,14 @@ var $multievent = function(){
                             }
                         
                         noty({
+                            layout: 'bottom',
                             text: data['message'],
                             type: 'success',
                             closeWith: ['hover'],
                         });
                     }else{
                         noty({
+                            layout: 'bottom',
                             text: data['message'],
                             type: 'error',
                             closeWith: ['hover']

@@ -1,6 +1,6 @@
 from flask import Flask, render_template, url_for, redirect, jsonify, request, g, session, flash
-from getProcInfo import Config, Connection, Node, CONFIG_FILE, CONFIG_FILE2, ProcessInfo, JsonValue
-import getProcInfo 
+from cesi import Config, Connection, Node, CONFIG_FILE, CONFIG_FILE2, ProcessInfo, JsonValue
+import cesi 
 import xmlrpclib
 import sqlite3
 

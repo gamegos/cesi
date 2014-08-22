@@ -234,12 +234,19 @@ var $passwordhandler = function(){
 
 
 var $buttonactions = function(){
+    var button = $(this);
     var $tr = $(this).parent().parent();
     var $td = $tr.children('td').first().next();
     var $url = $(this).attr('name');
     var $place = $(this).attr('place');
     var $environment = $(this).attr('env');
     $.ajax({
+        beforeSend: function(){
+            button.prepend('<span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> ');
+            button.parent().parent().find('button').each(function(){
+                $(this).addClass('disabled');
+            });
+        },
         url: $url,
         dataType: 'json',
         success: function(data){
@@ -299,12 +306,13 @@ var $buttonactions = function(){
                         $start.attr('name',$name );
                         $start.attr('value',"Start");
                         $start.html("Start");
+
                         $td = $td.next();
                         $stop = $td.children('button').first();
-                        $stop.attr('class',"btn btn-primary btn-block");
                         $stop.attr('class',"btn btn-primary btn-block disabled");
                         $stop.attr('name'," ");
                         $stop.attr('value',"Stop");
+                        $stop.html("Stop");
                     }
                 }else if(data['status'] == "error2"){
                     noty({
@@ -314,7 +322,7 @@ var $buttonactions = function(){
 
                 }else{
                     noty({
-                        text: "Error:"+data[message]+"  Code:"+data['code']+"  Payload:"+data[code],
+                        text: "Error:"+data['message']+"  Code:"+data['code']+"  Payload:"+data['code'],
                         type: 'error'
                      });
                 }

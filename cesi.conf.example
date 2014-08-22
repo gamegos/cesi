@@ -1,0 +1,18 @@
+[node:<node_name>]
+; user = <username>
+; password = <password>
+; host = <hostname>
+; port = <port>
+
+[node:<node_name2>]
+; user = <username>
+; password = <password>
+; host = <hostname>
+; port = <port>
+
+[environment:<environment_name>]
+members=<node_name>, <node_name2>
+
+
+
+

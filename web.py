@@ -1,5 +1,5 @@
 from flask import Flask, render_template, url_for, redirect, jsonify, request, g, session, flash
-from cesi import Config, Connection, Node, CONFIG_FILE, CONFIG_FILE2, ProcessInfo, JsonValue
+from cesi import Config, Connection, Node, CONFIG_FILE, ProcessInfo, JsonValue
 import cesi 
 import xmlrpclib
 import sqlite3
@@ -62,7 +62,7 @@ def logout():
 # Dashboard
 @app.route('/')
 def showMain():
-    # get user type
+# get user type
     if session.get('logged_in'):
         if session['usertype']==0:
             usertype = "Admin"
@@ -72,7 +72,7 @@ def showMain():
             usertype = "Only Log"
         elif session['usertype']==3:
             usertype = "Read Only"
-     
+ 
         all_process_count = 0
         running_process_count = 0
         stopped_process_count = 0
@@ -82,6 +82,8 @@ def showMain():
         g_process_list = []
         g_environment_list = []
         group_list = []
+        not_connected_node_list = []
+        connected_node_list = []
 
         node_name_list = Config(CONFIG_FILE).node_list
         node_count = len(node_name_list)
@@ -94,7 +96,15 @@ def showMain():
 
         for nodename in node_name_list:
             nodeconfig = Config(CONFIG_FILE).getNodeConfig(nodename)
-            node = Node(nodeconfig)
+
+            try:
+                node = Node(nodeconfig)
+                if not nodename in connected_node_list:
+                    connected_node_list.append(nodename);
+            except xmlrpclib.ProtocolError as err:
+                 if not nodename in not_connected_node_list:
+                    not_connected_node_list.append(nodename);
+                 continue
 
             for name in node.process_dict2.keys():
                 p_group = name.split(':')[0]
@@ -112,7 +122,7 @@ def showMain():
 
         for g_name in group_list:
             tmp= []
-            for nodename in node_name_list:
+            for nodename in connected_node_list:
                 nodeconfig = Config(CONFIG_FILE).getNodeConfig(nodename)
                 node = Node(nodeconfig)
                 for name in node.process_dict2.keys():
@@ -130,6 +140,9 @@ def showMain():
                         if not env_name in tmp:
                             tmp.append(env_name)
             g_environment_list.append(tmp)
+        
+        connected_count = len(connected_node_list)
+        not_connected_count = len(not_connected_node_list)
 
         return render_template('index.html',
                                 all_process_count =all_process_count,
@@ -137,14 +150,17 @@ def showMain():
                                 stopped_process_count =stopped_process_count,
                                 node_count =node_count,
                                 node_name_list = node_name_list,
+                                connected_count = connected_count,
+                                not_connected_count = not_connected_count,
                                 environment_list = environment_list,
                                 environment_name_list = environment_name_list,
                                 group_list = group_list,
                                 g_environment_list = g_environment_list,
                                 username = session['username'],
                                 usertype = usertype)
-    else:
+    else:   
         return redirect(url_for('login'))
+
 
 # Show node
 @app.route('/node/<node_name>')

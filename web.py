@@ -101,7 +101,7 @@ def showMain():
                 node = Node(nodeconfig)
                 if not nodename in connected_node_list:
                     connected_node_list.append(nodename);
-            except xmlrpclib.ProtocolError as err:
+            except Exception as err:
                  if not nodename in not_connected_node_list:
                     not_connected_node_list.append(nodename);
                  continue
@@ -156,6 +156,8 @@ def showMain():
                                 environment_name_list = environment_name_list,
                                 group_list = group_list,
                                 g_environment_list = g_environment_list,
+                                connected_node_list = connected_node_list,
+                                not_connected_node_list = not_connected_node_list,
                                 username = session['username'],
                                 usertype = usertype)
     else:   

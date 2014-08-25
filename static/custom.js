@@ -36,9 +36,11 @@ var $adduser= function(){
                 $(".save").click($adduserhandler);
             }else{
                 noty({
+                    timeout: 5000,
                     layout: 'bottom',
                     text: 'Only can admin add a user.',
-                    type: 'error'
+                    type: 'error',
+                    closeWith: ['click']
                 });
             }
         }
@@ -55,15 +57,19 @@ var $adduserhandler = function(){
         success: function(data){
             if(data['status']=="success"){
                 noty({
+                    timeout: 5000,
                     layout: 'bottom',
                     text: data['message'],
-                    type: 'success'
+                    type: 'success',
+                    closeWith: ['click']
                 });
             }else{
                 noty({
+                    timeout: 5000,
                     layout: 'bottom',
                     text: data['message'],
-                    type: 'error'
+                    type: 'error',
+                    closeWith: ['click']
                 });
 
             }
@@ -126,9 +132,11 @@ var $showdeluserpage = function(){
                 }
             }else{
                 noty({
+                    timeout: 5000,
                     layout: 'bottom',
                     text: 'Only admin can delete user',
-                    type: 'error'
+                    type: 'error',
+                    closeWith: ['click']
                 });
             }
         } 
@@ -140,9 +148,11 @@ var $delete_user = function(){
     var $url = "/delete/user/"+$username
     if($url=="/delete/user/admin"){
         noty({
+            timeout: 5000,
             layout: 'bottom',
             text: 'Admin can not be delete',
-            type: 'error'
+            type: 'error',
+            closeWith: ['click']
         });
 
     }else if( confirm("Are you sure delete this user?") ){
@@ -154,9 +164,11 @@ var $delete_user = function(){
                     $("."+$username).remove();
                 }else{
                     noty({
+                        timeout: 5000,
                         layout: 'bottom',
                         text: data['message'],
-                        type: 'error'
+                        type: 'error',
+                        closeWith: ['click']
                     });
                 }
             }
@@ -200,9 +212,11 @@ var $changepassword = function(){
                 $btn.click($passwordhandler);
             }else{
                 noty({
+                    timeout: 5000,
                     layout: 'bottom',
                     text: 'Unsuccesfull',
-                    type: 'error'
+                    type: 'error',
+                    closeWith: ['click']
                 });
 
             }
@@ -221,16 +235,20 @@ var $passwordhandler = function(){
         success: function(data){
             if(data['status']=="success"){
                 noty({
+                    timeout: 5000,
                     layout: 'bottom',
                     text: 'Password changed',
-                    type: 'success'
+                    type: 'success',
+                    closeWith: ['click']
                 });
 
             }else{
                 noty({
+                    timeout: 5000,
                     layout: 'bottom',
                     text: data['message'],
-                    type: 'error'
+                    type: 'error',
+                    closeWith: ['click']
                 });
             }
         }
@@ -325,16 +343,20 @@ var $buttonactions = function(){
                     }
                 }else if(data['status'] == "error2"){
                     noty({
+                        timeout: 5000,
                         layout: 'bottom',
                         text: data['message'],
-                        type: 'error'
+                        type: 'error',
+                        closeWith: ['click']
                     });
 
                 }else{
                     noty({
+                        timeout: 5000,
                         layout: 'bottom',
                         text: "Error:"+data['message']+"  Code:"+data['code']+"  Payload:"+data['code'],
-                        type: 'error'
+                        type: 'error',
+                        closeWith: ['click']
                      });
                 }
         }
@@ -565,9 +587,11 @@ var $selectgroupenv = function(){
                                         });
                                     }else{
                                         noty({
+                                            timeout: 5000,
                                             layout: 'bottom',
                                             text: log['message'],
-                                            type: 'warning'
+                                            type: 'warning',
+                                            closeWith: ['click']
                                         });
                                     }
                                 }
@@ -716,9 +740,11 @@ var $selectgroupenv = function(){
                                             });
                                         }else{
                                             noty({
+                                                timeout: 5000,
                                                 layout: 'bottom',
                                                 text: log['message'],
-                                                type: 'warning'
+                                                type: 'warning',
+                                                closeWith: ['click']
                                             });
                                         }
                                     }
@@ -980,9 +1006,11 @@ var $selectnode = function(){
                                     });
                                 }else{
                                     noty({
+                                        timeout: 5000,
                                         layout: 'bottom',
                                         text: log['message'],
-                                        type: 'warning'
+                                        type: 'warning',
+                                        closeWith: ['click']
                                     });
 
                                 }
@@ -1087,14 +1115,16 @@ var $multievent = function(){
                             layout: 'bottom',
                             text: data['message'],
                             type: 'success',
-                            closeWith: ['hover'],
+                            closeWith: ['click'],
+                            timeout: 5000
                         });
                     }else{
                         noty({
                             layout: 'bottom',
                             text: data['message'],
                             type: 'error',
-                            closeWith: ['hover']
+                            closeWith: ['click'],
+                            timeout: 5000
                         });
                     }
                 }

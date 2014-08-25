@@ -89,10 +89,6 @@ def showMain():
         node_count = len(node_name_list)
         environment_name_list = Config(CONFIG_FILE).environment_list
         
-        # get environment list 
-        for env_name in environment_name_list:
-            env_name = Config(CONFIG_FILE).getMemberNames(env_name)
-            environment_list.append(env_name)
 
         for nodename in node_name_list:
             nodeconfig = Config(CONFIG_FILE).getNodeConfig(nodename)
@@ -120,6 +116,15 @@ def showMain():
                 if process.state==0:
                     stopped_process_count = stopped_process_count + 1
 
+        # get environment list 
+        for env_name in environment_name_list:
+            env_members = Config(CONFIG_FILE).getMemberNames(env_name)
+            for index, node in enumerate(env_members):
+                if not node in connected_node_list:
+                    env_members.pop(index);
+            environment_list.append(env_members)        
+                    
+        
         for g_name in group_list:
             tmp= []
             for nodename in connected_node_list:
@@ -137,10 +142,13 @@ def showMain():
             for name in sublist:
                 for env_name in environment_name_list:
                     if name in Config(CONFIG_FILE).getMemberNames(env_name):
-                        if not env_name in tmp:
-                            tmp.append(env_name)
+                        if name in connected_node_list:
+                            if not env_name in tmp:
+                                tmp.append(env_name)
             g_environment_list.append(tmp)
         
+        print group_list
+        print g_environment_list
         connected_count = len(connected_node_list)
         not_connected_count = len(not_connected_node_list)
 
@@ -180,7 +188,10 @@ def showGroup(group_name, environment_name):
         process_list = []
         for nodename in env_memberlist:
             node_config = Config(CONFIG_FILE).getNodeConfig(nodename)
-            node = Node(node_config)
+            try:
+                node = Node(node_config)
+            except Exception as err:
+                continue
             p_list = node.process_dict2.keys()
             for name in p_list:
                 if name.split(':')[0] == group_name:

@@ -389,7 +389,7 @@ var $selectgroupenv = function(){
         if($checkcount == 0){   
             $( "#group"+$group_name ).remove();
         }else{
-            var $tr_u = $("tr[class*='"+$environment_name+"']");
+            var $tr_u = $( "#group"+$group_name ).find("tr[class*='"+$environment_name+"']");
             if($tr_u.length > 0){
                 $tr_u.each(function(){
                     var $oldenv = $(this).children('td').first().next().next().text();

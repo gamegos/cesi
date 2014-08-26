@@ -175,7 +175,8 @@ def showMain():
                                 connected_node_list = connected_node_list,
                                 not_connected_node_list = not_connected_node_list,
                                 username = session['username'],
-                                usertype = usertype)
+                                usertype = usertype,
+                                usertypecode = session['usertype'])
     else:   
         return redirect(url_for('login'))
 

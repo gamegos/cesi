@@ -380,6 +380,8 @@ var $buttonactions = function(){
 };
 
 var $selectgroupenv = function(){
+    var $usertype = $(this).attr('usertype');
+    console.log($usertype);
     var $maindiv = $("#maindiv");
 
     $('div[id^="panel"]').each(function(){
@@ -430,13 +432,21 @@ var $selectgroupenv = function(){
             var $tr_u = $( "#group"+$group_name ).find("tr[class*='"+$environment_name+"']");
             if($tr_u.length > 0){
                 $tr_u.each(function(){
-                    var $oldenv = $(this).children('td').first().next().next().text();
+                    if($usertype == 0 || $usertype == 1){
+                        var $oldenv = $(this).children('td').first().next().next().text();
+                    }else{
+                        var $oldenv = $(this).children('td').first().next().text();
+                    }
                     $oldenv = $oldenv.split(',');
                     if($oldenv.length > 1){
                         var $index = $oldenv.indexOf($environment_name);
                         $oldenv.splice($index,1);
                         var $newenv = $oldenv.join();
-                        $(this).children('td').first().next().next().text($newenv);
+                        if($usertype == 0 || $usertype == 1){
+                            $(this).children('td').first().next().next().text($newenv);
+                        }else{
+                            $(this).children('td').first().next().text($newenv);
+                        }
                         $(this).children('td').first().next().next().next().next().next().next().next().find('button').first().attr('env', $newenv);
                         $(this).children('td').first().next().next().next().next().next().next().next().next().find('button').first().attr('env', $newenv);
                     }else{
@@ -459,16 +469,23 @@ var $selectgroupenv = function(){
  
             $maindiv.prepend('<div class="panel panel-primary panel-custom" id="group'+$group_name+'"></div>'); 
             $panel = $maindiv.children('div').first();
-            $panel.append('<div class="panel-heading"><span class="glyphicon glyphicon-th-list"></span> '+ $group_name +'<div style="float:right;"><button class="btn btn-warning btn-sm multibtn" name="restart" >Restart</button><button class="btn btn-warning btn-sm multibtn" name="start" >Start</button><button class="btn btn-warning btn-sm multibtn" name="stop" >Stop</button></div> </div>');
+            $panel.append('<div class="panel-heading"><span class="glyphicon glyphicon-th-list"></span> '+ $group_name +'</div>');
+
+            if($usertype == 0 || $usertype == 1){
+                $panel.children('div').first().append('<div style="float:right;"><button class="btn btn-warning btn-sm multibtn" name="restart" >Restart</button><button class="btn btn-warning btn-sm multibtn" name="start" >Start</button><button class="btn btn-warning btn-sm multibtn" name="stop" >Stop</button></div>');
+                $panel.find("button[class~='multibtn']").each(function(){
+                    $(this).click($multievent);
+                });
+            }
+
             $panel.append('<table class="table table-bordered"></table>');
-
-            $panel.find("button[class~='multibtn']").each(function(){
-                $(this).click($multievent);
-            });
-
             $table = $panel.find('table');
-            $table.append('<tr class="active"><th><input type="checkbox" class="multiple"></th><th>Pid</th> <th>Environment</th> <th>Node name</th> <th>Name</th> <th>Uptime</th> <th>State name</th> <th></th> <th></th> </tr>');
-             
+            $table.append('<tr class="active"><th>Pid</th> <th>Environment</th> <th>Node name</th> <th>Name</th> <th>Uptime</th> <th>State name</th> </tr>');
+            
+            if($usertype == 0 || $usertype == 1){
+                $table.find('tr').first().prepend('<th><input type="checkbox" class="multiple"></th>');
+            }
+
             $table.find("input[class='multiple']").change($multiplecheckbox);
 
             $.ajax({
@@ -487,10 +504,10 @@ var $selectgroupenv = function(){
                         $table.append('<tr class="'+$nodename+'x'+$group_name+'x'+$name+'x'+$environment_name+'"></tr>');
                         $tr = $('.'+$nodename+'x'+$group_name+'x'+$name+'x'+$environment_name);
             
-                        
-                        //check
-                        $tr.append('<td> <input type="checkbox" class="single" node="'+$nodename+'" procname="'+$group_name+':'+$name+'"> </td>');                        
-
+                        if($usertype == 0 || $usertype == 1){ 
+                            //check
+                            $tr.append('<td> <input type="checkbox" class="single" node="'+$nodename+'" procname="'+$group_name+':'+$name+'"> </td>');                        
+                        }
                         //pid
                         if($pid == 0){
                             $tr.append('<td> - </td>');
@@ -518,101 +535,105 @@ var $selectgroupenv = function(){
                         }else{
                             $tr.append('<td class="alert alert-warning">'+$statename+ '</td>');
                         }
-                        
-                        //buttons
-                        if( $state==20 ){
-                            $tr.append('<td></td>');
-                            $td = $tr.children('td').last();
-                            $td.append('<button place="group" class="btn btn-primary btn-block act" env="'+$environment_name+'" name="/node/'+$nodename+'/process/'+$group_name+':'+$name+'/restart" value="Restart">Restart</button>');
-                            var $btn_restart = $td.children('button').first();
-                            $btn_restart.click($buttonactions);
+                       
+                        if($usertype == 0 || $usertype == 1 ){ 
+                            //buttons
+                            if( $state==20 ){
+                                $tr.append('<td></td>');
+                                $td = $tr.children('td').last();
+                                $td.append('<button place="group" class="btn btn-primary btn-block act" env="'+$environment_name+'" name="/node/'+$nodename+'/process/'+$group_name+':'+$name+'/restart" value="Restart">Restart</button>');
+                                var $btn_restart = $td.children('button').first();
+                                $btn_restart.click($buttonactions);
         
-                            $tr.append('<td></td>');
-                            var $td = $tr.children('td').last();
-                            $td.append('<button place="group" class="btn btn-primary btn-block act" env="'+$environment_name+'" name="/node/'+$nodename+'/process/'+$group_name+':'+$name+'/stop" value="Stop">Stop</button>');
-                            var $btn_stop = $td.children('button').first();
-                            $btn_stop.click($buttonactions);
-                        }else if($state==0){
-                            $tr.append('<td></td>');
-                            var $td= $tr.children('td').last();;
-                            $td.append('<button place="group" class="btn btn-primary btn-block act" env="'+$environment_name+'" name="/node/'+$nodename+'/process/'+$group_name+':'+$name+'/start" value="Start">Start</button>');
-                            var $btn_restart = $td.children('button').first();
-                            $btn_restart.click($buttonactions);
-    
-                            $tr.append('<td></td>');
-                            var $td = $tr.children('td').last();
-                            $td.append('<button place="group" class="btn btn-primary btn-block disabled act" value="Stop">Stop</button>');
-                            var $btn_stop = $td.children('button').first();
-                            $btn_stop.click($buttonactions);
-                        }
+                                $tr.append('<td></td>');
+                                var $td = $tr.children('td').last();
+                                $td.append('<button place="group" class="btn btn-primary btn-block act" env="'+$environment_name+'" name="/node/'+$nodename+'/process/'+$group_name+':'+$name+'/stop" value="Stop">Stop</button>');
+                                var $btn_stop = $td.children('button').first();
+                                $btn_stop.click($buttonactions);
+                            }else if($state==0){
+                                $tr.append('<td></td>');
+                                var $td= $tr.children('td').last();;
+                                $td.append('<button place="group" class="btn btn-primary btn-block act" env="'+$environment_name+'" name="/node/'+$nodename+'/process/'+$group_name+':'+$name+'/start" value="Start">Start</button>');
+                                var $btn_restart = $td.children('button').first();
+                                $btn_restart.click($buttonactions);
         
-                        //Readlog
-                        $tr.append('<td><a class="btn btn-primary btn-block act" nodename="'+$nodename+'" processgroup="'+$group_name+'" processname="'+$name+'" url="/node/'+$nodename+'/process/'+$group_name+':'+$name+'/readlog"> Readlog </a></td>');
-                        var $readlog = $tr.children('td').last().children('a').first();
-
-                        $readlog.click(function(){
-                            var url=$(this).attr('url');
-                            var nodename=$(this).attr('nodename');
-                            var processname=$(this).attr('processname');
-                            var processgroup=$(this).attr('processgroup');
-                            var classname = nodename+"_"+processgroup+"_"+processname
-                            var $dia = $("."+classname);
-                            var timer;
-    
-                            if($dia.length==0){
-                                $logdiv.append('<div class="'+classname+'"></div>');
-                                $dia = $("."+classname);
+                                $tr.append('<td></td>');
+                                var $td = $tr.children('td').last();
+                                $td.append('<button place="group" class="btn btn-primary btn-block disabled act" value="Stop">Stop</button>');
+                                var $btn_stop = $td.children('button').first();
+                                $btn_stop.click($buttonactions);
                             }
-                            $.ajax({
-                                url: url,
-                                dataType: 'json',
-                                success: function(log){
-                                    if (log['status']=="success"){
-                                        $dia.html('<p>'+log['log']+'</p>');
-                                        $dia.dialog({
-                                            open: function(){
-                                                timer = setInterval(function () {
-                                                    $.ajax({
-                                                        url: url,
-                                                        dataType: 'json',
-                                                        success: function(log){
-                                                            $dia.html('<p>'+log['log']+'</p>');
-                                                        }
-                                                    });
-                                                },1000);
-                                            },
-                                            close: function(){
-                                                clearInterval(timer);
-                                            },
-                                            title: classname,
-                                            maxWidth: 600,
-                                            maxHeight: 500,
-                                            show: {
-                                                effect: "blind",
-                                                duration: 500
-                                            },
-                                            hide: {
-                                                effect: "clip",
-                                                duration: 500,
-                                            }
-                                        }).parent().resizable({
-                                            containment: "#page-wrapper"
-                                        }).draggable({
-                                            containment: "#page-wrapper",
-                                            opacity: 0.70
-                                        });
-                                    }else{
-                                        noty({
-                                            timeout: 5000,
-                                            layout: 'bottom',
-                                            text: log['message'],
-                                            type: 'warning',
-                                            closeWith: ['click']
-                                        });
-                                    }
-                                }
-                            });
-                        });     
+                        }
+    
+                        if($usertype == 0 || $usertype == 1 || $usertype == 2 ){
+                            //Readlog
+                             $tr.append('<td><a class="btn btn-primary btn-block act" nodename="'+$nodename+'" processgroup="'+$group_name+'" processname="'+$name+'" url="/node/'+$nodename+'/process/'+$group_name+':'+$name+'/readlog"> Readlog </a></td>');
+                             var $readlog = $tr.children('td').last().children('a').first();
+    
+                             $readlog.click(function(){
+                                 var url=$(this).attr('url');
+                                 var nodename=$(this).attr('nodename');
+                                 var processname=$(this).attr('processname');
+                                 var processgroup=$(this).attr('processgroup');
+                                 var classname = nodename+"_"+processgroup+"_"+processname
+                                 var $dia = $("."+classname);
+                                 var timer;
+     
+                                 if($dia.length==0){
+                                     $logdiv.append('<div class="'+classname+'"></div>');
+                                     $dia = $("."+classname);
+                                 }
+                                 $.ajax({
+                                     url: url,
+                                     dataType: 'json',
+                                     success: function(log){
+                                         if (log['status']=="success"){
+                                             $dia.html('<p>'+log['log']+'</p>');
+                                             $dia.dialog({
+                                                 open: function(){
+                                                     timer = setInterval(function () {
+                                                         $.ajax({
+                                                             url: url,
+                                                             dataType: 'json',
+                                                             success: function(log){
+                                                                 $dia.html('<p>'+log['log']+'</p>');
+                                                             }
+                                                         });
+                                                     },1000);
+                                                 }, 
+                                                 close: function(){
+                                                     clearInterval(timer);
+                                                 },
+                                                 title: classname,
+                                                 maxWidth: 600,
+                                                 maxHeight: 500,
+                                                 show: {
+                                                     effect: "blind",
+                                                     duration: 500
+                                                 },
+                                                 hide: {
+                                                     effect: "clip",
+                                                     duration: 500,
+                                                 }
+                                             }).parent().resizable({
+                                                 containment: "#page-wrapper"
+                                             }).draggable({
+                                                 containment: "#page-wrapper",
+                                                 opacity: 0.70
+                                             });
+                                         }else{
+                                             noty({
+                                                 timeout: 5000,
+                                                 layout: 'bottom',
+                                                 text: log['message'],
+                                                 type: 'warning',
+                                                 closeWith: ['click']
+                                             });
+                                         }
+                                     }
+                                 });
+                             }); 
+                        }    
                     }
                 }
             });
@@ -634,9 +655,17 @@ var $selectgroupenv = function(){
                             $tr = $("tr[class^='"+$nodename+"x"+$group_name+"x"+$name+"']");
                             $newclass = $tr.attr('class')+"x"+$environment_name;
                             $tr.attr('class', $newclass);
-                            var $oldenv = $tr.children('td').first().next().next().text();
+                            if($usertype == 0 || $usertype == 1){
+                                var $oldenv = $tr.children('td').first().next().next().text();
+                            }else{
+                                var $oldenv = $tr.children('td').first().next().text();
+                            }
                             var $newenv = $oldenv+","+$environment_name;
-                            $tr.children('td').first().next().next().text($newenv);
+                            if($usertype == 0 || $usertype == 1){
+                                $tr.children('td').first().next().next().text($newenv);
+                            }else{
+                                $tr.children('td').first().next().text($newenv);
+                            }
                             $tr.children('td').first().next().next().next().next().next().next().next().find('button').first().attr('env', $newenv);
                             $tr.children('td').first().next().next().next().next().next().next().next().next().find('button').first().attr('env', $newenv);
                         }else{
@@ -775,6 +804,7 @@ var $selectgroupenv = function(){
 }
 
 var $selectnode = function(){
+    var $usertype = $(this).attr('usertype');
     var $maindiv = $("#maindiv");
     var $dashboardiv = $(".dash");
     $dashboardiv.empty();
@@ -889,15 +919,21 @@ var $selectnode = function(){
             success: function(result){
                 $maindiv.prepend('<div class="panel panel-primary panel-custom" id="panel'+nodename+'"></div>');
                 var $panel = $("#panel"+nodename);
-                $panel.append('<div class="panel-heading"><span class="glyphicon glyphicon-th-list"></span> '+ nodename +'<div style="float:right;"><button class="btn btn-warning btn-sm multibtn" name="restart" >Restart</button><button class="btn btn-warning btn-sm multibtn" name="start" >Start</button><button class="btn btn-warning btn-sm multibtn" name="stop" >Stop</button></div></div>');
-                
-                $panel.find("button[class~='multibtn']").each(function(){
-                    $(this).click($multievent);
-                });
+                $panel.append('<div class="panel-heading"><span class="glyphicon glyphicon-th-list"></span> '+ nodename +'</div>');
+
+                if($usertype == 0 || $usertype == 1){
+                    $panel.children('div').first().append('<div style="float:right;"><button class="btn btn-warning btn-sm multibtn" name="restart" >Restart</button><button class="btn btn-warning btn-sm multibtn" name="start" >Start</button><button class="btn btn-warning btn-sm multibtn" name="stop" >Stop</button></div>'); 
+                    $panel.find("button[class~='multibtn']").each(function(){
+                        $(this).click($multievent);
+                    });
+                }
                 
                 $panel.append('<table class="table table-bordered" id="table'+nodename+'" ></table>');
                 var $table = $("#table"+nodename);
-                $table = $table.append('<tr class="active"><th><input type="checkbox" class="multiple"></th> <th>Pid</th> <th>Name</th> <th>Group</th> <th>Uptime</th> <th>State name</th> <th></th> <th></th> </tr>');
+                $table.append('<tr class="active"><th>Pid</th> <th>Name</th> <th>Group</th> <th>Uptime</th> <th>State name</th> </tr>');
+                if($usertype == 0 || $usertype == 1){
+                    $table.find('tr').first().prepend('<th><input type="checkbox" class="multiple"></th>');
+                }
 
                 $table.find("input[class='multiple']").change($multiplecheckbox);
                 for(var $counter = 0; $counter < result['process_info'].length; $counter++){
@@ -909,10 +945,10 @@ var $selectnode = function(){
                     var $uptime = result['process_info'][$counter]['description'].substring(17,24);
                     var $state = result['process_info'][$counter]['state'];
                     var $statename = result['process_info'][$counter]['statename'];
-
-                    //check
-                    $tr_p.append('<td> <input type="checkbox" class="single" node="'+nodename+'" procname="'+$group+':'+$name+'"> </td>');
-
+                    if($usertype == 0 || $usertype == 1){
+                        //check
+                        $tr_p.append('<td> <input type="checkbox" class="single" node="'+nodename+'" procname="'+$group+':'+$name+'"> </td>');
+                    }
                     //pid
                     if( $pid == 0 ){
                         $tr_p.append('<td> - </td>');
@@ -939,100 +975,105 @@ var $selectnode = function(){
                    }
 
                    //buttons
-                   if( $state==20 ){
-                       $tr_p.append('<td></td>');
-                       $td_p = $tr_p.children('td').last();
-                       $td_p.append('<button place="node" class="btn btn-primary btn-block act" name="/node/'+nodename+'/process/'+$group+':'+$name+'/restart" value="Restart">Restart</button>');
-                       var $btn_restart = $td_p.children('button').first();
-                       $btn_restart.click($buttonactions);
+                   if($usertype == 0 || $usertype == 1){
+                       if( $state==20 ){
+                           $tr_p.append('<td></td>');
+                           $td_p = $tr_p.children('td').last();
+                           $td_p.append('<button place="node" class="btn btn-primary btn-block act" name="/node/'+nodename+'/process/'+$group+':'+$name+'/restart" value="Restart">Restart</button>');
+                           var $btn_restart = $td_p.children('button').first();
+                           $btn_restart.click($buttonactions);
 
-                       $tr_p.append('<td></td>');
-                       var $td_p = $tr_p.children('td').last();
-                       $td_p.append('<button place="node" class="btn btn-primary btn-block act" name="/node/'+nodename+'/process/'+$group+':'+$name+'/stop" value="Stop">Stop</button>');
-                       var $btn_stop = $td_p.children('button').first();
-                       $btn_stop.click($buttonactions);
-                    }else if($state==0){
-                       $tr_p.append('<td></td>');
-                       var $td_p = $tr_p.children('td').last();;
-                       $td_p.append('<button place="node" class="btn btn-primary btn-block act" name="/node/'+nodename+'/process/'+$group+':'+$name+'/start" value="Start">Start</button>');
-                       var $btn_restart = $td_p.children('button').first();
-                       $btn_restart.click($buttonactions);
+                           $tr_p.append('<td></td>');
+                           var $td_p = $tr_p.children('td').last();
+                           $td_p.append('<button place="node" class="btn btn-primary btn-block act" name="/node/'+nodename+'/process/'+$group+':'+$name+'/stop" value="Stop">Stop</button>');
+                           var $btn_stop = $td_p.children('button').first();
+                           $btn_stop.click($buttonactions);
+                        }else if($state==0){
+                           $tr_p.append('<td></td>');
+                           var $td_p = $tr_p.children('td').last();;
+                           $td_p.append('<button place="node" class="btn btn-primary btn-block act" name="/node/'+nodename+'/process/'+$group+':'+$name+'/start" value="Start">Start</button>');
+                           var $btn_restart = $td_p.children('button').first();
+                           $btn_restart.click($buttonactions);
 
-                       $tr_p.append('<td></td>');
-                       var $td_p = $tr_p.children('td').last();
-                       $td_p.append('<button place="node" class="btn btn-primary btn-block disabled act" value="Stop">Stop</button>');
-                       var $btn_stop = $td_p.children('button').first();
-                       $btn_stop.click($buttonactions);
-                    }
-                    //Readlog
-                    $tr_p.append('<td><a class="btn btn-primary btn-block act" nodename="'+nodename+'" processgroup="'+$group+'" processname="'+$name+'" url="/node/'+nodename+'/process/'+$group+':'+$name+'/readlog"> Readlog </a></td>');
-                    var $readlog = $tr_p.children('td').last().children('a').first();
-
-                    $readlog.click(function(){
-                        var url=$(this).attr('url');
-                        var nodename=$(this).attr('nodename');
-                        var processname=$(this).attr('processname');
-                        var processgroup=$(this).attr('processgroup');
-                        var classname = nodename+"_"+processgroup+"_"+processname
-                        var $dia = $("."+classname);
-                        var timer;
-
-                        if($dia.length==0){
-                            $logdiv.append('<div class="'+classname+'"></div>');
-                            $dia = $("."+classname);
+                           $tr_p.append('<td></td>');
+                           var $td_p = $tr_p.children('td').last();
+                           $td_p.append('<button place="node" class="btn btn-primary btn-block disabled act" value="Stop">Stop</button>');
+                           var $btn_stop = $td_p.children('button').first();
+                           $btn_stop.click($buttonactions);
                         }
-                        $.ajax({
-                            url: url,
-                            dataType: 'json',
-                            success: function(log){
-                                if (log['status']=="success"){
-                                    $dia.html('<p>'+log['log']+'</p>');
-                                    $dia.dialog({
-                                        open: function(){
-                                            timer = setInterval(function () {
-                                                $.ajax({
-                                                    url: url,
-                                                    dataType: 'json',
-                                                    success: function(log){
-                                                        $dia.html('<p>'+log['log']+'</p>');
-                                                    }
-                                                });
-                                            },1000);
-                                        },
-                                        close: function(){
-                                            console.log("kapandiii");
-                                            clearInterval(timer);
-                                        },
-                                        title: classname,
-                                        maxWidth: 600,
-                                        maxHeight: 500,
-                                        show: {
-                                            effect: "blind",
-                                            duration: 500
-                                        },
-                                        hide: {
-                                            effect: "clip",
-                                            duration: 500,
-                                        }
-                                    }).parent().resizable({
-                                        containment: "#page-wrapper"
-                                    }).draggable({
-                                        containment: "#page-wrapper",
-                                        opacity: 0.70
-                                    });
-                                }else{
-                                    noty({
-                                        timeout: 5000,
-                                        layout: 'bottom',
-                                        text: log['message'],
-                                        type: 'warning',
-                                        closeWith: ['click']
-                                    });
+                    }
 
-                                }
+                    if($usertype == 0 || $usertype == 1 || $usertype == 2){
+                        //Readlog
+                        $tr_p.append('<td><a class="btn btn-primary btn-block act" nodename="'+nodename+'" processgroup="'+$group+'" processname="'+$name+'" url="/node/'+nodename+'/process/'+$group+':'+$name+'/readlog"> Readlog </a></td>');
+                        var $readlog = $tr_p.children('td').last().children('a').first();
+    
+                        $readlog.click(function(){
+                            var url=$(this).attr('url');
+                            var nodename=$(this).attr('nodename');
+                            var processname=$(this).attr('processname');
+                            var processgroup=$(this).attr('processgroup');
+                            var classname = nodename+"_"+processgroup+"_"+processname
+                            var $dia = $("."+classname);
+                            var timer;
+
+                            if($dia.length==0){
+                                $logdiv.append('<div class="'+classname+'"></div>');
+                                $dia = $("."+classname);
                             }
+                            $.ajax({
+                                url: url,
+                                dataType: 'json',
+                                success: function(log){
+                                    if (log['status']=="success"){
+                                        $dia.html('<p>'+log['log']+'</p>');
+                                        $dia.dialog({
+                                            open: function(){
+                                                timer = setInterval(function () {
+                                                    $.ajax({
+                                                        url: url,
+                                                        dataType: 'json',
+                                                        success: function(log){
+                                                            $dia.html('<p>'+log['log']+'</p>');
+                                                        }
+                                                    });
+                                                },1000);
+                                            },
+                                            close: function(){
+                                                console.log("kapandiii");
+                                                clearInterval(timer);
+                                            },
+                                            title: classname,
+                                            maxWidth: 600,
+                                            maxHeight: 500,
+                                            show: {
+                                                effect: "blind",
+                                                duration: 500
+                                            },
+                                            hide: {
+                                                effect: "clip",
+                                                duration: 500,
+                                            }
+                                        }).parent().resizable({
+                                            containment: "#page-wrapper"
+                                        }).draggable({
+                                            containment: "#page-wrapper",
+                                            opacity: 0.70
+                                        });
+                                    }else{
+                                        noty({
+                                            timeout: 5000,
+                                            layout: 'bottom',
+                                            text: log['message'],
+                                            type: 'warning',
+                                            closeWith: ['click']
+                                        });
+    
+                                    }
+                                }
+                            });
                         });
-                    });
+                    }
                 }
             }  
         });

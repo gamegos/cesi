@@ -334,6 +334,8 @@ def add_user():
         if session['usertype'] == 0:
             return jsonify(status = 'success')
         else:
+            add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+            add_log.write("%s - - Unauthorized user request for add user event. Add user event fail .\n"%( datetime.now().ctime() ))
             return jsonify(status = 'error')
 
 
@@ -353,6 +355,8 @@ def del_user():
                            names = usernamelist,
                            types = usertypelist)
         else:
+            add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+            add_log.write("%s - - Unauthorized user request for delete user event. Delete user event fail .\n"%( datetime.now().ctime() ))
             return jsonify(status = 'error')
 
 @app.route('/delete/user/<username>')
@@ -363,14 +367,22 @@ def del_user_handler(username):
                 cur = get_db().cursor()
                 cur.execute("delete from userinfo where username=?",[username])
                 get_db().commit()
+                add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+                add_log.write("%s - - %s user deleted .\n"%( datetime.now().ctime(), username ))
                 return jsonify(status = "success")
             else:
+                add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+                add_log.write("%s - - %s  user request for delete admin user. Delete admin user event fail .\n"%( datetime.now().ctime(), session['username'] ))
                 return jsonify(status = "error",
                                message= "Admin can't delete")
         else:
+            add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+            add_log.write("%s - - %s is unauthorized user for request to delete a user. Delete event fail .\n"%( datetime.now().ctime(), session['username'] ))
             return jsonify(status = "error",
                            message = "Only Admin can delete a user")
     else:
+        add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+        add_log.write("%s - - Illegal request for delete user event.\n"%( datetime.now().ctime()))
         return redirect(url_for('login'))
 
 # Writes new user information to database
@@ -397,18 +409,28 @@ def adduserhandler():
                 if password == confirmpassword:
                     cur.execute("insert into userinfo values(?, ?, ?)", (username, password, usertype,))
                     get_db().commit()
+                    add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+                    add_log.write("%s - - New user added.\n"%( datetime.now().ctime() ))
                     return jsonify(status = "success",
                                    message ="User added")
                 else:
+                    add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+                    add_log.write("%s - - Passwords didn't match at add user event.\n"%( datetime.now().ctime() ))
                     return jsonify(status = "error",
                                    message ="Passwords didn't match")
             else:
+                add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+                add_log.write("%s - - Username is avaible at add user event.\n"%( datetime.now().ctime() ))
                 return jsonify(status = "error",
                                message ="Username is avaible. Please select different username")
         else:
+            add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+            add_log.write("%s - - %s is unauthorized user for request to add user event. Add user event fail .\n"%( datetime.now().ctime(), session['username'] ))
             return jsonify(status = "error",
-                           message = "Only Admin can delete a user")
+                           message = "Only Admin can add a user")
     else:
+        add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+        add_log.write("%s - - Illegal request for add user event.\n"%( datetime.now().ctime()))
         return jsonify(status = "error",
                        message = "First login please")
 
@@ -420,9 +442,13 @@ def changepassword(username):
         if session['username'] == username:
             return jsonify(status = "success")
         else:
+            add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+            add_log.write("%s - - %s user request to change %s 's password. Change password event fail\n"%( datetime.now().ctime(), session['username'], username))
             return jsonify(status = "error",
                            message = "You can only change own password.")
     else:
+        add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+        add_log.write("%s - - Illegal request for change %s 's password event.\n"%( datetime.now().ctime(), username))
         return redirect(url_for('login'))
 
 
@@ -438,14 +464,24 @@ def changepasswordhandler(username):
                 if request.form['new'] == request.form['confirm']:
                     cur.execute("update userinfo set password=? where username=?",[request.form['new'], username])
                     get_db().commit()
+                    add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+                    add_log.write("%s - - %s user change own password.\n"%( datetime.now().ctime(), session['username']))
                     return jsonify(status = "success")
                 else:
-                    return jsonify(status = "error", message = "Passwords do not match")
+                    add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+                    add_log.write("%s - - Passwords didn't match for %s 's change password event. Change password event fail .\n"%( datetime.now().ctime(), session['username']))
+                    return jsonify(status = "error", message = "Passwords didn't match")
             else:
+                add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+                add_log.write("%s - - Old password is wrong for %s 's change password event. Change password event fail .\n"%( datetime.now().ctime(), session['username']))
                 return jsonify(status = "error", message = "Old password is wrong")
         else:
+            add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+            add_log.write("%s - - %s user request to change %s 's password. Change password event fail\n"%( datetime.now().ctime(), session['username'], username))
             return jsonify(status = "error", message = "You can only change own password.")
     else:
+        add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+        add_log.write("%s - - Illegal request for change %s 's password event.\n"%( datetime.now().ctime(), username))
         return redirect(url_for('login'))
 
 @app.errorhandler(404)

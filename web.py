@@ -229,13 +229,21 @@ def json_restart(node_name, process_name):
                 node = Node(node_config)
                 if node.connection.supervisor.stopProcess(process_name):
                     if node.connection.supervisor.startProcess(process_name):
+                        add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+                        add_log.write("%s - - %s restarted %s node's %s process .\n"%( datetime.now().ctime(), session['username'], node_name, process_name ))
                         return JsonValue(process_name, node_name, "restart").success()
             except xmlrpclib.Fault as err:
+                add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+                add_log.write("%s - - %s unsucces restart event %s node's %s process .\n"%( datetime.now().ctime(), session['username'], node_name, process_name ))
                 return JsonValue(process_name, node_name, "restart").error(err.faultCode, err.faultString)
         else:
+            add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+            add_log.write("%s - - %s is unauthorized user request for restart. Restart event fail for %s node's %s process .\n"%( datetime.now().ctime(), session['username'], node_name, process_name ))
             return jsonify(status = "error2",
                            message = "You are not authorized this action" )
     else:
+        add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+        add_log.write("%s - - Illegal request for restart to %s node's %s process %s .\n"%( datetime.now().ctime(), node_name, process_name ))
         return redirect(url_for('login'))
 
 # Process start
@@ -247,13 +255,21 @@ def json_start(node_name, process_name):
                 node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
                 node = Node(node_config)
                 if node.connection.supervisor.startProcess(process_name):
+                    add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+                    add_log.write("%s - - %s started %s node's %s process .\n"%( datetime.now().ctime(), session['username'], node_name, process_name ))
                     return JsonValue(process_name, node_name, "start").success()
             except xmlrpclib.Fault as err:
+                add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+                add_log.write("%s - - %s unsucces start event %s node's %s process .\n"%( datetime.now().ctime(), session['username'], node_name, process_name ))
                 return JsonValue(process_name, node_name, "start").error(err.faultCode, err.faultString)
         else:   
+            add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+            add_log.write("%s - - %s is unauthorized user request for start. Start event fail for %s node's %s process .\n"%( datetime.now().ctime(), session['username'], node_name, process_name ))
             return jsonify(status = "error2",
                            message = "You are not authorized this action" )
     else:
+        add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+        add_log.write("%s - - Illegal request for start to %s node's %s process %s .\n"%( datetime.now().ctime(), node_name, process_name ))
         return redirect(url_for('login'))
 
 # Process stop
@@ -265,13 +281,21 @@ def json_stop(node_name, process_name):
                 node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
                 node = Node(node_config)
                 if node.connection.supervisor.stopProcess(process_name):
+                    add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+                    add_log.write("%s - - %s stopped %s node's %s process .\n"%( datetime.now().ctime(), session['username'], node_name, process_name ))
                     return JsonValue(process_name, node_name, "stop").success()
             except xmlrpclib.Fault as err:
+                add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+                add_log.write("%s - - %s unsucces stop event %s node's %s process .\n"%( datetime.now().ctime(), session['username'], node_name, process_name ))
                 return JsonValue(process_name, node_name, "stop").error(err.faultCode, err.faultString)
         else:
+            add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+            add_log.write("%s - - %s is unauthorized user request for stop. Stop event fail for %s node's %s process .\n"%( datetime.now().ctime(), session['username'], node_name, process_name ))
             return jsonify(status = "error2",
                            message = "You are not authorized this action" )
     else:
+        add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+        add_log.write("%s - - Illegal request for stop to %s node's %s process %s .\n"%( datetime.now().ctime(), node_name, process_name ))
         return redirect(url_for('login'))
 
 # Node name list in the configuration file
@@ -291,10 +315,16 @@ def readlog(node_name, process_name):
             node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
             node = Node(node_config)
             log = node.connection.supervisor.tailProcessStdoutLog(process_name, 0, 500)[0]
+            add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+            add_log.write("%s - - %s read log %s node's %s process .\n"%( datetime.now().ctime(), session['username'], node_name, process_name ))
             return jsonify( status = "success", url="node/"+node_name+"/process/"+process_name+"/read" , log=log)
         else:
+            add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+            add_log.write("%s - - %s is unauthorized user request for read log. Read log event fail for %s node's %s process .\n"%( datetime.now().ctime(), session['username'], node_name, process_name ))
             return jsonify( status = "error", message= "You are not authorized for this action")
     else:
+        add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+        add_log.write("%s - - Illegal request for read log to %s node's %s process %s .\n"%( datetime.now().ctime(), node_name, process_name ))
         return jsonify( status = "error", message= "First login please")
 
 # Add user method for only admin type user

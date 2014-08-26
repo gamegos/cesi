@@ -394,35 +394,39 @@ def adduserhandler():
             password = request.form['password']
             confirmpassword = request.form['confirmpassword']
 
-            if request.form['usertype'] == "Admin":
-                usertype = 0
-            elif request.form['usertype'] == "Standart User":
-                usertype = 1
-            elif request.form['usertype'] == "Only Log":
-                usertype = 2
-            elif request.form['usertype'] == "Read Only":
-                usertype = 3
+            if username == "" or password == "" or confirmpassword == "":
+                return jsonify( status = "null",
+                                message = "Please enter value")
+            else:
+                if request.form['usertype'] == "Admin":
+                    usertype = 0
+                elif request.form['usertype'] == "Standart User":
+                    usertype = 1
+                elif request.form['usertype'] == "Only Log":
+                    usertype = 2
+                elif request.form['usertype'] == "Read Only":
+                    usertype = 3
 
-            cur = get_db().cursor()
-            cur.execute("select * from userinfo where username=?",(username,))
-            if not cur.fetchall():
-                if password == confirmpassword:
-                    cur.execute("insert into userinfo values(?, ?, ?)", (username, password, usertype,))
-                    get_db().commit()
-                    add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
-                    add_log.write("%s - - New user added.\n"%( datetime.now().ctime() ))
-                    return jsonify(status = "success",
-                                   message ="User added")
+                cur = get_db().cursor()
+                cur.execute("select * from userinfo where username=?",(username,))
+                if not cur.fetchall():
+                    if password == confirmpassword:
+                        cur.execute("insert into userinfo values(?, ?, ?)", (username, password, usertype,))
+                        get_db().commit()
+                        add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+                        add_log.write("%s - - New user added.\n"%( datetime.now().ctime() ))
+                        return jsonify(status = "success",
+                                       message ="User added")
+                    else:
+                        add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+                        add_log.write("%s - - Passwords didn't match at add user event.\n"%( datetime.now().ctime() ))
+                        return jsonify(status = "warning",
+                                       message ="Passwords didn't match")
                 else:
                     add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
-                    add_log.write("%s - - Passwords didn't match at add user event.\n"%( datetime.now().ctime() ))
-                    return jsonify(status = "error",
-                                   message ="Passwords didn't match")
-            else:
-                add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
-                add_log.write("%s - - Username is avaible at add user event.\n"%( datetime.now().ctime() ))
-                return jsonify(status = "error",
-                               message ="Username is avaible. Please select different username")
+                    add_log.write("%s - - Username is avaible at add user event.\n"%( datetime.now().ctime() ))
+                    return jsonify(status = "warning",
+                                   message ="Username is avaible. Please select different username")
         else:
             add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
             add_log.write("%s - - %s is unauthorized user for request to add user event. Add user event fail .\n"%( datetime.now().ctime(), session['username'] ))

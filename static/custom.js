@@ -63,6 +63,15 @@ var $adduserhandler = function(){
                     type: 'success',
                     closeWith: ['click']
                 });
+            }else if(data['status']=="null" || data['status']=="warning"){
+                noty({
+                    timeout: 5000,
+                    layout: 'bottom',
+                    text: data['message'],
+                    type: 'warning',
+                    closeWith: ['click']
+                });
+
             }else{
                 noty({
                     timeout: 5000,
@@ -71,7 +80,6 @@ var $adduserhandler = function(){
                     type: 'error',
                     closeWith: ['click']
                 });
-
             }
         }
     });

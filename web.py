@@ -345,12 +345,10 @@ def del_user():
     if session.get('logged_in'):
         if session['usertype'] == 0:
             cur = get_db().cursor()
-            cur.execute("select username from userinfo")
-            usernames = cur.fetchall();
-            usernamelist =[str(element[0]) for element in usernames]
-            cur.execute("select type from userinfo")
-            usertypes = cur.fetchall();
-            usertypelist =[str(element[0]) for element in usertypes]
+            cur.execute("select username, type from userinfo")
+            users = cur.fetchall();
+            usernamelist =[str(element[0]) for element in users]
+            usertypelist =[str(element[1]) for element in users]
             return jsonify(status = 'success',
                            names = usernamelist,
                            types = usertypelist)

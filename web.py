@@ -466,11 +466,15 @@ def changepasswordhandler(username):
             ar=[str(r[0]) for r in cur.fetchall()]
             if request.form['old'] == ar[0]:
                 if request.form['new'] == request.form['confirm']:
-                    cur.execute("update userinfo set password=? where username=?",[request.form['new'], username])
-                    get_db().commit()
-                    add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
-                    add_log.write("%s - - %s user change own password.\n"%( datetime.now().ctime(), session['username']))
-                    return jsonify(status = "success")
+                    if request.form['new'] != "":
+                        cur.execute("update userinfo set password=? where username=?",[request.form['new'], username])
+                        get_db().commit()
+                        add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+                        add_log.write("%s - - %s user change own password.\n"%( datetime.now().ctime(), session['username']))
+                        return jsonify(status = "success")
+                    else:
+                        return jsonify(status = "null",
+                                       message = "Please enter valid value")
                 else:
                     add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
                     add_log.write("%s - - Passwords didn't match for %s 's change password event. Change password event fail .\n"%( datetime.now().ctime(), session['username']))

@@ -250,6 +250,14 @@ var $passwordhandler = function(){
                     closeWith: ['click']
                 });
 
+            }else if(data['status']=="null") {
+                noty({
+                    timeout: 5000,
+                    layout: 'bottom',
+                    text: data['message'],
+                    type: 'warning',
+                    closeWith: ['click']
+                });
             }else{
                 noty({
                     timeout: 5000,

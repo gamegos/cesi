@@ -185,8 +185,12 @@ def showMain():
 def showNode(node_name):
     if session.get('logged_in'):
         node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
+        add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+        add_log.write("%s - - %s is viewed node %s .\n"%( datetime.now().ctime(), session['username'], node_name ))
         return jsonify( process_info = Node(node_config).process_dict) 
     else:
+        add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+        add_log.write("%s - - Illegal request for view node %s .\n"%( datetime.now().ctime(), node_name ))
         return redirect(url_for('login'))
 
 @app.route('/group/<group_name>/environment/<environment_name>')

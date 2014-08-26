@@ -1,8 +1,10 @@
 from flask import Flask, render_template, url_for, redirect, jsonify, request, g, session, flash
 from cesi import Config, Connection, Node, CONFIG_FILE, ProcessInfo, JsonValue
+from datetime import datetime
 import cesi 
 import xmlrpclib
 import sqlite3
+
 
 DATABASE = "./userinfo.db"
 
@@ -35,6 +37,8 @@ def control():
 #if query returns an empty list
         if not cur.fetchall():
             session.clear()
+            add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+            add_log.write("%s - - Login fail. Username is not avaible.\n"%( datetime.now().ctime() ))
             return "Username is not available"
         else:
             cur.execute("select * from userinfo where username=?",(username,))
@@ -43,9 +47,13 @@ def control():
                 session['logged_in'] = True
                 cur.execute("select * from userinfo where username=?",(username,))
                 session['usertype'] = cur.fetchall()[0][2]
+                add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+                add_log.write("%s - - %s is logged in.\n"%( datetime.now().ctime(), session['username'] ))
                 return redirect(url_for('showMain'))
             else:
                 session.clear()
+                add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+                add_log.write("%s - - Login fail. Invalid password.\n"%( datetime.now().ctime() ))
                 return "Invalid password"
 
 # Render login page
@@ -56,6 +64,8 @@ def login():
 # Logout action
 @app.route('/logout', methods = ['GET', 'POST'])
 def logout():
+    add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+    add_log.write("%s - - %s is logged out.\n"%( datetime.now().ctime(), session['username'] ))
     session.clear()
     return redirect(url_for('login'))
 

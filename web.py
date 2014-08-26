@@ -147,8 +147,6 @@ def showMain():
                                 tmp.append(env_name)
             g_environment_list.append(tmp)
         
-        print group_list
-        print g_environment_list
         connected_count = len(connected_node_list)
         not_connected_count = len(not_connected_node_list)
 

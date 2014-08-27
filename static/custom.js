@@ -1200,3 +1200,9 @@ $( document ).ready(function() {
     $(".changepassword").click($changepassword);
     $(".ajax3").click($selectgroupenv);
 });
+
+$(window).unload(function(){
+    $( "input:checked" ).each(function() {
+        $(this).prop( "checked",false );
+    });    
+});

@@ -42,6 +42,11 @@ class Config:
         self.member_list = self.member_list.split(', ')
         return self.member_list
 
+    def getDatabase(self):
+        return str(self.cfg.get('cesi', 'database'))
+
+    def getActivityLog(self):
+        return str(self.cfg.get('cesi', 'activity_log'))
 
 class NodeConfig:
 

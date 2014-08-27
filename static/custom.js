@@ -1248,7 +1248,7 @@ $( document ).ready(function() {
             success: function(log){
                 $(".activity-log").children('p').first().html(function(){
                     for(var i=0; i< log['log'].length; i++){
-                        log['log'][i] = log['log'][i]+'<br>'
+                        log['log'][i] = '&nbsp&nbsp'+log['log'][i]+'<br>'
                     }
                     return log['log']
                 });

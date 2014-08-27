@@ -8,17 +8,21 @@ import mmap
 import os
 import time
 
-DATABASE = "./userinfo.db"
-
 app = Flask(__name__)
 app.config.from_object(__name__)
-app.secret_key = '42' # :)
+
+app.config.update(dict(
+        DATABASE='./userinfo.db',
+        DEBUG=True,
+        SECRET_KEY='42',
+        ACTIVITY_LOG='/home/gulsah/Masaustu/cesi_activity.log'
+        ))
 
 # Database connection
 def get_db():
     db = getattr(g, '_database', None)
     if db is None:
-        db = g._database = sqlite3.connect(DATABASE)
+        db = g._database = sqlite3.connect(app.config['DATABASE'])
     return db
 
 # Close database connection
@@ -30,9 +34,9 @@ def close_connection(exception):
 
 @app.route('/activitylog')
 def getlogtail():
-    n=20
-    size = os.path.getsize("/home/gulsah/Masaustu/cesi_activity.log")
-    with open("/home/gulsah/Masaustu/cesi_activity.log", "rb") as f:
+    n=12
+    size = os.path.getsize(app.config['ACTIVITY_LOG'])
+    with open(app.config['ACTIVITY_LOG'], "rb") as f:
         # for Windows the mmap parameters are different
         fm = mmap.mmap(f.fileno(), 0, mmap.MAP_SHARED, mmap.PROT_READ)
         try:
@@ -59,7 +63,7 @@ def control():
 #if query returns an empty list
         if not cur.fetchall():
             session.clear()
-            add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+            add_log = open(app.config['ACTIVITY_LOG'], "a")
             add_log.write("%s - - Login fail. Username is not avaible.\n"%( datetime.now().ctime() ))
             return jsonify(status = "warning",
                            message = "Username is not  avaible ")
@@ -70,12 +74,12 @@ def control():
                 session['logged_in'] = True
                 cur.execute("select * from userinfo where username=?",(username,))
                 session['usertype'] = cur.fetchall()[0][2]
-                add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+                add_log = open(app.config['ACTIVITY_LOG'], "a")
                 add_log.write("%s - - %s is logged in.\n"%( datetime.now().ctime(), session['username'] ))
                 return jsonify(status = "success")
             else:
                 session.clear()
-                add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+                add_log = open(app.config['ACTIVITY_LOG'], "a")
                 add_log.write("%s - - Login fail. Invalid password.\n"%( datetime.now().ctime() ))
                 return jsonify(status = "warning",
                                message = "Invalid password")
@@ -88,7 +92,7 @@ def login():
 # Logout action
 @app.route('/logout', methods = ['GET', 'POST'])
 def logout():
-    add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+    add_log = open(app.config['ACTIVITY_LOG'], "a")
     add_log.write("%s - - %s is logged out.\n"%( datetime.now().ctime(), session['username'] ))
     session.clear()
     return redirect(url_for('login'))
@@ -210,11 +214,11 @@ def showMain():
 def showNode(node_name):
     if session.get('logged_in'):
         node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
-        add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+        add_log = open(app.config['ACTIVITY_LOG'], "a")
         add_log.write("%s - - %s is viewed node %s .\n"%( datetime.now().ctime(), session['username'], node_name ))
         return jsonify( process_info = Node(node_config).process_dict) 
     else:
-        add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+        add_log = open(app.config['ACTIVITY_LOG'], "a")
         add_log.write("%s - - Illegal request for view node %s .\n"%( datetime.now().ctime(), node_name ))
         return redirect(url_for('login'))
 
@@ -254,20 +258,20 @@ def json_restart(node_name, process_name):
                 node = Node(node_config)
                 if node.connection.supervisor.stopProcess(process_name):
                     if node.connection.supervisor.startProcess(process_name):
-                        add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+                        add_log = open(app.config['ACTIVITY_LOG'], "a")
                         add_log.write("%s - - %s restarted %s node's %s process .\n"%( datetime.now().ctime(), session['username'], node_name, process_name ))
                         return JsonValue(process_name, node_name, "restart").success()
             except xmlrpclib.Fault as err:
-                add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+                add_log = open(app.config['ACTIVITY_LOG'], "a")
                 add_log.write("%s - - %s unsucces restart event %s node's %s process .\n"%( datetime.now().ctime(), session['username'], node_name, process_name ))
                 return JsonValue(process_name, node_name, "restart").error(err.faultCode, err.faultString)
         else:
-            add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+            add_log = open(app.config['ACTIVITY_LOG'], "a")
             add_log.write("%s - - %s is unauthorized user request for restart. Restart event fail for %s node's %s process .\n"%( datetime.now().ctime(), session['username'], node_name, process_name ))
             return jsonify(status = "error2",
                            message = "You are not authorized this action" )
     else:
-        add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+        add_log = open(app.config['ACTIVITY_LOG'], "a")
         add_log.write("%s - - Illegal request for restart to %s node's %s process %s .\n"%( datetime.now().ctime(), node_name, process_name ))
         return redirect(url_for('login'))
 
@@ -280,20 +284,20 @@ def json_start(node_name, process_name):
                 node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
                 node = Node(node_config)
                 if node.connection.supervisor.startProcess(process_name):
-                    add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+                    add_log = open(app.config['ACTIVITY_LOG'], "a")
                     add_log.write("%s - - %s started %s node's %s process .\n"%( datetime.now().ctime(), session['username'], node_name, process_name ))
                     return JsonValue(process_name, node_name, "start").success()
             except xmlrpclib.Fault as err:
-                add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+                add_log = open(app.config['ACTIVITY_LOG'], "a")
                 add_log.write("%s - - %s unsucces start event %s node's %s process .\n"%( datetime.now().ctime(), session['username'], node_name, process_name ))
                 return JsonValue(process_name, node_name, "start").error(err.faultCode, err.faultString)
         else:   
-            add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+            add_log = open(app.config['ACTIVITY_LOG'], "a")
             add_log.write("%s - - %s is unauthorized user request for start. Start event fail for %s node's %s process .\n"%( datetime.now().ctime(), session['username'], node_name, process_name ))
             return jsonify(status = "error2",
                            message = "You are not authorized this action" )
     else:
-        add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+        add_log = open(app.config['ACTIVITY_LOG'], "a")
         add_log.write("%s - - Illegal request for start to %s node's %s process %s .\n"%( datetime.now().ctime(), node_name, process_name ))
         return redirect(url_for('login'))
 
@@ -306,20 +310,20 @@ def json_stop(node_name, process_name):
                 node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
                 node = Node(node_config)
                 if node.connection.supervisor.stopProcess(process_name):
-                    add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+                    add_log = open(app.config['ACTIVITY_LOG'], "a")
                     add_log.write("%s - - %s stopped %s node's %s process .\n"%( datetime.now().ctime(), session['username'], node_name, process_name ))
                     return JsonValue(process_name, node_name, "stop").success()
             except xmlrpclib.Fault as err:
-                add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+                add_log = open(app.config['ACTIVITY_LOG'], "a")
                 add_log.write("%s - - %s unsucces stop event %s node's %s process .\n"%( datetime.now().ctime(), session['username'], node_name, process_name ))
                 return JsonValue(process_name, node_name, "stop").error(err.faultCode, err.faultString)
         else:
-            add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+            add_log = open(app.config['ACTIVITY_LOG'], "a")
             add_log.write("%s - - %s is unauthorized user request for stop. Stop event fail for %s node's %s process .\n"%( datetime.now().ctime(), session['username'], node_name, process_name ))
             return jsonify(status = "error2",
                            message = "You are not authorized this action" )
     else:
-        add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+        add_log = open(app.config['ACTIVITY_LOG'], "a")
         add_log.write("%s - - Illegal request for stop to %s node's %s process %s .\n"%( datetime.now().ctime(), node_name, process_name ))
         return redirect(url_for('login'))
 
@@ -340,15 +344,15 @@ def readlog(node_name, process_name):
             node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
             node = Node(node_config)
             log = node.connection.supervisor.tailProcessStdoutLog(process_name, 0, 500)[0]
-            add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+            add_log = open(app.config['ACTIVITY_LOG'], "a")
             add_log.write("%s - - %s read log %s node's %s process .\n"%( datetime.now().ctime(), session['username'], node_name, process_name ))
             return jsonify( status = "success", url="node/"+node_name+"/process/"+process_name+"/read" , log=log)
         else:
-            add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+            add_log = open(app.config['ACTIVITY_LOG'], "a")
             add_log.write("%s - - %s is unauthorized user request for read log. Read log event fail for %s node's %s process .\n"%( datetime.now().ctime(), session['username'], node_name, process_name ))
             return jsonify( status = "error", message= "You are not authorized for this action")
     else:
-        add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+        add_log = open(app.config['ACTIVITY_LOG'], "a")
         add_log.write("%s - - Illegal request for read log to %s node's %s process %s .\n"%( datetime.now().ctime(), node_name, process_name ))
         return jsonify( status = "error", message= "First login please")
 
@@ -359,7 +363,7 @@ def add_user():
         if session['usertype'] == 0:
             return jsonify(status = 'success')
         else:
-            add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+            add_log = open(app.config['ACTIVITY_LOG'], "a")
             add_log.write("%s - - Unauthorized user request for add user event. Add user event fail .\n"%( datetime.now().ctime() ))
             return jsonify(status = 'error')
 
@@ -378,7 +382,7 @@ def del_user():
                            names = usernamelist,
                            types = usertypelist)
         else:
-            add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+            add_log = open(app.config['ACTIVITY_LOG'], "a")
             add_log.write("%s - - Unauthorized user request for delete user event. Delete user event fail .\n"%( datetime.now().ctime() ))
             return jsonify(status = 'error')
 
@@ -390,21 +394,21 @@ def del_user_handler(username):
                 cur = get_db().cursor()
                 cur.execute("delete from userinfo where username=?",[username])
                 get_db().commit()
-                add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+                add_log = open(app.config['ACTIVITY_LOG'], "a")
                 add_log.write("%s - - %s user deleted .\n"%( datetime.now().ctime(), username ))
                 return jsonify(status = "success")
             else:
-                add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+                add_log = open(app.config['ACTIVITY_LOG'], "a")
                 add_log.write("%s - - %s  user request for delete admin user. Delete admin user event fail .\n"%( datetime.now().ctime(), session['username'] ))
                 return jsonify(status = "error",
                                message= "Admin can't delete")
         else:
-            add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+            add_log = open(app.config['ACTIVITY_LOG'], "a")
             add_log.write("%s - - %s is unauthorized user for request to delete a user. Delete event fail .\n"%( datetime.now().ctime(), session['username'] ))
             return jsonify(status = "error",
                            message = "Only Admin can delete a user")
     else:
-        add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+        add_log = open(app.config['ACTIVITY_LOG'], "a")
         add_log.write("%s - - Illegal request for delete user event.\n"%( datetime.now().ctime()))
         return redirect(url_for('login'))
 
@@ -441,22 +445,22 @@ def adduserhandler():
                         return jsonify(status = "success",
                                        message ="User added")
                     else:
-                        add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+                        add_log = open(app.config['ACTIVITY_LOG'], "a")
                         add_log.write("%s - - Passwords didn't match at add user event.\n"%( datetime.now().ctime() ))
                         return jsonify(status = "warning",
                                        message ="Passwords didn't match")
                 else:
-                    add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+                    add_log = open(app.config['ACTIVITY_LOG'], "a")
                     add_log.write("%s - - Username is avaible at add user event.\n"%( datetime.now().ctime() ))
                     return jsonify(status = "warning",
                                    message ="Username is avaible. Please select different username")
         else:
-            add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+            add_log = open(app.config['ACTIVITY_LOG'], "a")
             add_log.write("%s - - %s is unauthorized user for request to add user event. Add user event fail .\n"%( datetime.now().ctime(), session['username'] ))
             return jsonify(status = "error",
                            message = "Only Admin can add a user")
     else:
-        add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+        add_log = open(app.config['ACTIVITY_LOG'], "a")
         add_log.write("%s - - Illegal request for add user event.\n"%( datetime.now().ctime()))
         return jsonify(status = "error",
                        message = "First login please")
@@ -469,12 +473,12 @@ def changepassword(username):
         if session['username'] == username:
             return jsonify(status = "success")
         else:
-            add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+            add_log = open(app.config['ACTIVITY_LOG'], "a")
             add_log.write("%s - - %s user request to change %s 's password. Change password event fail\n"%( datetime.now().ctime(), session['username'], username))
             return jsonify(status = "error",
                            message = "You can only change own password.")
     else:
-        add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+        add_log = open(app.config['ACTIVITY_LOG'], "a")
         add_log.write("%s - - Illegal request for change %s 's password event.\n"%( datetime.now().ctime(), username))
         return redirect(url_for('login'))
 
@@ -499,19 +503,19 @@ def changepasswordhandler(username):
                         return jsonify(status = "null",
                                        message = "Please enter valid value")
                 else:
-                    add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+                    add_log = open(app.config['ACTIVITY_LOG'], "a")
                     add_log.write("%s - - Passwords didn't match for %s 's change password event. Change password event fail .\n"%( datetime.now().ctime(), session['username']))
                     return jsonify(status = "error", message = "Passwords didn't match")
             else:
-                add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+                add_log = open(app.config['ACTIVITY_LOG'], "a")
                 add_log.write("%s - - Old password is wrong for %s 's change password event. Change password event fail .\n"%( datetime.now().ctime(), session['username']))
                 return jsonify(status = "error", message = "Old password is wrong")
         else:
-            add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+            add_log = open(app.config['ACTIVITY_LOG'], "a")
             add_log.write("%s - - %s user request to change %s 's password. Change password event fail\n"%( datetime.now().ctime(), session['username'], username))
             return jsonify(status = "error", message = "You can only change own password.")
     else:
-        add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+        add_log = open(app.config['ACTIVITY_LOG'], "a")
         add_log.write("%s - - Illegal request for change %s 's password event.\n"%( datetime.now().ctime(), username))
         return redirect(url_for('login'))
 

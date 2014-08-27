@@ -28,8 +28,6 @@ var $login = function(){
 }
 
 var $adduser= function(){
-
-    clearInterval(timeractivity);
     $(".activity-log").empty();
     var $link = "/add/user";
     $.ajax({
@@ -122,7 +120,6 @@ var $adduserhandler = function(){
 }
 
 var $showdeluserpage = function(){
-    clearInterval(timeractivity);
     $(".activity-log").empty();
     var $link = "/delete/user";
     $.ajax({
@@ -219,7 +216,6 @@ var $delete_user = function(){
 }
 
 var $changepassword = function(){
-    clearInterval(timeractivity);
     $(".activity-log").empty();
     $username = $(this).attr('name');
     $link = "/change/password/"+$username;
@@ -416,7 +412,6 @@ var $buttonactions = function(){
 };
 
 var $selectgroupenv = function(){
-    clearInterval(timeractivity);
     $(".activity-log").empty();
     var $usertype = $(this).attr('usertype');
     console.log($usertype);
@@ -842,7 +837,6 @@ var $selectgroupenv = function(){
 }
 
 var $selectnode = function(){
-    clearInterval(timeractivity);
     $(".activity-log").empty();
     var $usertype = $(this).attr('usertype');
     var $maindiv = $("#maindiv");
@@ -1241,7 +1235,6 @@ $( document ).ready(function() {
     $(".changepassword").click($changepassword);
     $(".ajax3").click($selectgroupenv);
 
-    timeractivity = setInterval(function () {
         $.ajax({
             url: "/activitylog",
             dataType: 'json',
@@ -1254,7 +1247,6 @@ $( document ).ready(function() {
                 });
             }
         });
-    },1000);
 });
 
 $(window).unload(function(){

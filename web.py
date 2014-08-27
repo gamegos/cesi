@@ -39,7 +39,8 @@ def control():
             session.clear()
             add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
             add_log.write("%s - - Login fail. Username is not avaible.\n"%( datetime.now().ctime() ))
-            return "Username is not available"
+            return jsonify(status = "warning",
+                           message = "Username is not  avaible ")
         else:
             cur.execute("select * from userinfo where username=?",(username,))
             if password == cur.fetchall()[0][1]:
@@ -49,12 +50,13 @@ def control():
                 session['usertype'] = cur.fetchall()[0][2]
                 add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
                 add_log.write("%s - - %s is logged in.\n"%( datetime.now().ctime(), session['username'] ))
-                return redirect(url_for('showMain'))
+                return jsonify(status = "success")
             else:
                 session.clear()
                 add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
                 add_log.write("%s - - Login fail. Invalid password.\n"%( datetime.now().ctime() ))
-                return "Invalid password"
+                return jsonify(status = "warning",
+                               message = "Invalid password")
 
 # Render login page
 @app.route('/login', methods = ['GET', 'POST'])

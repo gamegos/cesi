@@ -1,3 +1,32 @@
+var $login = function(){
+    var $url = "/login/control";
+    $.ajax({
+        url: $url,
+        dataType: 'json',
+        type: 'post',
+        data: $(this).parent().parent().serialize(),
+        success: function(data){
+            if(data['status']=='warning'){
+                noty({
+                    timeout: 5000,
+                    layout: 'bottom',
+                    text: data['message'],
+                    type: 'warning',
+                    closeWith: ['click']
+                });
+            }else{
+               window.location='/'; 
+            }
+        },
+        complete: function(){
+            $(".loginform").find('input').each(function(){
+                $(this).val("");
+            });
+        }
+    });
+
+}
+
 var $adduser= function(){
     var $link = "/add/user";
     $.ajax({
@@ -1193,6 +1222,7 @@ var $multievent = function(){
 
 $( document ).ready(function() {
     $(".showall").click($selectnode);
+    $(".login").click($login);
     $(".ajax2").click($selectnode);
     $(".act").click($buttonactions);
     $(".adduser").click($adduser);

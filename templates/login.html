@@ -27,7 +27,7 @@
                         <h3 class="panel-title">Please Sign In</h3>
                     </div>
                     <div class="panel-body">
-                        <form role="form" method="post" action="{{ url_for('control') }}">
+                        <form class="loginform" role="form" method="post" action="/login/control">
                             <fieldset>
                                 <div class="form-group">
                                     <input class="form-control" placeholder="Username" name="email" autofocus>
@@ -41,7 +41,7 @@
                                     </label>
                                 </div>
                                 <!-- Change this to a button or input when using this as a form -->
-                                <button class="btn btn-lg btn-success btn-block">Login </button>
+                                <a class="btn btn-lg btn-success btn-block login">Login </a>
                             </fieldset>
                         </form>
                     </div>
@@ -57,7 +57,8 @@
 
     <!-- SB Admin Scripts - Include with every page -->
     <script src="{{ url_for('static', filename='js/sb-admin.js') }}"></script>
-
+    <script src="{{ url_for('static', filename='custom.js') }}"></script>
+    <script language="JavaScript" type="text/javascript"  src="{{ url_for('static', filename ='noty-2.2.4/js/noty/packaged/jquery.noty.packaged.min.js') }}"></script>
 </body>
 
 </html>

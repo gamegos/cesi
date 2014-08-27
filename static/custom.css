@@ -8,39 +8,6 @@
   border: 2px solid #000;
 }
 
-.nav > li > label {
-  position: relative;
-  display: block;
-  padding: 10px 15px;
-  color: #428bca;
-  font-size: 14px;
-  font-family: Arial;
-  line-height: 1.428571429
-} 
-.nav > li > label:hover,
-.nav > li > label:focus {
-  text-decoration: none;
-  background-color: #eee;
-}
-.nav > li.disabled > label {
-  color: #999;
-}
-.nav > li.disabled > label:hover,
-.nav > li.disabled > label:focus {
-  color: #999;
-  text-decoration: none;
-  cursor: not-allowed;
-  background-color: transparent;
-}
-.nav .open > label,
-.nav .open > label,
-.nav .open > label:focus {
-  background-color: #eee;
-  border-color: #428bca;
-}
-
-
-
 #selectable .ui-selected { background: #D1FFD1; }
 
 /* Background colors */

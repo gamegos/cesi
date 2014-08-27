@@ -4,7 +4,9 @@ from datetime import datetime
 import cesi 
 import xmlrpclib
 import sqlite3
-
+import mmap
+import os
+import time
 
 DATABASE = "./userinfo.db"
 
@@ -25,6 +27,26 @@ def close_connection(exception):
     db = getattr(g, '_database', None)
     if db is not None:
         db.close()
+
+@app.route('/activitylog')
+def getlogtail():
+    n=20
+    size = os.path.getsize("/home/gulsah/Masaustu/cesi_activity.log")
+    with open("/home/gulsah/Masaustu/cesi_activity.log", "rb") as f:
+        # for Windows the mmap parameters are different
+        fm = mmap.mmap(f.fileno(), 0, mmap.MAP_SHARED, mmap.PROT_READ)
+        try:
+            for i in xrange(size - 1, -1, -1):
+                if fm[i] == '\n':
+                    n -= 1
+                    if n == -1:
+                        break
+            lines = fm[i + 1 if i else 0:].splitlines()
+            return jsonify(log = lines)
+        finally:
+            fm.close()
+
+
 
 # Username and password control
 @app.route('/login/control', methods = ['GET', 'POST'])

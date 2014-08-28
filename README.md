@@ -37,3 +37,8 @@ cesi-devel@googlegroups.com
 
 [1]: http://supervisord.org/
 
+![Dashboard](https://github.com/GulsahKose/cesi/blob/master/screenshots/image2)
+
+
+![Showall](https://github.com/GulsahKose/cesi/blob/master/screenshots/image1)
+

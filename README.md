@@ -32,6 +32,7 @@ Fill cesi.conf.example
 ## Mailing list
 
 cesi-commit@googlegroups.com
+
 cesi-devel@googlegroups.com
 
 [1]: http://supervisord.org/

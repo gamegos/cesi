@@ -1,10 +1,10 @@
 #cesi ( Centralized Supervisor Interface )
 
-cesi is a web inteface provides manage supervizors from an interface.
+cesi is a web interface provides manage supervizors from same interface.
 
 ## Dependenses
 
-* Python
+* Python ==> 2.7.6
 * Flask
 * xmlrpclib
 * mmap
@@ -13,6 +13,7 @@ cesi is a web inteface provides manage supervizors from an interface.
 
 ## Installation
     sudo apt-get install sqlite3, python, Flask
+
     sqlite3 pat/to/userinfo.db < userinfo.db
 
 ## Configuration
@@ -20,6 +21,7 @@ cesi is a web inteface provides manage supervizors from an interface.
 Fill cesi.conf.example
 
     mv cesi.conf.example cesi.conf
+
     cp cesi.conf /etc/cesi.conf
 
 

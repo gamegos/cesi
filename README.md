@@ -14,7 +14,7 @@ cesi is a web interface provides manage supervizors from same interface.
 ## Installation
     sudo apt-get install sqlite3, python, Flask
 
-    sqlite3 pat/to/userinfo.db < userinfo.db
+    sqlite3 path/to/userinfo.db < userinfo.sql
 
 ## Configuration
 

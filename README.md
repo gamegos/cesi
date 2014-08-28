@@ -2,7 +2,7 @@
 
 cesi is a web interface provides manage supervizors from same interface.
 
-## Dependenses
+## Dependencies
 
 * Python ==> 2.7.6
 * Flask

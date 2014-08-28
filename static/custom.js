@@ -28,7 +28,7 @@ var $login = function(){
 }
 
 var $adduser= function(){
-    $(".activity-log").empty();
+    $(".activity-log").remove();
     var $link = "/add/user";
     $.ajax({
         url: $link,
@@ -120,7 +120,7 @@ var $adduserhandler = function(){
 }
 
 var $showdeluserpage = function(){
-    $(".activity-log").empty();
+    $(".activity-log").remove();
     var $link = "/delete/user";
     $.ajax({
         url: $link,
@@ -216,7 +216,7 @@ var $delete_user = function(){
 }
 
 var $changepassword = function(){
-    $(".activity-log").empty();
+    $(".activity-log").remove();
     $username = $(this).attr('name');
     $link = "/change/password/"+$username;
     $.ajax({
@@ -412,7 +412,7 @@ var $buttonactions = function(){
 };
 
 var $selectgroupenv = function(){
-    $(".activity-log").empty();
+    $(".activity-log").remove();
     var $usertype = $(this).attr('usertype');
     console.log($usertype);
     var $maindiv = $("#maindiv");
@@ -837,7 +837,7 @@ var $selectgroupenv = function(){
 }
 
 var $selectnode = function(){
-    $(".activity-log").empty();
+    $(".activity-log").remove();
     var $usertype = $(this).attr('usertype');
     var $maindiv = $("#maindiv");
     var $dashboardiv = $(".dash");

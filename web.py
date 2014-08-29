@@ -493,7 +493,7 @@ def changepasswordhandler(username):
                     if request.form['new'] != "":
                         cur.execute("update userinfo set password=? where username=?",[request.form['new'], username])
                         get_db().commit()
-                        add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+                        add_log = open(ACTIVITY_LOG, "a")
                         add_log.write("%s - %s user change own password.\n"%( datetime.now().ctime(), session['username']))
                         return jsonify(status = "success")
                     else:

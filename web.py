@@ -437,12 +437,12 @@ def adduserhandler():
                     if password == confirmpassword:
                         cur.execute("insert into userinfo values(?, ?, ?)", (username, password, usertype,))
                         get_db().commit()
-                        add_log = open("/home/gulsah/Masaustu/cesi_activity.log", "a")
+                        add_log = open(ACTIVITY_LOG, "a")
                         add_log.write("%s - New user added.\n"%( datetime.now().ctime() ))
                         return jsonify(status = "success",
                                        message ="User added")
                     else:
-                        add_log = open(CTIVITY_LOG, "a")
+                        add_log = open(ACTIVITY_LOG, "a")
                         add_log.write("%s - Passwords didn't match at add user event.\n"%( datetime.now().ctime() ))
                         return jsonify(status = "warning",
                                        message ="Passwords didn't match")

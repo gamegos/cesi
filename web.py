@@ -32,20 +32,29 @@ def close_connection(exception):
 @app.route('/activitylog')
 def getlogtail():
     n=12
-    size = os.path.getsize(ACTIVITY_LOG)
-    with open(ACTIVITY_LOG, "rb") as f:
-        # for Windows the mmap parameters are different
-        fm = mmap.mmap(f.fileno(), 0, mmap.MAP_SHARED, mmap.PROT_READ)
-        try:
-            for i in xrange(size - 1, -1, -1):
-                if fm[i] == '\n':
-                    n -= 1
-                    if n == -1:
-                        break
+    try:
+        size = os.path.getsize(ACTIVITY_LOG)
+        with open(ACTIVITY_LOG, "rb") as f:
+            # for Windows the mmap parameters are different
+            fm = mmap.mmap(f.fileno(), 0, mmap.MAP_SHARED, mmap.PROT_READ)
+        for i in xrange(size - 1, -1, -1):
+            if fm[i] == '\n':
+                n -= 1
+                if n == -1:
+                    break
             lines = fm[i + 1 if i else 0:].splitlines()
-            return jsonify(log = lines)
-        finally:
+        return jsonify(status = "success",
+                       log = lines)
+    except Exception as err:
+        return jsonify(status = "error",
+                       messagge= err)
+    finally:
+        try:
             fm.close()
+        except (UnboundLocalError, TypeError):
+            return jsonify(status="error",
+                           message = "Activity log file is empty")
+            
 
 
 

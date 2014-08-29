@@ -72,7 +72,7 @@ def control():
                 cur.execute("select * from userinfo where username=?",(username,))
                 session['usertype'] = cur.fetchall()[0][2]
                 add_log = open(ACTIVITY_LOG, "a")
-                add_log.write("%s - %s is logged in.\n"%( datetime.now().ctime(), session['username'] ))
+                add_log.write("%s - %s logged in.\n"%( datetime.now().ctime(), session['username'] ))
                 return jsonify(status = "success")
             else:
                 session.clear()
@@ -90,7 +90,7 @@ def login():
 @app.route('/logout', methods = ['GET', 'POST'])
 def logout():
     add_log = open(ACTIVITY_LOG, "a")
-    add_log.write("%s - %s is logged out.\n"%( datetime.now().ctime(), session['username'] ))
+    add_log.write("%s - %s logged out.\n"%( datetime.now().ctime(), session['username'] ))
     session.clear()
     return redirect(url_for('login'))
 
@@ -212,7 +212,7 @@ def showNode(node_name):
     if session.get('logged_in'):
         node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
         add_log = open(ACTIVITY_LOG, "a")
-        add_log.write("%s - %s is viewed node %s .\n"%( datetime.now().ctime(), session['username'], node_name ))
+        add_log.write("%s - %s viewed node %s .\n"%( datetime.now().ctime(), session['username'], node_name ))
         return jsonify( process_info = Node(node_config).process_dict) 
     else:
         add_log = open(ACTIVITY_LOG, "a")

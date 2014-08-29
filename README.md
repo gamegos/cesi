@@ -35,7 +35,6 @@ cesi-commit@googlegroups.com
 
 cesi-devel@googlegroups.com
 
-[1]: http://supervisord.org/
 
 ## Screenshots
 
@@ -44,3 +43,10 @@ cesi-devel@googlegroups.com
 
 ![Showall](https://github.com/GulsahKose/cesi/blob/master/screenshots/image1)
 
+## Blog
+
+[Usage this program][2]
+
+
+[1]: http://supervisord.org/
+[2]: http://www.gulsahkose.com/2014/08/cesi-centralized-supervisor-interface.html

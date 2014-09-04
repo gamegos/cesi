@@ -12,7 +12,7 @@ cesi is a web interface provides manage [supervizors][1] from same interface.
 * sqlite3
 
 ## Installation
-    sudo apt-get install sqlite3, python, python-flask
+    sudo apt-get install sqlite3 python python-flask
 
     sqlite3 path/to/userinfo.db < userinfo.sql
 
@@ -45,8 +45,8 @@ cesi-devel@googlegroups.com
 
 ## Blog
 
-[Usage this program][2]
+[Usage][2]
 
 
 [1]: http://supervisord.org/
-[2]: http://www.gulsahkose.com/2014/08/cesi-centralized-supervisor-interface.html
+[2]: http://www.gulsahkose.com/2014/09/cesi-centralized-supervisor-interface.html

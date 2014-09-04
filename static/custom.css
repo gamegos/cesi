@@ -27,6 +27,10 @@
   margin-top: 40px;
 }
 
+.logo{
+  margin-left: 10px;
+}
+
 #selectable .ui-selected { background: #D1FFD1; }
 
 /* Background colors */

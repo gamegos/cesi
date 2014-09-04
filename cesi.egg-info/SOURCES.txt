@@ -1,0 +1,8 @@
+setup.py
+cesi.egg-info/PKG-INFO
+cesi.egg-info/SOURCES.txt
+cesi.egg-info/dependency_links.txt
+cesi.egg-info/requires.txt
+cesi.egg-info/top_level.txt
+pack/cesi.py
+pack/web.py

@@ -8,6 +8,25 @@
   border: 2px solid #000;
 }
 
+@media(min-width:768px) {
+    .navbar-static-side {
+        z-index: 1;
+        position: absolute;
+        width: 250px;
+        margin-top: 80px;
+    }
+
+    .navbar-top-links .dropdown-messages,
+    .navbar-top-links .dropdown-tasks,
+    .navbar-top-links .dropdown-alerts {
+        margin-left: auto;
+    }
+}
+
+.pagewrap{
+  margin-top: 40px;
+}
+
 #selectable .ui-selected { background: #D1FFD1; }
 
 /* Background colors */

@@ -10,13 +10,13 @@ cesi is a web interface provides manage [supervizors][1] from same interface.
 
 ## Installation
 
-   $sudo apt-get install sqlite3 python python-flask
+    $sudo apt-get install sqlite3 python python-flask
 
-   $git clone https://github.com/GulsahKose/cesi
+    $git clone https://github.com/GulsahKose/cesi
 
-   $cd cesi
+    $cd cesi
 
-   $sqlite3 path/to/userinfo.db < userinfo.sql
+    $sqlite3 path/to/userinfo.db < userinfo.sql
 
 ## Configuration
 
@@ -27,6 +27,14 @@ Fill cesi.conf
 ## Run Project
 
     $python web.py
+
+## First Login
+
+Please change password after first login!
+
+Username : admin
+
+Password : admin
 
 ## Mailing list
 

@@ -706,10 +706,10 @@ var $selectgroupenv = function(){
                             $grouptable.append('<tr class="'+$nodename+'x'+$group_name+'x'+$name+'x'+$environment_name+'"></tr>');
                             $tr = $('.'+$nodename+'x'+$group_name+'x'+$name+'x'+$environment_name);
                         
-                            
-                            //check
-                            $tr.append('<td> <input type="checkbox" class="single" node="'+$nodename+'" procname="'+$group_name+':'+$name+'"> </td>');
-                                                
+                            if($usertype == 0 || $usertype == 1){
+                            	//check
+                            	$tr.append('<td> <input type="checkbox" class="single" node="'+$nodename+'" procname="'+$group_name+':'+$name+'"> </td>');
+                            }                    
                             //pid
                             if($pid == 0){
                                 $tr.append('<td> - </td>');
@@ -737,34 +737,36 @@ var $selectgroupenv = function(){
                             }else{
                                 $tr.append('<td class="alert alert-warning">'+$statename+ '</td>');
                             }
-    
+   			    if($usertype == 0 || $usertype == 1){ 
                             //buttons
-                            if( $state==20 ){
-                                $tr.append('<td></td>');
-                                $td = $tr.children('td').last();
-                                    $td.append('<button place="group" class="btn btn-primary btn-block act" env="'+$environment_name+'" name="/node/'+$nodename+'/process/'+$group_name+':'+$name+'/restart" value="Restart">Restart</button>');
-                            var $btn_restart = $td.children('button').first();
-                                $btn_restart.click($buttonactions);
-    
-                                $tr.append('<td></td>');
-                                var $td = $tr.children('td').last();
-                                $td.append('<button place="group" class="btn btn-primary btn-block act" env="'+$environment_name+'" name="/node/'+$nodename+'/process/'+$group_name+':'+$name+'/stop" value="Stop">Stop</button>');
-                                var $btn_stop = $td.children('button').first();
-                                $btn_stop.click($buttonactions);
-                            }else if($state==0){
-                                $tr.append('<td></td>');
-                                var $td= $tr.children('td').last();;
-                                $td.append('<button place="group" class="btn btn-primary btn-block act" env="'+$environment_name+'" name="/node/'+$nodename+'/process/'+$group_name+':'+$name+'/start" value="Start">Start</button>');
+                                if( $state==20 ){
+                                    $tr.append('<td></td>');
+                                    $td = $tr.children('td').last();
+                                        $td.append('<button place="group" class="btn btn-primary btn-block act" env="'+$environment_name+'" name="/node/'+$nodename+'/process/'+$group_name+':'+$name+'/restart" value="Restart">Restart</button>');
                                 var $btn_restart = $td.children('button').first();
-                                $btn_restart.click($buttonactions);
+                                    $btn_restart.click($buttonactions);
+      
+                                    $tr.append('<td></td>');
+                                    var $td = $tr.children('td').last();
+                                    $td.append('<button place="group" class="btn btn-primary btn-block act" env="'+$environment_name+'" name="/node/'+$nodename+'/process/'+$group_name+':'+$name+'/stop" value="Stop">Stop</button>');
+                                    var $btn_stop = $td.children('button').first();
+                                    $btn_stop.click($buttonactions);
+                                }else if($state==0){
+                                    $tr.append('<td></td>');
+                                    var $td= $tr.children('td').last();;
+                                    $td.append('<button place="group" class="btn btn-primary btn-block act" env="'+$environment_name+'" name="/node/'+$nodename+'/process/'+$group_name+':'+$name+'/start" value="Start">Start</button>');
+                                    var $btn_restart = $td.children('button').first();
+                                    $btn_restart.click($buttonactions);
+      
+                                    $tr.append('<td></td>');
+                                    var $td = $tr.children('td').last();
+                                    $td.append('<button place="group" class="btn btn-primary btn-block disabled act" value="Stop">Stop</button>');
+                                    var $btn_stop = $td.children('button').first();
+                                    $btn_stop.click($buttonactions);
+                                }
+			    }
     
-                                $tr.append('<td></td>');
-                                var $td = $tr.children('td').last();
-                                $td.append('<button place="group" class="btn btn-primary btn-block disabled act" value="Stop">Stop</button>');
-                                var $btn_stop = $td.children('button').first();
-                                $btn_stop.click($buttonactions);
-                            }
-    
+			    if($usertype == 0 || $usertype == 1 || $usertype == 2){
                             //Readlog
                             $tr.append('<td><a class="btn btn-primary btn-block act" nodename="'+$nodename+'" processgroup="'+$group_name+'" processname="'+$name+'" url="/node/'+$nodename+'/process/'+$group_name+':'+$name+'/readlog"> Readlog </a></td>');
                             var $readlog = $tr.children('td').last().children('a').first();
@@ -828,6 +830,7 @@ var $selectgroupenv = function(){
                                     }
                                 });
                             });
+			    }
                         }
                     }
                 }

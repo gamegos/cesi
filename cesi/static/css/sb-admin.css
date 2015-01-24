@@ -134,8 +134,10 @@ body {
 
 @media(min-width:768px) {
     .navbar-static-side {
+        height: 700%;
+        overflow-y: auto;
         z-index: 1;
-        position: absolute;
+        position: fixed;
         width: 250px;
         margin-top: 51px;
     }

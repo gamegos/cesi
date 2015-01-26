@@ -513,7 +513,7 @@ var $selectgroupenv = function(){
 
             $panel.append('<table class="table table-bordered"></table>');
             $table = $panel.find('table');
-            $table.append('<tr class="active"><th>Pid</th> <th>Environment</th> <th>Node name</th> <th>Name</th> <th>Uptime</th> <th>State name</th> </tr>');
+            $table.append('<tr class="active"><th>Pid</th> <th>Environment</th> <th>Node name</th> <th>Name</th> <th>Uptime</th> <th>State</th> </tr>');
             
             if($usertype == 0 || $usertype == 1){
                 $table.find('tr').first().prepend('<th><input type="checkbox" class="multiple"></th>');
@@ -967,7 +967,7 @@ var $selectnode = function(){
                 
                 $panel.append('<table class="table table-bordered" id="table'+nodename+'" ></table>');
                 var $table = $("#table"+nodename);
-                $table.append('<tr class="active"><th>Pid</th> <th>Name</th> <th>Group</th> <th>Uptime</th> <th>State name</th> </tr>');
+                $table.append('<tr class="active"><th>Pid</th> <th>Name</th> <th>Group</th> <th>Uptime</th> <th>State</th> </tr>');
                 if($usertype == 0 || $usertype == 1){
                     $table.find('tr').first().prepend('<th><input type="checkbox" class="multiple"></th>');
                 }

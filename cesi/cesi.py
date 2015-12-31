@@ -48,6 +48,9 @@ class Config:
     def getActivityLog(self):
         return str(self.cfg.get('cesi', 'activity_log'))
 
+    def getHost(self):
+        return str(self.cfg.get('cesi', 'host'))
+
 class NodeConfig:
 
     def __init__(self, node_name, host, port, username, password):

@@ -621,7 +621,7 @@ var $selectgroupenv = function(){
                                      dataType: 'json',
                                      success: function(log){
                                          if (log['status']=="success"){
-                                             $dia.html('<p>'+log['log']+'</p>');
+                                             $dia.html('<pre>'+log['log']+'</pre>');
                                              $dia.dialog({
                                                  open: function(){
                                                      timer = setInterval(function () {
@@ -629,7 +629,7 @@ var $selectgroupenv = function(){
                                                              url: url,
                                                              dataType: 'json',
                                                              success: function(log){
-                                                                 $dia.html('<p>'+log['log']+'</p>');
+                                                                 $dia.html('<pre>'+log['log']+'</pre>');
                                                              }
                                                          });
                                                      },1000);
@@ -638,8 +638,13 @@ var $selectgroupenv = function(){
                                                      clearInterval(timer);
                                                  },
                                                  title: classname,
-                                                 maxWidth: 600,
-                                                 maxHeight: 500,
+                                                 position: {
+                                                     my: 'center top',
+                                                     at: 'center center',
+                                                     'of': $('#maindiv')
+                                                 },
+                                                 minHeight: 320,
+                                                 minWidth: 640,
                                                  show: {
                                                      effect: "blind",
                                                      duration: 500
@@ -789,7 +794,7 @@ var $selectgroupenv = function(){
                                     dataType: 'json',
                                     success: function(log){
                                         if (log['status']=="success"){
-                                            $dia.html('<p>'+log['log']+'</p>');
+                                            $dia.html('<pre>'+log['log']+'</pre>');
                                             $dia.dialog({
                                                 open: function(){
                                                     timer = setInterval(function () {
@@ -797,7 +802,7 @@ var $selectgroupenv = function(){
                                                             url: url,
                                                             dataType: 'json',
                                                             success: function(log){
-                                                                $dia.html('<p>'+log['log']+'</p>');
+                                                                $dia.html('<pre>'+log['log']+'</pre>');
                                                             }
                                                         });
                                                     },1000);
@@ -806,8 +811,13 @@ var $selectgroupenv = function(){
                                                     clearInterval(timer);
                                                 },
                                                 title: classname,
-                                                maxWidth: 600,
-                                                maxHeight: 500,
+                                                 position: {
+                                                     my: 'center top',
+                                                     at: 'center center',
+                                                     'of': $('#maindiv')
+                                                 },
+                                                 minHeight: 320,
+                                                 minWidth: 640,
                                                 show: {
                                                     effect: "blind",
                                                     duration: 500
@@ -1063,7 +1073,7 @@ var $selectnode = function(){
                                 dataType: 'json',
                                 success: function(log){
                                     if (log['status']=="success"){
-                                        $dia.html('<p>'+log['log']+'</p>');
+                                        $dia.html('<pre>'+log['log']+'</pre>');
                                         $dia.dialog({
                                             open: function(){
                                                 timer = setInterval(function () {
@@ -1071,7 +1081,7 @@ var $selectnode = function(){
                                                         url: url,
                                                         dataType: 'json',
                                                         success: function(log){
-                                                            $dia.html('<p>'+log['log']+'</p>');
+                                                            $dia.html('<pre>'+log['log']+'</pre>');
                                                         }
                                                     });
                                                 },1000);
@@ -1081,8 +1091,13 @@ var $selectnode = function(){
                                                 clearInterval(timer);
                                             },
                                             title: classname,
-                                            maxWidth: 600,
-                                            maxHeight: 500,
+                                            position: {
+                                                my: 'center top',
+                                                at: 'center center',
+                                                'of': $('#maindiv')
+                                            },
+                                            minHeight: 320,
+                                            minWidth: 640,
                                             show: {
                                                 effect: "blind",
                                                 duration: 500

@@ -979,7 +979,7 @@ var $selectnode = function(){
                     var $pid = result['process_info'][$counter]['pid'];
                     var $name = result['process_info'][$counter]['name'];
                     var $group = result['process_info'][$counter]['group'];
-                    var $uptime = result['process_info'][$counter]['description'].substring(17,24);
+                    var $uptime = result['process_info'][$counter]['description'].substring(result['process_info'][$counter]['description'].length - 8);
                     var $state = result['process_info'][$counter]['state'];
                     var $statename = result['process_info'][$counter]['statename'];
                     if($usertype == 0 || $usertype == 1){

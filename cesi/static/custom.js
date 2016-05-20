@@ -1066,7 +1066,7 @@ var $selectnode = function(){
 
                             if($dia.length==0){
                                 $logdiv.append('<div class="'+classname+'"></div>');
-                                $dia = $("."+classname);
+                                $dia = $("div[class='"+classname+"']");
                             }
                             $.ajax({
                                 url: url,

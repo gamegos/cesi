@@ -535,7 +535,7 @@ var $selectgroupenv = function(){
                         var $uptime = result['process_list'][$counter][3];
                 
                         $table.append('<tr class="'+$nodename+'x'+$group_name+'x'+$name+'x'+$environment_name+'"></tr>');
-                        $tr = $('.'+$nodename+'x'+$group_name+'x'+$name+'x'+$environment_name);
+                        $tr = $('tr[class="'+$nodename+'x'+$group_name+'x'+$name+'x'+$environment_name+'"]');
             
                         if($usertype == 0 || $usertype == 1){ 
                             //check

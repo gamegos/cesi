@@ -60,7 +60,7 @@ class DockerUnixSockConfig:
             name = self.__get_name__(container)
             if not self.__test_port__(ip_address, port):
                 continue
-            result[name] = {'hostname':ip_address, 'port':port, 'username':'', 'password':''}
+            result[name] = {'host':ip_address, 'port':port, 'username':'', 'password':''}
         return result
 
     __config__ = None

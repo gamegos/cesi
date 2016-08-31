@@ -1,9 +1,10 @@
 import xmlrpclib
 import ConfigParser
+import os
 from datetime import datetime, timedelta
 from flask import jsonify
 
-CONFIG_FILE = "/etc/cesi.conf"
+CONFIG_FILE = os.environ.get('CESI_CONFIG_FILE') or '/etc/cesi.conf'
 class Config:
     
     def __init__(self, CFILE):
@@ -50,6 +51,9 @@ class Config:
 
     def getHost(self):
         return str(self.cfg.get('cesi', 'host'))
+
+    def getAuthMode(self):
+        return str(self.cfg.get('cesi', 'auth_mode'))
 
 class NodeConfig:
 

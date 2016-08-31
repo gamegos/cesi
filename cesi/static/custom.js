@@ -1252,6 +1252,7 @@ $( document ).ready(function() {
     $(".deluser").click($showdeluserpage);
     $(".changepassword").click($changepassword);
     $(".ajax3").click($selectgroupenv);
+    $('.loginform').submit(function () { return false; })
 
         $.ajax({
             url: "/activitylog",

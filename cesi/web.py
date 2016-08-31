@@ -7,6 +7,7 @@ import sqlite3
 import mmap
 import os
 import time
+import auth
 
 app = Flask(__name__)
 app.config.from_object(__name__)
@@ -76,7 +77,9 @@ def control():
                            message = "Username is not  avaible ")
         else:
             cur.execute("select * from userinfo where username=?",(username,))
-            if password == cur.fetchall()[0][1]:
+            dbpassword = cur.fetchall()[0][1]
+            auth_mode = Config(CONFIG_FILE).getAuthMode()
+            if auth.validate_password(username, password, dbpassword, auth_mode):
                 session['username'] = username
                 session['logged_in'] = True
                 cur.execute("select * from userinfo where username=?",(username,))

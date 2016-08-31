@@ -54,14 +54,17 @@ var $adduser= function(){
                 $panel_body.append('<form class="adduserform" method="post" action="/add/user/handler">');
 
                 var $form = $panel_body.children('form').first();
+                $form.submit(function () { return false; })
                 $form.append('<fieldset></fieldset>');
 
                 var $fieldset= $form.children('fieldset').first();
                 $fieldset.append('<div class="form-group"> <input class="form-control" placeholder="Username" name="username"  autofocus> </div>');
-                $fieldset.append('<div class="form-group"> <input class="form-control" placeholder="Password" name="password" type="password" value=""> </div>');
-                $fieldset.append('<div class="form-group"> <input class="form-control" placeholder="Confirm Password" name="confirmpassword" type="password" value=""> </div>');
+                if (auth_mode == 'basic') {
+                    $fieldset.append('<div class="form-group"> <input class="form-control" placeholder="Password" name="password" type="password" value=""> </div>');
+                    $fieldset.append('<div class="form-group"> <input class="form-control" placeholder="Confirm Password" name="confirmpassword" type="password" value=""> </div>');
+                }
                 $fieldset.append('<div class="form-group"> <select class="form-control" name="usertype"> <option selected>Standart User</option> <option>Admin</option> <option>Only Log</option> <option>Read Only</option> </select> </div>');
-                $fieldset.append('<a class="btn btn-lg btn-success btn-block save" >Save</a>');
+                $fieldset.append('<button type="submit" class="btn btn-lg btn-success btn-block save" >Save</button>');
 
                 $(".save").click($adduserhandler);
             }else{

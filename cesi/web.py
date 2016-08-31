@@ -132,14 +132,15 @@ def showMain():
         group_list = []
         not_connected_node_list = []
         connected_node_list = []
+        cesicfg = Config(CONFIG_FILE)
 
-        node_name_list = Config(CONFIG_FILE).node_list
+        node_name_list = cesicfg.node_list
         node_count = len(node_name_list)
-        environment_name_list = Config(CONFIG_FILE).environment_list
+        environment_name_list = cesicfg.environment_list
         
 
         for nodename in node_name_list:
-            nodeconfig = Config(CONFIG_FILE).getNodeConfig(nodename)
+            nodeconfig = cesicfg.getNodeConfig(nodename)
 
             try:
                 node = Node(nodeconfig)
@@ -166,7 +167,7 @@ def showMain():
 
         # get environment list 
         for env_name in environment_name_list:
-            env_members = Config(CONFIG_FILE).getMemberNames(env_name)
+            env_members = cesicfg.getMemberNames(env_name)
             for index, node in enumerate(env_members):
                 if not node in connected_node_list:
                     env_members.pop(index);
@@ -176,7 +177,7 @@ def showMain():
         for g_name in group_list:
             tmp= []
             for nodename in connected_node_list:
-                nodeconfig = Config(CONFIG_FILE).getNodeConfig(nodename)
+                nodeconfig = cesicfg.getNodeConfig(nodename)
                 node = Node(nodeconfig)
                 for name in node.process_dict2.keys():
                     group_name = name.split(':')[0]
@@ -189,7 +190,7 @@ def showMain():
             tmp = []
             for name in sublist:
                 for env_name in environment_name_list:
-                    if name in Config(CONFIG_FILE).getMemberNames(env_name):
+                    if name in cesicfg.getMemberNames(env_name):
                         if name in connected_node_list:
                             if not env_name in tmp:
                                 tmp.append(env_name)
@@ -199,6 +200,7 @@ def showMain():
         not_connected_count = len(not_connected_node_list)
 
         return render_template('index.html',
+                                auth_mode=cesicfg.getAuthMode(),
                                 all_process_count =all_process_count,
                                 running_process_count =running_process_count,
                                 stopped_process_count =stopped_process_count,
@@ -427,14 +429,19 @@ def del_user_handler(username):
 def adduserhandler():
     if session.get('logged_in'):
         if session['usertype'] == 0:
+            cesicfg = Config(CONFIG_FILE)
+            auth_mode = cesicfg.getAuthMode()
             username = request.form['username']
-            password = request.form['password']
-            confirmpassword = request.form['confirmpassword']
+            password = request.form.get('password')
+            confirmpassword = request.form.get('confirmpassword')
 
-            if username == "" or password == "" or confirmpassword == "":
+            if username == "" or (auth_mode == 'basic' and (password == "" or confirmpassword == "")):
                 return jsonify( status = "null",
                                 message = "Please enter value")
             else:
+                if auth_mode != 'basic':
+                    password = ''
+                    confirmpassword = ''
                 if request.form['usertype'] == "Admin":
                     usertype = 0
                 elif request.form['usertype'] == "Standart User":

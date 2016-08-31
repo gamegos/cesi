@@ -51,7 +51,7 @@
                     </a>
                     <ul class="dropdown-menu dropdown-user">
                         <li><a href="#"><i class="fa fa-user fa-fw"></i> {{username}}({{usertype}}) </a></li>
-                        {% if auth_mode == 'basic' %}
+                        {% if auth_mode == 'basic' or username == 'admin' %}
                         <li><a name="{{username}}" href="#" class="changepassword"><i class="glyphicon glyphicon-wrench"></i> Change Password </a></li>
                         {% endif %}
                         {% if usertypecode == 0 %}

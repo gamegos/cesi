@@ -440,8 +440,8 @@ def adduserhandler():
                                 message = "Please enter value")
             else:
                 if auth_mode != 'basic':
-                    password = ''
-                    confirmpassword = ''
+                    password = password or ''
+                    confirmpassword = confirmpassword or ''
                 if request.form['usertype'] == "Admin":
                     usertype = 0
                 elif request.form['usertype'] == "Standart User":

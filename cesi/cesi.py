@@ -1,6 +1,7 @@
 import xmlrpclib
 import ConfigParser
 import os
+import hosts
 from datetime import datetime, timedelta
 from flask import jsonify
 
@@ -11,18 +12,13 @@ class Config:
         self.CFILE = CFILE
         self.cfg = ConfigParser.ConfigParser()
         self.cfg.read(self.CFILE)
-        node_discovery = self.cfg.get('cesi', 'node_discovery') if self.cfg.has_option('cesi', 'node_discovery') else 'inline'
         self.environment_list = [name[12:] for name in self.cfg.sections() if name[:11] == 'environment']
         self.group_list = [name[6:] for name in self.cfg.sections() if name[:5] == 'group']
-        self.node_list = NodeReader(self.cfg).read(node_discovery)
+        self.node_list = hosts.read(self.cfg)
         
     def getNodeConfig(self, node_name):
-        node_name = "node:%s" % (node_name)
-        username = self.cfg.get(node_name, 'username')
-        password = self.cfg.get(node_name, 'password')
-        host = self.cfg.get(node_name, 'host')
-        port = self.cfg.get(node_name, 'port')
-        return NodeConfig(node_name, host, port, username, password)
+        host, port, username, password = hosts.config(self.cfg, node_name)
+        return NodeConfig(node_name, username, password, host, port)
 
     def getMemberNames(self, environment_name):
         environment_name = "environment:%s" % (environment_name)
@@ -40,14 +36,6 @@ class Config:
 
     def getAuthMode(self):
         return str(self.cfg.get('cesi', 'auth_mode'))
-
-class NodeReader:
-    def __init__ (self, cfg):
-        self.cfg = cfg
-    def read(self, node_discovery):
-        return getattr(self, node_discovery)() if hasattr(self, node_discovery) else None
-    def inline(self):
-        return [name[5:] for name in self.cfg.sections() if name[:4] == 'node']
 
 class NodeConfig:
     def __init__(self, node_name, host, port, username, password):

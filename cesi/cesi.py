@@ -11,37 +11,23 @@ class Config:
         self.CFILE = CFILE
         self.cfg = ConfigParser.ConfigParser()
         self.cfg.read(self.CFILE)
-
-        self.node_list = []
-        for name in self.cfg.sections():
-            if name[:4] == 'node':
-                self.node_list.append(name[5:])
-
-        self.environment_list = []
-        for name in self.cfg.sections():
-            if name[:11] == 'environment':
-                self.environment_list.append(name[12:])
-
-        self.group_list = []
-        for name in self.cfg.sections():
-            if name[:5] == 'group':
-                self.group_list.append(name[6:])
-
+        node_discovery = self.cfg.get('cesi', 'node_discovery') if self.cfg.has_option('cesi', 'node_discovery') else 'inline'
+        self.environment_list = [name[12:] for name in self.cfg.sections() if name[:11] == 'environment']
+        self.group_list = [name[6:] for name in self.cfg.sections() if name[:5] == 'group']
+        self.node_list = NodeReader(self.cfg).read(node_discovery)
         
     def getNodeConfig(self, node_name):
-        self.node_name = "node:%s" % (node_name)
-        self.username = self.cfg.get(self.node_name, 'username')
-        self.password = self.cfg.get(self.node_name, 'password')
-        self.host = self.cfg.get(self.node_name, 'host')
-        self.port = self.cfg.get(self.node_name, 'port')
-        self.node_config = NodeConfig(self.node_name, self.host, self.port, self.username, self.password)
-        return self.node_config
+        node_name = "node:%s" % (node_name)
+        username = self.cfg.get(node_name, 'username')
+        password = self.cfg.get(node_name, 'password')
+        host = self.cfg.get(node_name, 'host')
+        port = self.cfg.get(node_name, 'port')
+        return NodeConfig(node_name, host, port, username, password)
 
     def getMemberNames(self, environment_name):
-        self.environment_name = "environment:%s" % (environment_name)
-        self.member_list = self.cfg.get(self.environment_name, 'members')
-        self.member_list = self.member_list.split(', ')
-        return self.member_list
+        environment_name = "environment:%s" % (environment_name)
+        member_list = self.cfg.get(environment_name, 'members').split(', ')
+        return member_list
 
     def getDatabase(self):
         return str(self.cfg.get('cesi', 'database'))
@@ -55,18 +41,23 @@ class Config:
     def getAuthMode(self):
         return str(self.cfg.get('cesi', 'auth_mode'))
 
-class NodeConfig:
+class NodeReader:
+    def __init__ (self, cfg):
+        self.cfg = cfg
+    def read(self, node_discovery):
+        return getattr(self, node_discovery)() if hasattr(self, node_discovery) else None
+    def inline(self):
+        return [name[5:] for name in self.cfg.sections() if name[:4] == 'node']
 
+class NodeConfig:
     def __init__(self, node_name, host, port, username, password):
         self.node_name = node_name
         self.host = host
         self.port = port
         self.username = username
         self.password = password
-            
 
 class Node:
-
     def __init__(self, node_config):
         self.long_name = node_config.node_name
         self.name = node_config.node_name[5:]

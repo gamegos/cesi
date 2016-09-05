@@ -984,12 +984,13 @@ var $selectnode = function(){
 
                 $table.find("input[class='multiple']").change($multiplecheckbox);
                 for(var $counter = 0; $counter < result['process_info'].length; $counter++){
+                    var description = result['process_info'][$counter]['description'];
                     $table = $table.append('<tr class="process_info" id="'+nodename+$counter+'"></tr>');
                     var $tr_p = $('#'+nodename+$counter);
                     var $pid = result['process_info'][$counter]['pid'];
                     var $name = result['process_info'][$counter]['name'];
                     var $group = result['process_info'][$counter]['group'];
-                    var $uptime = result['process_info'][$counter]['description'].substring(result['process_info'][$counter]['description'].length - 8);
+                    var $uptime = description.match('uptime') != null ? description.replace(/^(.+uptime\s)*(.+)$/, '$2') : '-';
                     var $state = result['process_info'][$counter]['state'];
                     var $statename = result['process_info'][$counter]['statename'];
                     if($usertype == 0 || $usertype == 1){

@@ -12,7 +12,7 @@ cesi is a web interface provides manage [supervizors][1] from same interface.
 
     $sudo apt-get install sqlite3 python python-flask
 
-    $git clone https://github.com/GulsahKose/cesi
+    $git clone https://github.com/Gamegos/cesi
 
     $cd cesi
 

@@ -7,3 +7,5 @@
 * Burçin Akalın (@burcinakalin)
 * Matěj Koudelka (@hxpro)
 * Lewis Cowper
+* Gustavo Kawamoto (@gkawamoto)
+

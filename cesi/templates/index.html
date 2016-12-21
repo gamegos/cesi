@@ -23,6 +23,9 @@
 
     <!-- Table links -->
     <link rel=stylesheet type=text/css href="{{ url_for('static', filename='custom.css') }}">
+    <script>
+        var auth_mode = '{{ auth_mode }}';
+    </script>
 </head>
 
 <body>
@@ -48,7 +51,9 @@
                     </a>
                     <ul class="dropdown-menu dropdown-user">
                         <li><a href="#"><i class="fa fa-user fa-fw"></i> {{username}}({{usertype}}) </a></li>
+                        {% if auth_mode == 'basic' or username == 'admin' %}
                         <li><a name="{{username}}" href="#" class="changepassword"><i class="glyphicon glyphicon-wrench"></i> Change Password </a></li>
+                        {% endif %}
                         {% if usertypecode == 0 %}
                         <li class="divider"></li>
                         <li><a href="#" class="adduser"><i class="glyphicon glyphicon-plus"></i> Add User </a></li>

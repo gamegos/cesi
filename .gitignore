@@ -1,9 +1,5 @@
-.vscode/
-*.db
-*.log
-*~
 *pyc
-*swo
 *swp
-cesi.debug.conf
-venv/
+*swo
+*~
+*.db

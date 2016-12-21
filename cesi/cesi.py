@@ -1,29 +1,46 @@
 import xmlrpclib
 import ConfigParser
-import os
-import hosts
 from datetime import datetime, timedelta
 from flask import jsonify
 
-CONFIG_FILE = os.environ.get('CESI_CONFIG_FILE') or '/etc/cesi.conf'
+CONFIG_FILE = "/etc/cesi.conf"
 class Config:
     
     def __init__(self, CFILE):
         self.CFILE = CFILE
         self.cfg = ConfigParser.ConfigParser()
         self.cfg.read(self.CFILE)
-        self.environment_list = [name[12:] for name in self.cfg.sections() if name[:11] == 'environment']
-        self.group_list = [name[6:] for name in self.cfg.sections() if name[:5] == 'group']
-        self.node_list = hosts.read(self.cfg)
+
+        self.node_list = []
+        for name in self.cfg.sections():
+            if name[:4] == 'node':
+                self.node_list.append(name[5:])
+
+        self.environment_list = []
+        for name in self.cfg.sections():
+            if name[:11] == 'environment':
+                self.environment_list.append(name[12:])
+
+        self.group_list = []
+        for name in self.cfg.sections():
+            if name[:5] == 'group':
+                self.group_list.append(name[6:])
+
         
     def getNodeConfig(self, node_name):
-        host, port, username, password = hosts.config(self.cfg, node_name)
-        return NodeConfig(node_name, username, password, host, port)
+        self.node_name = "node:%s" % (node_name)
+        self.username = self.cfg.get(self.node_name, 'username')
+        self.password = self.cfg.get(self.node_name, 'password')
+        self.host = self.cfg.get(self.node_name, 'host')
+        self.port = self.cfg.get(self.node_name, 'port')
+        self.node_config = NodeConfig(self.node_name, self.host, self.port, self.username, self.password)
+        return self.node_config
 
     def getMemberNames(self, environment_name):
-        environment_name = "environment:%s" % (environment_name)
-        member_list = self.cfg.get(environment_name, 'members').split(', ')
-        return member_list
+        self.environment_name = "environment:%s" % (environment_name)
+        self.member_list = self.cfg.get(self.environment_name, 'members')
+        self.member_list = self.member_list.split(', ')
+        return self.member_list
 
     def getDatabase(self):
         return str(self.cfg.get('cesi', 'database'))
@@ -34,18 +51,18 @@ class Config:
     def getHost(self):
         return str(self.cfg.get('cesi', 'host'))
 
-    def getAuthMode(self):
-        return str(self.cfg.get('cesi', 'auth_mode'))
-
 class NodeConfig:
+
     def __init__(self, node_name, host, port, username, password):
         self.node_name = node_name
         self.host = host
         self.port = port
         self.username = username
         self.password = password
+            
 
 class Node:
+
     def __init__(self, node_config):
         self.long_name = node_config.node_name
         self.name = node_config.node_name[5:]

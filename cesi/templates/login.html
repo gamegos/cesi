@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>cesi login</title>
+    <title>Start Bootstrap - SB Admin Version 2.0 Demo</title>
 
     <!-- Core CSS - Include with every page -->
     <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
@@ -24,12 +24,7 @@
             <div class="col-md-4 col-md-offset-4">
                 <div class="login-panel panel panel-default">
                     <div class="panel-heading">
-                        <h3 class="panel-title" style="display:table;">
-                            {% if auth_mode == 'github' %}
-                            <img style="width:20px; height:20px; display:table-cell; margin-right:5px; vertical-align:middle;" src="{{ url_for('static', filename='img/github.svg') }}"/>
-                            {% endif %}
-                            <span style="display:table-cell; vertical-align:middle;">Please Sign In</span>
-                        </h3>
+                        <h3 class="panel-title">Please Sign In</h3>
                     </div>
                     <div class="panel-body">
                         <form class="loginform" role="form" method="post" action="/login/control">
@@ -41,7 +36,7 @@
                                     <input class="form-control" placeholder="Password" name="password" type="password" value="">
                                 </div>
                                 <!-- Change this to a button or input when using this as a form -->
-                                <button class="btn btn-lg btn-success btn-block login" type="submit">Login </button>
+                                <a class="btn btn-lg btn-success btn-block login">Login </a>
                             </fieldset>
                         </form>
                     </div>

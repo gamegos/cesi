@@ -1,0 +1,2 @@
+recursive-include cesi/static *.js *.css *.png *.otf *.eot *.svg *.ttf *.woff *.less *.scss *.html *.gif *.txt *.json *.markdown
+recursive-include templates *.html 

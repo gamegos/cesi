@@ -549,13 +549,17 @@ def main(args=()):
 
     parser.add_argument('--config', default=cesi.CONFIG_FILE,
                         type=str, help='config file')
+    parser.add_argument('-d', '--debug', default=False, action='store_true',
+                        help='debug mode')
+    parser.add_argument('-r', '--use-reloader', default=False, action='store_true',
+                        help='reload if app code changes (dev mode)')
 
     args = parser.parse_args()
 
     cesi.CONFIG_FILE = args.config
 
     try:
-        app.run(debug=True, use_reloader=True, host=get_host())
+        app.run(debug=args.debug, use_reloader=args.use_reloader, host=get_host())
     except xmlrpclib.Fault as err:
         print "A fault occurred"
         print "Fault code: %d" % err.faultCode

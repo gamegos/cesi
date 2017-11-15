@@ -270,7 +270,7 @@ def showGroup(group_name, environment_name):
         return redirect(url_for('login'))
 
 
-@app.route('/node/<node_name>/process/<process_name>/restart')
+@app.route('/node/<node_name>/process/<path:process_name>/restart')
 def json_restart(node_name, process_name):
     if session.get('logged_in'):
         if session['usertype'] == 0 or session['usertype'] == 1:
@@ -297,7 +297,7 @@ def json_restart(node_name, process_name):
         return redirect(url_for('login'))
 
 # Process start
-@app.route('/node/<node_name>/process/<process_name>/start')
+@app.route('/node/<node_name>/process/<path:process_name>/start')
 def json_start(node_name, process_name):
     if session.get('logged_in'):
         if session['usertype'] == 0 or session['usertype'] == 1:
@@ -323,7 +323,7 @@ def json_start(node_name, process_name):
         return redirect(url_for('login'))
 
 # Process stop
-@app.route('/node/<node_name>/process/<process_name>/stop')
+@app.route('/node/<node_name>/process/<path:process_name>/stop')
 def json_stop(node_name, process_name):
     if session.get('logged_in'):
         if session['usertype'] == 0 or session['usertype'] == 1:
@@ -358,7 +358,7 @@ def getlist():
         return redirect(url_for('login'))
 
 # Show log for process
-@app.route('/node/<node_name>/process/<process_name>/readlog')
+@app.route('/node/<node_name>/process/<path:process_name>/readlog')
 def readlog(node_name, process_name):
     if session.get('logged_in'):
         if session['usertype'] == 0 or session['usertype'] == 1 or session['usertype'] == 2:

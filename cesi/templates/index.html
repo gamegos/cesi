@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ng-table/1.0.0/ng-table.min.css">
 
     <!--     Fonts and icons     -->
-    <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link href='http://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
@@ -21,7 +21,7 @@
 </head>
 
 <body>
-    <div class="navbar navbar-expand-lg navbar-dark bg-primary" id="mainNav">
+    <div class="navbar navbar-expand-lg navbar-dark bg-primary" id="mainNav"  ng-controller="NavbarCtrl">
         <div class="container">
             <a class="navbar-brand" href="/">CeSI&nbsp;&nbsp;&nbsp;</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive"
@@ -50,24 +50,25 @@
 
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle mr-lg-2" id="alertsDropdown" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fa fa-fw fa-bell"></i>
-                            <span class="d-lg" id="username">Account</span>
+                            <i class="fa" ng-class="{'fa-user': usertype!='Admin', 'fa-user-circle-o': usertype=='Admin'}"></i>
+                            <span class="d-lg" id="username">&nbsp; {{username}} ({{usertype}})</span>
                         </a>
 
                         <div class="dropdown-menu">
                             <a ui-sref="users/password" class="dropdown-item changepassword">
-                                <i class="glyphicon glyphicon-wrench"></i> Change Password </a>
+                                <i class="fa fa-wrench"></i>&nbsp; Change Password </a>
 
+                            <div ng-show="usertype=='Admin'">
                             <div class="dropdown-divider"></div>
-
+                            
                             <a ui-sref="users/add" class="dropdown-item adduser">
-                                <i class="glyphicon glyphicon-plus"></i> Add User </a>
+                                <i class="fa fa-user-plus"></i>&nbsp; Add User </a>
                             <a ui-sref="users/delete" class="dropdown-item deluser">
-                                <i class="glyphicon glyphicon-trash"></i> Delete User </a>
-
+                                <i class="fa fa-user-times"></i>&nbsp; Delete User </a>
+                            </div>
                             <div class="dropdown-divider"></div>
-                            <a ui-sref="logout" class="dropdown-item">
-                                <i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                            <a href="" class="dropdown-item" ng-click="userLogout()">
+                                <i class="fa fa-sign-out"></i>&nbsp; Logout</a>
                         </div>
                     </li>
                 </ul>

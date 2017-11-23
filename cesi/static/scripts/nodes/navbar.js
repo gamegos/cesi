@@ -67,9 +67,13 @@ angular.module('cesiApp.navbar', [
     cesiService.userInfo().then(function (data) {
       $rootScope.username = data['username'];
       $rootScope.usertype = findType(data['usertypecode']);
-      document.getElementById('show-account').innerHTML = data['username'] + " (" + $rootScope.usertype + ")";
-      document.getElementById('username').innerHTML = data['username'];
     });
+
+    $scope.userLogout = function(){
+      cesiService.logout().then(function(res, err){
+        window.location.replace('/login');
+      })
+    }
   }])
 
   .controller('AddUserCtrl', ['$scope', 'cesiService', function ($scope, cesiService) {

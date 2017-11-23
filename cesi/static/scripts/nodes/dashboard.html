@@ -1,8 +1,4 @@
-<style>
-    .dashboard-cards {margin-top:20px; margin-bottom: 20px}
-    .dashboard-cards .card-blockquote{ height: 150px;}
-</style>
-<div ng-controller="DashboardCtrl">
+<div ng-controller="DashboardCtrl" class="dashboard-wrp">
     <div class="row dashboard-cards">
         <div class="col-md-4 col-xs-12">
             <div class="card">
@@ -41,24 +37,30 @@
                 </div>
             </div>
         </div>
-           
-    </div><!-- /.row -->
-    
-        <div class="row">
-            <div class="col-md-10"><h5>Activity Log</h5></div>
-            <div class="col-md-2" style="text-align: right"><button type="button" class="btn btn-primary btn-sm" ng-click="refresh()" id="refresh-button">
-                    <strong>Refresh</strong>
-                </button></div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <table class="table table-striped table-hover table-bordered table-sm">
-                    <tr ng-repeat = "log in logs track by $index"><td>{{log}}</td></tr>
-                </table>
-            </div>
-        </div>
-        
 
-    
-  
+    </div>
+    <!-- /.row -->
+
+    <div class="row">
+        <div class="col-md-10">
+            <h5>Activity Log</h5>
+        </div>
+        <div class="col-md-2" style="text-align: right">
+            <button type="button" class="btn btn-primary btn-sm" ng-click="refresh()" id="refresh-button">
+                <i class="fa fa-fw fa-refresh"></i> Refresh</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-striped table-hover table-bordered table-sm">
+                <tr ng-repeat="log in logs track by $index">
+                    <td>{{log}}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+
+
+
 </div>

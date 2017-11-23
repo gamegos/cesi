@@ -1,72 +1,79 @@
 <!DOCTYPE html>
 <html ng-app="cesiApp" lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>CeSI</title>
 
- 
+
     <link rel="stylesheet" href="https://bootswatch.com/4/superhero/bootstrap.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ng-table/1.0.0/ng-table.min.css">
-    
+
     <!--     Fonts and icons     -->
     <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
     <link href='http://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 
 </head>
 
 <body>
     <div class="navbar navbar-expand-lg navbar-dark bg-primary" id="mainNav">
-      <div class="container">
-        <a class="navbar-brand" href="/">CeSI&nbsp;&nbsp;&nbsp;</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        
-        <div class="collapse navbar-collapse" id="navbarResponsive">
-            <ul class="navbar-nav">
-                <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Dashboard">
-                    <a class="nav-link active" ui-sref="dashboard"><i class="fa fa-fw fa-dashboard"></i>
-                        <span class="nav-link-text">Dashboard&nbsp;&nbsp;</span>
-                    </a>
-                </li>
+        <div class="container">
+            <a class="navbar-brand" href="/">CeSI&nbsp;&nbsp;&nbsp;</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive"
+                aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-                <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Nodes">
-                    <a class="nav-link" ui-sref="nodes"><i class="fa fa-fw fa-sitemap"></i>
-                        <span class="nav-link-text">Nodes</span>
-                    </a>
-                </li>
-            </ul>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav">
+                    <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Dashboard">
+                        <a class="nav-link" ui-sref="dashboard" ui-sref-active="active">
+                            <i class="fa fa-fw fa-dashboard"></i>
+                            <span class="nav-link-text">Dashboard&nbsp;&nbsp;</span>
+                        </a>
+                    </li>
 
-            <ul class="navbar-nav ml-auto">
+                    <li class="nav-item" data-toggle="tooltip" data-placement="right" title="All Nodes">
+                        <a class="nav-link" ui-sref="nodes" ui-sref-active="active">
+                            <i class="fa fa-fw fa-sitemap"></i>
+                            <span class="nav-link-text">All Nodes</span>
+                        </a>
+                    </li>
+                </ul>
 
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle mr-lg-2" id="alertsDropdown" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="fa fa-fw fa-bell"></i>
-                        <span class="d-lg" id="username">Account</span>
-                    </a>
-                    
-                    <div class="dropdown-menu">
-                        <a ui-sref="users/password" class="dropdown-item changepassword">
-                            <i class="glyphicon glyphicon-wrench"></i> Change Password </a>
+                <ul class="navbar-nav ml-auto">
 
-                        <div class="dropdown-divider"></div>
-                            
-                        <a ui-sref="users/add" class="dropdown-item adduser">
-                            <i class="glyphicon glyphicon-plus"></i> Add User </a>
-                        <a ui-sref="users/delete"  class="dropdown-item deluser">
-                            <i class="glyphicon glyphicon-trash"></i> Delete User </a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle mr-lg-2" id="alertsDropdown" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-fw fa-bell"></i>
+                            <span class="d-lg" id="username">Account</span>
+                        </a>
 
-                        <div class="dropdown-divider"></div>
-                        <a ui-sref="logout"  class="dropdown-item"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
-                    </div>
-                </li>
-            </ul>
+                        <div class="dropdown-menu">
+                            <a ui-sref="users/password" class="dropdown-item changepassword">
+                                <i class="glyphicon glyphicon-wrench"></i> Change Password </a>
+
+                            <div class="dropdown-divider"></div>
+
+                            <a ui-sref="users/add" class="dropdown-item adduser">
+                                <i class="glyphicon glyphicon-plus"></i> Add User </a>
+                            <a ui-sref="users/delete" class="dropdown-item deluser">
+                                <i class="glyphicon glyphicon-trash"></i> Delete User </a>
+
+                            <div class="dropdown-divider"></div>
+                            <a ui-sref="logout" class="dropdown-item">
+                                <i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
         </div>
-    
-      </div>
     </div>
 
     <div class="container" id="wrapper">
@@ -88,8 +95,8 @@
     <script src="{{ url_for('static', filename='scripts/nodes/navbar.js') }}"></script>
     <script src="{{ url_for('static', filename='scripts/nodes/dashboard.js') }}"></script>
     <script src="{{ url_for('static', filename='scripts/nodes/nodes.js') }}"></script>
-        
-      <!--    <script src="{{ url_for('static', filename='scripts/groups/groups.js') }}"></script>
+
+    <!--    <script src="{{ url_for('static', filename='scripts/groups/groups.js') }}"></script>
       
         <!--  Checkbox, Radio & Switch Plugins ->
         <script src="{{ url_for('static', filename='js/bootstrap-checkbox-radio-switch.js') }}"></script>

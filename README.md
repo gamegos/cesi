@@ -68,10 +68,16 @@ cesi-devel@googlegroups.com
 
 ## TODO
 
+- Filter nodes from left menu
+- Group nodes by groups and environments
 - Do not use external adresses for javascript and css libraries 
 - Remove angular, vs from login page
-- Error page template
-- Config ile port degistirme
-- Title'i degistirme
+- Changeerror page template
+- Change server port with config
+- Change page title with config
 - Better format activity log (tabbed date, level, component, message)
 - Fix batch action buttons 
+- Auto refresh page
+- Option to select different templates
+- Readlog button for processes
+- Show process logs

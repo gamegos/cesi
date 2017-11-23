@@ -25,11 +25,14 @@ angular.module('cesiApp.nodes', [
         $scope.environments = [];
         $scope.groups = [];
 
+        $scope.checkboxModel = {};
+
 
         $scope.load = function () {
             cesiService.load().then(function (data) {
                 $scope.nodeNames = data.node_name_list;
                 angular.forEach($scope.nodeNames, function (name) {
+                    $scope.checkboxModel[name] = true
                     $scope.reload(name);
                 });
 

@@ -6,7 +6,7 @@
             <div class="list-group">
                 <div class="list-group-item  list-group-item-action" ng-repeat="name in nodeNames">
                     <label class="{{name}}">
-                        <input type="checkbox" class="{{name}}"> {{name}}</label>
+                        <input type="checkbox" class="{{name}}" ng-model="checkboxModel[name]"> {{name}}</label>
                 </div>
             </div>
 
@@ -30,7 +30,7 @@
             </div>
 
 
-            <div ng-repeat="(nodeIndex, nodeName) in nodeNames" class="row nodes">
+            <div ng-repeat="(nodeIndex, nodeName) in nodeNames" class="row nodes"  ng-if="checkboxModel[nodeName]">
                 <div class="col-md-12">
 
                     <h4>Processes for {{nodeName}}</h4>

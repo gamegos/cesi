@@ -87,6 +87,18 @@ angular.module('cesiLib', [])
                 return deferred.promise;
             },
 
+            getenvironments: function () {
+                var deferred = $q.defer();
+                $http.get(host_ip + '/environments')
+                    .then(function (response) {
+                        deferred.resolve(response.data);
+                    })
+                    .catch(function (response) {
+                        deferred.reject(response);
+                    });
+                return deferred.promise;
+            },
+
             getusers: function () {
                 var deferred = $q.defer();
                 $http.get(host_ip + '/delete/user')

@@ -223,9 +223,7 @@ def showInfo():
     else:   
         return jsonify(message = 'Session expired'), 403
 
-
-
-# Dashboard
+    # Dashboard
 @app.route('/')
 def showMain():
 # get user type

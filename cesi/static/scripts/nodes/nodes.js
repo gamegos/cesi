@@ -27,6 +27,16 @@ angular.module('cesiApp.nodes', [
 
         $scope.checkboxModel = {};
 
+        $scope.environments = [];
+        $scope.getEnvironments = function () {
+            cesiService.dashboard().then(function (data) {
+                for (var i = 0; i < data.environment_name_list.length; i++) { 
+                    $scope.environments[i] = {"name":data.environment_name_list[i], "nodes":data.environment_list[i]}
+                    $scope.checkboxModel[data.environment_name_list[i]] = true
+                }
+            });
+
+        };    
 
         $scope.load = function () {
             cesiService.load().then(function (data) {
@@ -117,6 +127,8 @@ angular.module('cesiApp.nodes', [
         }
 
         //---------------------------------------------
+
+        $scope.getEnvironments();
 
         $scope.load();
 

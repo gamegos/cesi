@@ -134,5 +134,3 @@ class JsonValue:
                        message = "%s %s %s event unsuccesful" %(self.node_name, self.process_name, self.event),
                        nodename = self.node_name,
                        payload = self.payload)
- 
-

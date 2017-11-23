@@ -1,0 +1,27 @@
+<div class="login-panel panel panel-default deleteuser" ng-app="myApp" ng-controller="DeleteUserCtrl">
+<div class="panel-heading"> 
+<h3 class="panel-title">Delete User </h3>  
+</div>
+<div class="panel-body pre-scrollable">
+<div class="table-responsive">
+<table class="table table-striped table-bordered table-hover" id="dataTables-example" >
+<tbody>
+<tr>
+<th>Username</th>
+<th>Usertype</th>
+<th>
+	
+</th>
+</tr>
+<tr ng-repeat="user in users">
+	<td>{{user.name}}</td> 
+	<td>{{user.type}}</td>
+	<td>
+		<button ng-click="deleteUser(user.name)" class="glyphicon glyphicon-trash btn btn-sm btn-success btn-block delete"></button>
+	</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>

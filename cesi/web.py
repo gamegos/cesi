@@ -1,5 +1,5 @@
 from flask import Flask, render_template, url_for, redirect, jsonify, request, g, session, flash
-from cesi import Config, Connection, Node, ProcessInfo, JsonValue
+from cesi import Config, Connection, Node, CONFIG_FILE, ProcessInfo, JsonValue
 from datetime import datetime
 import cesi 
 import xmlrpclib
@@ -7,34 +7,20 @@ import sqlite3
 import mmap
 import os
 import time
-import sys
-import argparse
 
 app = Flask(__name__)
 app.config.from_object(__name__)
 app.secret_key= '42'
 
-CONFIG = None
-
-# Configuration
-def get_config():
-    global CONFIG
-    if CONFIG is None:
-        cfg = CONFIG = Config(cesi.CONFIG_FILE)
-    return CONFIG
-
-def get_activity_log():
-    return get_config().getActivityLog()
-
-def get_host():
-    return get_config().getHost()
+DATABASE = Config(CONFIG_FILE).getDatabase()
+ACTIVITY_LOG = Config(CONFIG_FILE).getActivityLog()
+HOST = Config(CONFIG_FILE).getHost()
 
 # Database connection
 def get_db():
     db = getattr(g, '_database', None)
     if db is None:
-        db_path = get_config().getDatabase()
-        db = g._database = sqlite3.connect(db_path)
+        db = g._database = sqlite3.connect(DATABASE)
     return db
 
 # Close database connection
@@ -48,8 +34,8 @@ def close_connection(exception):
 def getlogtail():
     n=12
     try:
-        size = os.path.getsize(get_activity_log())
-        with open(get_activity_log(), "rb") as f:
+        size = os.path.getsize(ACTIVITY_LOG)
+        with open(ACTIVITY_LOG, "rb") as f:
             # for Windows the mmap parameters are different
             fm = mmap.mmap(f.fileno(), 0, mmap.MAP_SHARED, mmap.PROT_READ)
         for i in xrange(size - 1, -1, -1):
@@ -79,31 +65,33 @@ def control():
     if request.method == 'POST':
         username = request.form['email']
         password = request.form['password']
+        app.logger.debug("user: %s, pass: %s", username, password)
         cur = get_db().cursor()
         cur.execute("select * from userinfo where username=?",(username,))
 #if query returns an empty list
         if not cur.fetchall():
             session.clear()
-            add_log = open(get_activity_log(), "a")
-            add_log.write("%s - Login fail. Username is not avaible.\n"%( datetime.now().ctime() ))
+            add_log = open(ACTIVITY_LOG, "a")
+            add_log.write("%s - Login fail. Username is not available.\n"%( datetime.now().ctime() ))
             return jsonify(status = "warning",
-                           message = "Username is not  avaible ")
+                           message = "Invalid username or passowrd")
         else:
             cur.execute("select * from userinfo where username=?",(username,))
+            
             if password == cur.fetchall()[0][1]:
                 session['username'] = username
                 session['logged_in'] = True
                 cur.execute("select * from userinfo where username=?",(username,))
                 session['usertype'] = cur.fetchall()[0][2]
-                add_log = open(get_activity_log(), "a")
+                add_log = open(ACTIVITY_LOG, "a")
                 add_log.write("%s - %s logged in.\n"%( datetime.now().ctime(), session['username'] ))
                 return jsonify(status = "success")
             else:
                 session.clear()
-                add_log = open(get_activity_log(), "a")
+                add_log = open(ACTIVITY_LOG, "a")
                 add_log.write("%s - Login fail. Invalid password.\n"%( datetime.now().ctime() ))
                 return jsonify(status = "warning",
-                               message = "Invalid password")
+                               message = "Invalid username or passowrd")
 
 # Render login page
 @app.route('/login', methods = ['GET', 'POST'])
@@ -113,14 +101,22 @@ def login():
 # Logout action
 @app.route('/logout', methods = ['GET', 'POST'])
 def logout():
-    add_log = open(get_activity_log(), "a")
+    add_log = open(ACTIVITY_LOG, "a")
     add_log.write("%s - %s logged out.\n"%( datetime.now().ctime(), session['username'] ))
     session.clear()
-    return redirect(url_for('login'))
+    return redirect('/login')
+
+# User Info
+@app.route('/userinfo')
+def userInfo():
+   if session.get('logged_in'):
+       return jsonify(username = session['username'],usertypecode = session['usertype'])
+   else:
+      return jsonify(message = 'Session expired'), 403
 
 # Dashboard
-@app.route('/')
-def showMain():
+@app.route('/dashboard')
+def showInfo():
 # get user type
     if session.get('logged_in'):
         if session['usertype']==0:
@@ -144,13 +140,12 @@ def showMain():
         not_connected_node_list = []
         connected_node_list = []
 
-        node_name_list = get_config().node_list
+        node_name_list = Config(CONFIG_FILE).node_list
         node_count = len(node_name_list)
-        environment_name_list = get_config().environment_list
-        
+        environment_name_list = Config(CONFIG_FILE).environment_list
 
         for nodename in node_name_list:
-            nodeconfig = get_config().getNodeConfig(nodename)
+            nodeconfig = Config(CONFIG_FILE).getNodeConfig(nodename)
 
             try:
                 node = Node(nodeconfig)
@@ -173,11 +168,11 @@ def showMain():
                 if process.state==20:
                     running_process_count = running_process_count + 1
                 if process.state==0:
-                    stopped_process_count = stopped_process_count + 1
+                    stopped_process_count = stopped_process_count + 1 
 
         # get environment list 
         for env_name in environment_name_list:
-            env_members = get_config().getMemberNames(env_name)
+            env_members = Config(CONFIG_FILE).getMemberNames(env_name)
             for index, node in enumerate(env_members):
                 if not node in connected_node_list:
                     env_members.pop(index);
@@ -187,7 +182,7 @@ def showMain():
         for g_name in group_list:
             tmp= []
             for nodename in connected_node_list:
-                nodeconfig = get_config().getNodeConfig(nodename)
+                nodeconfig = Config(CONFIG_FILE).getNodeConfig(nodename)
                 node = Node(nodeconfig)
                 for name in node.process_dict2.keys():
                     group_name = name.split(':')[0]
@@ -200,7 +195,126 @@ def showMain():
             tmp = []
             for name in sublist:
                 for env_name in environment_name_list:
-                    if name in get_config().getMemberNames(env_name):
+                    if name in Config(CONFIG_FILE).getMemberNames(env_name):
+                        if name in connected_node_list:
+                            if not env_name in tmp:
+                                tmp.append(env_name)
+            g_environment_list.append(tmp)
+        
+        connected_count = len(connected_node_list)
+        not_connected_count = len(not_connected_node_list)
+
+        return jsonify(			all_process_count =all_process_count,
+                                running_process_count =running_process_count,
+                                stopped_process_count =stopped_process_count,
+                                node_count =node_count,
+                                node_name_list = node_name_list,
+                                connected_count = connected_count,
+                                not_connected_count = not_connected_count,
+                                environment_list = environment_list,
+                                environment_name_list = environment_name_list,
+                                group_list = group_list,
+                                g_environment_list = g_environment_list,
+                                connected_node_list = connected_node_list,
+                                not_connected_node_list = not_connected_node_list,
+                                username = session['username'],
+                                usertype = usertype,
+                                usertypecode = session['usertype'])
+    else:   
+        return jsonify(message = 'Session expired'), 403
+
+
+
+# Dashboard
+@app.route('/')
+def showMain():
+# get user type
+    if session.get('logged_in'):
+        if session['usertype']==0:
+            usertype = "Admin"
+        elif session['usertype']==1:
+            usertype = "Standart User"
+        elif session['usertype']==2:
+            usertype = "Only Log"
+        elif session['usertype']==3:
+            usertype = "Read Only"
+ 
+
+        
+        all_process_count = 0
+        running_process_count = 0
+        stopped_process_count = 0
+        member_names = []
+        environment_list = []
+        g_node_list = []
+        g_process_list = []
+        g_environment_list = []
+        group_list = []
+        not_connected_node_list = []
+        connected_node_list = []
+
+        node_name_list = Config(CONFIG_FILE).node_list
+        node_count = len(node_name_list)
+        environment_name_list = Config(CONFIG_FILE).environment_list
+        
+        
+
+        for nodename in node_name_list:
+            nodeconfig = Config(CONFIG_FILE).getNodeConfig(nodename)
+
+            try:
+                node = Node(nodeconfig)
+                if not nodename in connected_node_list:
+                    connected_node_list.append(nodename);
+            except Exception as err:
+                 if not nodename in not_connected_node_list:
+                    not_connected_node_list.append(nodename);
+                 continue
+
+
+
+            for name in node.process_dict2.keys():
+                p_group = name.split(':')[0]
+                p_name = name.split(':')[1]
+                if p_group != p_name:
+                    if not p_group in group_list:
+                        group_list.append(p_group)
+
+            for process in node.process_list:
+                all_process_count = all_process_count + 1
+                if process.state==20:
+                    running_process_count = running_process_count + 1
+                if process.state==0:
+                    stopped_process_count = stopped_process_count + 1
+
+        
+    
+        # get environment list 
+        for env_name in environment_name_list:
+            env_members = Config(CONFIG_FILE).getMemberNames(env_name)
+            for index, node in enumerate(env_members):
+                if not node in connected_node_list:
+                    env_members.pop(index);
+            environment_list.append(env_members)        
+                    
+        
+        for g_name in group_list:
+            tmp= []
+            for nodename in connected_node_list:
+                nodeconfig = Config(CONFIG_FILE).getNodeConfig(nodename)
+                node = Node(nodeconfig)
+                for name in node.process_dict2.keys():
+                    group_name = name.split(':')[0]
+                    if group_name == g_name:
+                        if not nodename in tmp:
+                            tmp.append(nodename)
+            g_node_list.append(tmp)
+
+        for sublist in g_node_list:
+            tmp = []
+            for name in sublist:
+                for env_name in environment_name_list:
+                    if name in Config(CONFIG_FILE).getMemberNames(env_name):
                         if name in connected_node_list:
                             if not env_name in tmp:
                                 tmp.append(env_name)
@@ -227,29 +341,90 @@ def showMain():
                                 usertype = usertype,
                                 usertypecode = session['usertype'])
     else:   
-        return redirect(url_for('login'))
+         return redirect('/login')
 
 
 # Show node
 @app.route('/node/<node_name>')
 def showNode(node_name):
     if session.get('logged_in'):
-        node_config = get_config().getNodeConfig(node_name)
-        add_log = open(get_activity_log(), "a")
+        node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
+        add_log = open(ACTIVITY_LOG, "a")
         add_log.write("%s - %s viewed node %s .\n"%( datetime.now().ctime(), session['username'], node_name ))
         return jsonify( process_info = Node(node_config).process_dict) 
     else:
-        add_log = open(get_activity_log(), "a")
+        add_log = open(ACTIVITY_LOG, "a")
         add_log.write("%s - Illegal request for view node %s .\n"%( datetime.now().ctime(), node_name ))
-        return redirect(url_for('login'))
+        return jsonify(message = 'Session expired'), 403
+
+
+
+@app.route('/node/all/start')
+def startAll():
+    if session.get('logged_in'):
+        node_name_list = Config(CONFIG_FILE).node_list
+        for nodename in node_name_list:
+            nodeconfig = Config(CONFIG_FILE).getNodeConfig(nodename)
+
+            try:
+                node = Node(nodeconfig)
+            except Exception as err:
+                continue
+
+            for process in node.process_list:
+                json_start(nodename, process.name)
+                
+        return jsonify(status="success")
+    else:
+        return jsonify(message = 'Session expired'), 403
+
+
+
+@app.route('/node/all/stop')
+def stopAll():
+    if session.get('logged_in'):
+        node_name_list = Config(CONFIG_FILE).node_list
+        for nodename in node_name_list:
+            nodeconfig = Config(CONFIG_FILE).getNodeConfig(nodename)
+
+            try:
+                node = Node(nodeconfig)
+            except Exception as err:
+                continue
+
+            for process in node.process_list:
+                json_stop(nodename, process.name)
+
+        return jsonify(status="success")
+    else:
+        return jsonify(message = 'Session expired'), 403
+
+@app.route('/node/all/restart')
+def restartAll():
+    if session.get('logged_in'):
+        node_name_list = Config(CONFIG_FILE).node_list
+        for nodename in node_name_list:
+            nodeconfig = Config(CONFIG_FILE).getNodeConfig(nodename)
+
+            try:
+                node = Node(nodeconfig)
+            except Exception as err:
+                continue
+
+            for process in node.process_list:
+                json_restart(nodename, process.name)
+                
+        return jsonify(status="success")
+    else:
+        return jsonify(message = 'Session expired'), 403
 
 @app.route('/group/<group_name>/environment/<environment_name>')
 def showGroup(group_name, environment_name):
     if session.get('logged_in'):
-        env_memberlist = get_config().getMemberNames(environment_name)
+        env_memberlist = Config(CONFIG_FILE).getMemberNames(environment_name)
         process_list = []
         for nodename in env_memberlist:
-            node_config = get_config().getNodeConfig(nodename)
+            node_config = Config(CONFIG_FILE).getNodeConfig(nodename)
             try:
                 node = Node(node_config)
             except Exception as err:
@@ -267,113 +442,119 @@ def showGroup(group_name, environment_name):
                     process_list.append(tmp)
         return jsonify(process_list = process_list)
     else:
-        return redirect(url_for('login'))
+        return jsonify(message = 'Session expired'), 403
 
 
-@app.route('/node/<node_name>/process/<path:process_name>/restart')
+@app.route('/node/<node_name>/process/<process_name>/restart')
 def json_restart(node_name, process_name):
     if session.get('logged_in'):
         if session['usertype'] == 0 or session['usertype'] == 1:
             try:
-                node_config = get_config().getNodeConfig(node_name)
+                node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
                 node = Node(node_config)
                 if node.connection.supervisor.stopProcess(process_name):
                     if node.connection.supervisor.startProcess(process_name):
-                        add_log = open(get_activity_log(), "a")
+                        add_log = open(ACTIVITY_LOG, "a")
                         add_log.write("%s - %s restarted %s node's %s process .\n"%( datetime.now().ctime(), session['username'], node_name, process_name ))
                         return JsonValue(process_name, node_name, "restart").success()
             except xmlrpclib.Fault as err:
-                add_log = open(get_activity_log(), "a")
+                add_log = open(ACTIVITY_LOG, "a")
                 add_log.write("%s - %s unsucces restart event %s node's %s process .\n"%( datetime.now().ctime(), session['username'], node_name, process_name ))
                 return JsonValue(process_name, node_name, "restart").error(err.faultCode, err.faultString)
         else:
-            add_log = open(get_activity_log(), "a")
+            add_log = open(ACTIVITY_LOG, "a")
             add_log.write("%s - %s is unauthorized user request for restart. Restart event fail for %s node's %s process .\n"%( datetime.now().ctime(), session['username'], node_name, process_name ))
             return jsonify(status = "error2",
                            message = "You are not authorized this action" )
     else:
-        add_log = open(get_activity_log(), "a")
+        add_log = open(ACTIVITY_LOG, "a")
         add_log.write("%s - Illegal request for restart to %s node's %s process %s .\n"%( datetime.now().ctime(), node_name, process_name ))
-        return redirect(url_for('login'))
+        return jsonify(message = 'Session expired'), 403
 
 # Process start
-@app.route('/node/<node_name>/process/<path:process_name>/start')
+@app.route('/node/<node_name>/process/<process_name>/start')
 def json_start(node_name, process_name):
     if session.get('logged_in'):
         if session['usertype'] == 0 or session['usertype'] == 1:
             try:
-                node_config = get_config().getNodeConfig(node_name)
+                node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
                 node = Node(node_config)
                 if node.connection.supervisor.startProcess(process_name):
-                    add_log = open(get_activity_log(), "a")
+                    add_log = open(ACTIVITY_LOG, "a")
                     add_log.write("%s - %s started %s node's %s process .\n"%( datetime.now().ctime(), session['username'], node_name, process_name ))
                     return JsonValue(process_name, node_name, "start").success()
+                else:
+                    return jsonify(status="error1",
+                               message="Cannot start process")
             except xmlrpclib.Fault as err:
-                add_log = open(get_activity_log(), "a")
+                add_log = open(ACTIVITY_LOG, "a")
                 add_log.write("%s - %s unsucces start event %s node's %s process .\n"%( datetime.now().ctime(), session['username'], node_name, process_name ))
                 return JsonValue(process_name, node_name, "start").error(err.faultCode, err.faultString)
         else:   
-            add_log = open(get_activity_log(), "a")
+            add_log = open(ACTIVITY_LOG, "a")
             add_log.write("%s - %s is unauthorized user request for start. Start event fail for %s node's %s process .\n"%( datetime.now().ctime(), session['username'], node_name, process_name ))
             return jsonify(status = "error2",
                            message = "You are not authorized this action" )
     else:
-        add_log = open(get_activity_log(), "a")
+        add_log = open(ACTIVITY_LOG, "a")
         add_log.write("%s - Illegal request for start to %s node's %s process %s .\n"%( datetime.now().ctime(), node_name, process_name ))
-        return redirect(url_for('login'))
+        return jsonify(message = 'Session expired'), 403
 
 # Process stop
-@app.route('/node/<node_name>/process/<path:process_name>/stop')
+@app.route('/node/<node_name>/process/<process_name>/stop')
 def json_stop(node_name, process_name):
     if session.get('logged_in'):
         if session['usertype'] == 0 or session['usertype'] == 1:
             try:
-                node_config = get_config().getNodeConfig(node_name)
+                node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
                 node = Node(node_config)
                 if node.connection.supervisor.stopProcess(process_name):
-                    add_log = open(get_activity_log(), "a")
+                    add_log = open(ACTIVITY_LOG, "a")
                     add_log.write("%s - %s stopped %s node's %s process .\n"%( datetime.now().ctime(), session['username'], node_name, process_name ))
                     return JsonValue(process_name, node_name, "stop").success()
+                else:
+                    return jsonify(status="error1",
+                               message="Cannot stop process")
             except xmlrpclib.Fault as err:
-                add_log = open(get_activity_log(), "a")
+                add_log = open(ACTIVITY_LOG, "a")
                 add_log.write("%s - %s unsucces stop event %s node's %s process .\n"%( datetime.now().ctime(), session['username'], node_name, process_name ))
                 return JsonValue(process_name, node_name, "stop").error(err.faultCode, err.faultString)
         else:
-            add_log = open(get_activity_log(), "a")
+            add_log = open(ACTIVITY_LOG, "a")
             add_log.write("%s - %s is unauthorized user request for stop. Stop event fail for %s node's %s process .\n"%( datetime.now().ctime(), session['username'], node_name, process_name ))
             return jsonify(status = "error2",
                            message = "You are not authorized this action" )
     else:
-        add_log = open(get_activity_log(), "a")
+        add_log = open(ACTIVITY_LOG, "a")
         add_log.write("%s - Illegal request for stop to %s node's %s process %s .\n"%( datetime.now().ctime(), node_name, process_name ))
-        return redirect(url_for('login'))
+        return jsonify(message = 'Session expired'), 403
 
 # Node name list in the configuration file
 @app.route('/node/name/list')
 def getlist():
     if session.get('logged_in'):
-        node_name_list = get_config().node_list
+        node_name_list = Config(CONFIG_FILE).node_list
         return jsonify( node_name_list = node_name_list )
     else:
-        return redirect(url_for('login'))
+        return jsonify(message = 'Session expired'), 403
 
 # Show log for process
-@app.route('/node/<node_name>/process/<path:process_name>/readlog')
+@app.route('/node/<node_name>/process/<process_name>/readlog')
 def readlog(node_name, process_name):
     if session.get('logged_in'):
         if session['usertype'] == 0 or session['usertype'] == 1 or session['usertype'] == 2:
-            node_config = get_config().getNodeConfig(node_name)
+            node_config = Config(CONFIG_FILE).getNodeConfig(node_name)
             node = Node(node_config)
             log = node.connection.supervisor.tailProcessStdoutLog(process_name, 0, 500)[0]
-            add_log = open(get_activity_log(), "a")
+            add_log = open(ACTIVITY_LOG, "a")
             add_log.write("%s - %s read log %s node's %s process .\n"%( datetime.now().ctime(), session['username'], node_name, process_name ))
             return jsonify( status = "success", url="node/"+node_name+"/process/"+process_name+"/read" , log=log)
         else:
-            add_log = open(get_activity_log(), "a")
+            add_log = open(ACTIVITY_LOG, "a")
             add_log.write("%s - %s is unauthorized user request for read log. Read log event fail for %s node's %s process .\n"%( datetime.now().ctime(), session['username'], node_name, process_name ))
             return jsonify( status = "error", message= "You are not authorized for this action")
     else:
-        add_log = open(get_activity_log(), "a")
+        add_log = open(ACTIVITY_LOG, "a")
         add_log.write("%s - Illegal request for read log to %s node's %s process %s .\n"%( datetime.now().ctime(), node_name, process_name ))
         return jsonify( status = "error", message= "First login please")
 
@@ -384,7 +565,7 @@ def add_user():
         if session['usertype'] == 0:
             return jsonify(status = 'success')
         else:
-            add_log = open(get_activity_log(), "a")
+            add_log = open(ACTIVITY_LOG, "a")
             add_log.write("%s - Unauthorized user request for add user event. Add user event fail .\n"%( datetime.now().ctime() ))
             return jsonify(status = 'error')
 
@@ -403,7 +584,7 @@ def del_user():
                            names = usernamelist,
                            types = usertypelist)
         else:
-            add_log = open(get_activity_log(), "a")
+            add_log = open(ACTIVITY_LOG, "a")
             add_log.write("%s - Unauthorized user request for delete user event. Delete user event fail .\n"%( datetime.now().ctime() ))
             return jsonify(status = 'error')
 
@@ -415,23 +596,23 @@ def del_user_handler(username):
                 cur = get_db().cursor()
                 cur.execute("delete from userinfo where username=?",[username])
                 get_db().commit()
-                add_log = open(get_activity_log(), "a")
+                add_log = open(ACTIVITY_LOG, "a")
                 add_log.write("%s - %s user deleted .\n"%( datetime.now().ctime(), username ))
                 return jsonify(status = "success")
             else:
-                add_log = open(get_activity_log(), "a")
+                add_log = open(ACTIVITY_LOG, "a")
                 add_log.write("%s - %s  user request for delete admin user. Delete admin user event fail .\n"%( datetime.now().ctime(), session['username'] ))
                 return jsonify(status = "error",
                                message= "Admin can't delete")
         else:
-            add_log = open(get_activity_log(), "a")
+            add_log = open(ACTIVITY_LOG, "a")
             add_log.write("%s - %s is unauthorized user for request to delete a user. Delete event fail .\n"%( datetime.now().ctime(), session['username'] ))
             return jsonify(status = "error",
                            message = "Only Admin can delete a user")
     else:
-        add_log = open(get_activity_log(), "a")
+        add_log = open(ACTIVITY_LOG, "a")
         add_log.write("%s - Illegal request for delete user event.\n"%( datetime.now().ctime()))
-        return redirect(url_for('login'))
+        return jsonify(message = 'Session expired'), 403
 
 # Writes new user information to database
 @app.route('/add/user/handler', methods = ['GET', 'POST'])
@@ -461,27 +642,27 @@ def adduserhandler():
                     if password == confirmpassword:
                         cur.execute("insert into userinfo values(?, ?, ?)", (username, password, usertype,))
                         get_db().commit()
-                        add_log = open(get_activity_log(), "a")
+                        add_log = open(ACTIVITY_LOG, "a")
                         add_log.write("%s - New user added.\n"%( datetime.now().ctime() ))
                         return jsonify(status = "success",
                                        message ="User added")
                     else:
-                        add_log = open(get_activity_log(), "a")
+                        add_log = open(ACTIVITY_LOG, "a")
                         add_log.write("%s - Passwords didn't match at add user event.\n"%( datetime.now().ctime() ))
                         return jsonify(status = "warning",
                                        message ="Passwords didn't match")
                 else:
-                    add_log = open(get_activity_log(), "a")
+                    add_log = open(ACTIVITY_LOG, "a")
                     add_log.write("%s - Username is avaible at add user event.\n"%( datetime.now().ctime() ))
                     return jsonify(status = "warning",
                                    message ="Username is avaible. Please select different username")
         else:
-            add_log = open(get_activity_log(), "a")
+            add_log = open(ACTIVITY_LOG, "a")
             add_log.write("%s - %s is unauthorized user for request to add user event. Add user event fail .\n"%( datetime.now().ctime(), session['username'] ))
             return jsonify(status = "error",
                            message = "Only Admin can add a user")
     else:
-        add_log = open(get_activity_log(), "a")
+        add_log = open(ACTIVITY_LOG, "a")
         add_log.write("%s - Illegal request for add user event.\n"%( datetime.now().ctime()))
         return jsonify(status = "error",
                        message = "First login please")
@@ -494,14 +675,14 @@ def changepassword(username):
         if session['username'] == username:
             return jsonify(status = "success")
         else:
-            add_log = open(get_activity_log(), "a")
+            add_log = open(ACTIVITY_LOG, "a")
             add_log.write("%s - %s user request to change %s 's password. Change password event fail\n"%( datetime.now().ctime(), session['username'], username))
             return jsonify(status = "error",
                            message = "You can only change own password.")
     else:
-        add_log = open(get_activity_log(), "a")
+        add_log = open(ACTIVITY_LOG, "a")
         add_log.write("%s - Illegal request for change %s 's password event.\n"%( datetime.now().ctime(), username))
-        return redirect(url_for('login'))
+        return jsonify(message = 'Session expired'), 403
 
 
 
@@ -517,53 +698,40 @@ def changepasswordhandler(username):
                     if request.form['new'] != "":
                         cur.execute("update userinfo set password=? where username=?",[request.form['new'], username])
                         get_db().commit()
-                        add_log = open(get_activity_log(), "a")
+                        add_log = open(ACTIVITY_LOG, "a")
                         add_log.write("%s - %s user change own password.\n"%( datetime.now().ctime(), session['username']))
                         return jsonify(status = "success")
                     else:
                         return jsonify(status = "null",
                                        message = "Please enter valid value")
                 else:
-                    add_log = open(get_activity_log(), "a")
+                    add_log = open(ACTIVITY_LOG, "a")
                     add_log.write("%s - Passwords didn't match for %s 's change password event. Change password event fail .\n"%( datetime.now().ctime(), session['username']))
                     return jsonify(status = "error", message = "Passwords didn't match")
             else:
-                add_log = open(get_activity_log(), "a")
+                add_log = open(ACTIVITY_LOG, "a")
                 add_log.write("%s - Old password is wrong for %s 's change password event. Change password event fail .\n"%( datetime.now().ctime(), session['username']))
                 return jsonify(status = "error", message = "Old password is wrong")
         else:
-            add_log = open(get_activity_log(), "a")
+            add_log = open(ACTIVITY_LOG, "a")
             add_log.write("%s - %s user request to change %s 's password. Change password event fail\n"%( datetime.now().ctime(), session['username'], username))
             return jsonify(status = "error", message = "You can only change own password.")
     else:
-        add_log = open(get_activity_log(), "a")
+        add_log = open(ACTIVITY_LOG, "a")
         add_log.write("%s - Illegal request for change %s 's password event.\n"%( datetime.now().ctime(), username))
-        return redirect(url_for('login'))
+        return jsonify(message = 'Session expired'), 403
 
 @app.errorhandler(404)
 def page_not_found(error):
     return render_template('page_not_found.html'), 404
 
-def main(args=()):
-    parser = argparse.ArgumentParser(description='Cesi web server')
-
-    parser.add_argument('--config', default=cesi.CONFIG_FILE,
-                        type=str, help='config file')
-    parser.add_argument('-d', '--debug', default=False, action='store_true',
-                        help='debug mode')
-    parser.add_argument('-r', '--use-reloader', default=False, action='store_true',
-                        help='reload if app code changes (dev mode)')
-
-    args = parser.parse_args()
-
-    cesi.CONFIG_FILE = args.config
-
-    try:
-        app.run(debug=args.debug, use_reloader=args.use_reloader, host=get_host())
-    except xmlrpclib.Fault as err:
-        print "A fault occurred"
-        print "Fault code: %d" % err.faultCode
-        print "Fault string: %s" % err.faultString
-
-if __name__ == '__main__':
-    main(args=sys.argv)
+try:
+    if __name__ == '__main__':
+        app.run(debug=True, 
+         host='0.0.0.0', 
+         port=5010,
+         threaded=True)
+except xmlrpclib.Fault as err:
+    print "A fault occurred"
+    print "Fault code: %d" % err.faultCode
+    print "Fault string: %s" % err.faultString

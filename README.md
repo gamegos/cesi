@@ -28,6 +28,13 @@ Fill cesi.conf
 
     $python web.py
 
+## Run With Docker
+
+If you would like to run image, you must copy your config file in local pc in /etc/ directory.
+
+    docker run -d -p 5000:5000 -v /path/to/config/:/etc/ burcina/docker-cesi
+
+
 ## First Login
 
 Please change password after first login!
@@ -57,3 +64,14 @@ cesi-devel@googlegroups.com
 
 [1]: http://supervisord.org/
 [2]: http://www.gulsahkose.com/2014/09/cesi-centralized-supervisor-interface.html
+
+
+## TODO
+
+- Do not use external adresses for javascript and css libraries 
+- Remove angular, vs from login page
+- Error page template
+- Config ile port degistirme
+- Title'i degistirme
+- Better format activity log (tabbed date, level, component, message)
+- Fix batch action buttons 

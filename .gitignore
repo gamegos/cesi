@@ -3,3 +3,6 @@
 *swo
 *~
 *.db
+*.log
+.idea
+.vscode

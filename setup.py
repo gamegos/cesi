@@ -2,9 +2,9 @@ from setuptools import setup, find_packages
 
 setup(
   name='cesi',
-  version='0.1.0.dev0',
+  version='2.0.0',
   description='Centralized supervisor interface.',
-  long_description=('uzun tanimlama'),
+  long_description=('CESI is a web based interface to manage multiple supervizor instances'),
   url='http://github.com/gamegos/cesi',
   license='GPLv3',
   author='Gulsah Kose',

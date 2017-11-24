@@ -9,10 +9,11 @@ CONFIG_FILE = "/etc/cesi.conf"
 class Config:
     DEFAULT_PORT = '5000'
     DEFAULT_NAME = 'CeSI'
+    DEFAULT_THEME = 'superhero'
 
     def __init__(self, CFILE):
         self.CFILE = CFILE
-        self.cfg = ConfigParser.SafeConfigParser(defaults={'port': self.DEFAULT_PORT, 'name': self.DEFAULT_NAME})
+        self.cfg = ConfigParser.SafeConfigParser(defaults={'port': self.DEFAULT_PORT, 'name': self.DEFAULT_NAME, 'theme': self.DEFAULT_THEME})
         self.cfg.read(self.CFILE)
 
         self.node_list = []
@@ -60,7 +61,10 @@ class Config:
         return int(self.cfg.get('cesi', 'port'))
 
     def getName(self):
-        return str(self.cfg.get('cesi', 'name'))
+        return self.cfg.get('cesi', 'name')
+
+    def getTheme(self):
+        return self.cfg.get('cesi', 'theme')
 
 
 class NodeConfig:

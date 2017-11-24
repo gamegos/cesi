@@ -14,7 +14,8 @@ angular.module('cesiApp.nodes', [
     })
 
 
-    .controller('NodesCtrl', ['$scope', 'cesiService', '$stateParams', function ($scope, cesiService, $stateParams) {
+    .controller('NodesCtrl', ['$scope', 'cesiService', '$stateParams',
+            function ($scope, cesiService, $stateParams) {
 
         $scope.nodeGrouping = ($stateParams.grouping + '').toLowerCase();
         if($scope.nodeGrouping != 'groups' && $scope.nodeGrouping != 'environments') $scope.nodeGrouping = ''

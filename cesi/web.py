@@ -369,7 +369,7 @@ def startAll():
                 continue
 
             for process in node.process_list:
-                json_start(nodename, process.name)
+                json_start(nodename, process.group + ":" + process.name)
                 
         return jsonify(status="success")
     else:
@@ -390,7 +390,7 @@ def stopAll():
                 continue
 
             for process in node.process_list:
-                json_stop(nodename, process.name)
+                json_stop(nodename, process.group + ":" + process.name)
 
         return jsonify(status="success")
     else:
@@ -409,7 +409,7 @@ def restartAll():
                 continue
 
             for process in node.process_list:
-                json_restart(nodename, process.name)
+                json_restart(nodename, process.group + ":" + process.name)
                 
         return jsonify(status="success")
     else:

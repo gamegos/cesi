@@ -1,27 +1,24 @@
 'use strict';
 
-function notify(type, message) {
-  $.notify({
-    // options
-    message: message,
-  }, {
-    // settings
-    type: type
-  });
+function notify($scope, type, message) {
+  $scope.notifTitle = type
+  $scope.message = message
+  $scope.alertType = "alert-" + type
 };
 
 function findType(type) {
+  type = type + ""
   switch (type) {
-    case '0', 0:
+    case '0':
       return "Admin"
       break;
-    case '1', 1:
+    case '1':
       return "Standart User"
       break;
-    case '2', 2:
+    case '2':
       return "Only Log"
       break;
-    case '3', 3:
+    case '3':
       return "Read Only"
       break;
     default:
@@ -54,76 +51,66 @@ angular.module('cesiApp.navbar', [
       controller: 'DeleteUserCtrl'
     });
 
-    $stateProvider.state('logout', {
-      url: '/users/delete',
-      template: '',
-      controller: 'LogoutCtrl'
-    });
-
-
   })
 
   .controller('NavbarCtrl', ['$scope', 'cesiService', '$rootScope', function ($scope, cesiService, $rootScope) {
     cesiService.userInfo().then(function (data) {
       $rootScope.username = data['username'];
       $rootScope.usertype = findType(data['usertypecode']);
-      document.getElementById('show-account').innerHTML = data['username'] + " (" + $rootScope.usertype + ")";
-      document.getElementById('username').innerHTML = data['username'];
     });
+
+    $scope.userLogout = function(){
+      cesiService.logout().then(function(res, err){
+        window.location.replace('/login');
+      })
+    }
   }])
 
   .controller('AddUserCtrl', ['$scope', 'cesiService', function ($scope, cesiService) {
     $scope.submit = function () {
       cesiService.add($scope.form).then(function (data) {
-        document.getElementById('add-user-button').disabled = false;
-        document.getElementById('add-user-button').value = "Save";
+        $scope.loading = true
 
         switch (data.status) {
           case "success":
-            notify("success", data.message);
+            notify($scope, "success", data.message);
+            document.getElementById("add-user-form").reset();
             break;
           case "warning":
-            notify("warning", data.message);
+            notify($scope, "warning", data.message);
             break;
           case "error":
-            notify("danger", data.message);
+            notify($scope, "danger", data.message);
             break;
           default:
-            notify("danger", "Error!");
+            notify($scope, "danger", "Undefined error! " +  data.message);
             break;
         }
 
-        document.getElementById("add-user-form").reset();
       });
-
-      document.getElementById('add-user-button').disabled = true;
-      document.getElementById('add-user-button').value = "Adding User";
     };
   }])
 
   .controller('ChangePasswordCtrl', ['$scope', 'cesiService', function ($scope, cesiService) {
     $scope.submit = function () {
+      $scope.loading = true
       cesiService.changepassword($scope.form).then(function (data) {
-        document.getElementById('change-password-button').disabled = false;
-        document.getElementById('change-password-button').value = "Change Password";
-
+        $scope.loading = false
         switch (data.status) {
           case "success":
-            notify("success", "Password Has Been changed");
+            notify($scope, "success", "Password Has Been changed");
             break;
           case "error":
-            notify("danger", data.message);
+            notify($scope, "danger", data.message);
             break;
           default:
-            notify("danger", "Error!");
+            notify($scope, "danger", "Undefined error! " +  data.message);
             break;
         }
 
         document.getElementById("change-password-form").reset();
       });
 
-      document.getElementById('change-password-button').disabled = true;
-      document.getElementById('change-password-button').value = "Changing Password";
     };
   }])
 
@@ -135,16 +122,12 @@ angular.module('cesiApp.navbar', [
         $scope.users = [];
         for (var i = 0; i < data['names'].length; i++) {
 
-          if (data['names'][i] === "admin") {
-            continue;
-          }
           $scope.users.push({
             name: data['names'][i],
             type: findType(data['types'][i])
           })
         }
 
-        console.log($scope.users);
       });
     };
 
@@ -152,13 +135,13 @@ angular.module('cesiApp.navbar', [
       cesiService.deleteuser(arg).then(function (data) {
         switch (data.status) {
           case "success":
-            notify("success", "User is Deleted");
+            notify($scope, "success", "User '" + arg + "' is Deleted");
             break;
           case "error":
-            notify("danger", data.message);
+            notify($scope, "danger", data.message);
             break;
           default:
-            notify("danger", "Error!");
+            notify($scope, "danger", "Error!");
             break;
         }
       });
@@ -167,8 +150,4 @@ angular.module('cesiApp.navbar', [
 
     $scope.refresh();
   }])
-  .controller('LogoutCtrl', ['cesiService', function (cesiService) {
-    cesiService.logout().then(function (data) {
-      window.location.replace('/login');
-    });
-  }]);
+ 

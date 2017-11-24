@@ -1,29 +1,37 @@
-<div ng-app="myApp" class="login-panel panel panel-default addauser">
-	<div class="panel-heading">
-		<h3 class="panel-title">Please Enter User Information </h3>
+<div class="user-form add-user" ng-controller="AddUserCtrl">
+	<h2>Change User</h2>
+
+	<div class="row">
+		<div class="col-lg-6 col-sm-12">
+			<div class="alert" ng-class="alertType" ng-show="message">
+				<button type="button" class="close" ng-click="message=''">×</button>
+				<h5 style="text-transform: capitalize;">{{notifTitle}}</h5>
+				<span>{{message}}</span>
+			</div>
+
+			<form class="adduserform" ng-submit="submit()" id="add-user-form">
+				<fieldset>
+					<div class="form-group">
+						<input class="form-control" placeholder="Username" ng-model="form.username" autofocus="">
+					</div>
+					<div class="form-group">
+						<input class="form-control" placeholder="Password" ng-model="form.password" type="password" value="">
+					</div>
+					<div class="form-group">
+						<input class="form-control" placeholder="Confirm Password" ng-model="form.confirmpassword" type="password" value="">
+					</div>
+					<div class="form-group">
+						<select class="form-control" ng-model="form.usertype">
+							<option>Standart User</option>
+							<option>Admin</option>
+							<option>Only Log</option>
+							<option>Read Only</option>
+						</select>
+					</div>
+					<input value="Save" type="submit" class="btn btn-lg btn-primary btn-block save" id="add-user-button">
+				</fieldset>
+			</form>
+		</div>
 	</div>
-	<div class="add_user panel-body">
-		<form class="adduserform" ng-controller="AddUserCtrl" ng-submit="submit()" id="add-user-form">
-			<fieldset>
-				<div class="form-group">
-					<input class="form-control" placeholder="Username" ng-model="form.username" autofocus="">
-				</div>
-				<div class="form-group">
-					<input class="form-control" placeholder="Password" ng-model="form.password" type="password" value="">
-				</div>
-				<div class="form-group">
-					<input class="form-control" placeholder="Confirm Password" ng-model="form.confirmpassword" type="password" value="">
-				</div>
-				<div class="form-group">
-					<select class="form-control" ng-model="form.usertype">
-						<option selected="">Standart User</option>
-						<option>Admin</option>
-						<option>Only Log</option>
-						<option>Read Only</option>
-					</select>
-				</div>
-				<input value="Save" type="submit" class="btn btn-lg btn-success btn-block save" id="add-user-button">
-			</fieldset>
-		</form>
-	</div>
+
 </div>

@@ -43,7 +43,8 @@ class Config:
     def getMemberNames(self, environment_name):
         self.environment_name = "environment:%s" % (environment_name)
         self.member_list = self.cfg.get(self.environment_name, 'members')
-        self.member_list = self.member_list.split(', ')
+        self.member_list = self.member_list.split(',')
+        self.member_list = map(str.strip, self.member_list)
         return self.member_list
 
     def getDatabase(self):

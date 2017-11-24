@@ -1,12 +1,20 @@
 .btn{cursor: pointer}
 
-#wrapper{margin-top: 20px}
+#wrapper{margin-top: 20px; max-width: 1140px}
 
 body {font-size: .8rem;}
 .node-menu{}
 
 .nodes{}
-.nodes-wrp .buttons{margin-top: 20px;}
+.nodes-wrp .buttons{margin-bottom: 20px;}
 
 .dashboard-cards {margin-bottom: 20px}
 .dashboard-cards .card-blockquote{ height: 150px;}
+
+.node-menu {margin-bottom: 20px}
+.node-menu .card-body {padding: 1rem; padding-bottom: .5rem}
+.node-group {margin-top:1rem}
+
+.node-group .badge{font-size: 60%;}
+
+.logs {font-family: Courier New, Courier, monospace; white-space: pre-line;}

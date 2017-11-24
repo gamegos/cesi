@@ -3,10 +3,8 @@
 angular.module('cesiApp', [
         'ui.router',
         'cesiLib',
-        // 'ngTable',
         'cesiApp.dashboard',
         'cesiApp.nodes',
-        // 'myApp.groups',
         'cesiApp.navbar'
     ])
     .factory('authInterceptorService', ['$q', '$location', function ($q, $location) {

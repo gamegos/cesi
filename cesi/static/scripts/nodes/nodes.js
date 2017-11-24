@@ -7,30 +7,31 @@ angular.module('cesiApp.nodes', [
 
     .config(function ($stateProvider) {
         $stateProvider.state('nodes', {
-            url: '/nodes',
+            url: '/nodes?grouping',
             controller: 'NodesCtrl',
             templateUrl: 'static/scripts/nodes/nodes.html'
         });
     })
 
 
-    .controller('NodesCtrl', ['$scope', 'cesiService', function ($scope, cesiService) {
-        $scope.nodeMenu = []
+    .controller('NodesCtrl', ['$scope', 'cesiService', '$stateParams',
+            function ($scope, cesiService, $stateParams) {
+
+        $scope.nodeGrouping = ($stateParams.grouping + '').toLowerCase();
+        if($scope.nodeGrouping != 'groups' && $scope.nodeGrouping != 'environments') $scope.nodeGrouping = ''
 
         $scope.nodeNames = [];
         $scope.nodeMap = {};
 
         $scope.processStatus = {};
 
-        $scope.environments = [];
-        $scope.groups = [];
-
         $scope.checkboxModel = {};
 
         $scope.environments = {};
         $scope.groups = {};
         $scope.selectedGroups = [];
-        
+        $scope.logs = {}
+
         $scope.getEnvironmentsAndGroups = function () {
             cesiService.dashboard().then(function (data) {
                 for (var i = 0; i < data.environment_name_list.length; i++) { 
@@ -80,7 +81,11 @@ angular.module('cesiApp.nodes', [
 
         $scope.getNodeLog = function (node, group, name) {
             cesiService.getnodelog(node, group, name).then(function (data) {
-                console.log(data);
+                $scope.logs.nodeName = node
+                $scope.logs.processName = name
+                $scope.logs.logs = data.log
+                
+                $('#processLogsModal').modal({})
             });
         };
 

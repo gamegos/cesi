@@ -320,6 +320,7 @@ def showMain():
 
         return render_template('index.html',
                                 name = Config(CONFIG_FILE).getName(),
+                                theme = Config(CONFIG_FILE).getTheme(),
                                 all_process_count =all_process_count,
                                 running_process_count =running_process_count,
                                 stopped_process_count =stopped_process_count,

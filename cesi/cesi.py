@@ -3,12 +3,17 @@ import ConfigParser
 from datetime import datetime, timedelta
 from flask import jsonify
 
+
+
 CONFIG_FILE = "/etc/cesi.conf"
 class Config:
-    
+    DEFAULT_PORT = '5000'
+    DEFAULT_NAME = 'CeSI'
+    DEFAULT_THEME = 'superhero'
+
     def __init__(self, CFILE):
         self.CFILE = CFILE
-        self.cfg = ConfigParser.ConfigParser()
+        self.cfg = ConfigParser.SafeConfigParser(defaults={'port': self.DEFAULT_PORT, 'name': self.DEFAULT_NAME, 'theme': self.DEFAULT_THEME})
         self.cfg.read(self.CFILE)
 
         self.node_list = []
@@ -39,7 +44,8 @@ class Config:
     def getMemberNames(self, environment_name):
         self.environment_name = "environment:%s" % (environment_name)
         self.member_list = self.cfg.get(self.environment_name, 'members')
-        self.member_list = self.member_list.split(', ')
+        self.member_list = self.member_list.split(',')
+        self.member_list = map(str.strip, self.member_list)
         return self.member_list
 
     def getDatabase(self):
@@ -55,7 +61,10 @@ class Config:
         return int(self.cfg.get('cesi', 'port'))
 
     def getName(self):
-        return str(self.cfg.get('cesi', 'name'))
+        return self.cfg.get('cesi', 'name')
+
+    def getTheme(self):
+        return self.cfg.get('cesi', 'theme')
 
 
 class NodeConfig:

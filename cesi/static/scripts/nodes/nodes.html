@@ -91,11 +91,12 @@
                         </thead>
                         <tbody>
                             <tr ng-repeat="process in nodeMap[nodeName] track by $index">
-                                <td data-title="Name" filter="{ name: 'text'}" sortable="'name'">{{process.name}}</td>
-                                <td data-title="Pid" filter="{ pid: 'number'}" sortable="'pid'">{{process.pid}}</td>
-                                <td data-title="Group" filter="{ group: 'text'}" sortable="'group'">{{process.group}}</td>
-                                <td data-title="Uptime" filter="{ uptime: 'time'}" sortable="'uptime'">{{process.now - process.start | secondsToTime}}</td>
-                                <td data-title="State" filter="{ state: 'text'}" sortable="'state'">{{processStatus[nodeName + '/' + process.pid]? "UPDATING...":process.statename}}</td>
+                                <td><strong>{{process.name}}</strong></td>
+                                <td>{{process.pid}}</td>
+                                <td>{{process.group}}</td>
+                                <td>{{process.now - process.start | secondsToTime}}</td>
+                                <td>
+                                    <span class="badge" ng-class="{'badge-success':process.statename=='RUNNING', 'badge-danger':process.statename=='STOPPED',  'badge-warning': processStatus[nodeName + '/' + process.pid]}">{{processStatus[nodeName + '/' + process.pid]? "UPDATING...":process.statename}}</span></td>
                                 <td style="text-align: right; white-space: nowrap">
                                     <button class="btn btn-primary btn-sm" ng-click="restart(nodeName, process)" ng-disabled="process.statename != 'RUNNING' || processStatus[nodeName + '/' + process.pid]">
                                         <i class="fa fa-fw fa-refresh"></i>

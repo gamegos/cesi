@@ -5,7 +5,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    {% if name %}
+    <title>{{name}}</title>
+    {% else %}
     <title>CeSI</title>
+    {% endif %}
 
 
     <link rel="stylesheet" href="https://bootswatch.com/4/superhero/bootstrap.css">
@@ -23,7 +27,7 @@
 <body>
     <div class="navbar navbar-expand-lg navbar-dark bg-primary" id="mainNav"  ng-controller="NavbarCtrl">
         <div class="container">
-            <a class="navbar-brand" href="/">CeSI&nbsp;&nbsp;&nbsp;</a>
+            <a class="navbar-brand" href="/">{% if name %}{{name}}{% else %}CeSI{% endif %}&nbsp;&nbsp;&nbsp;</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive"
                 aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>

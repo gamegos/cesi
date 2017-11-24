@@ -319,6 +319,7 @@ def showMain():
         not_connected_count = len(not_connected_node_list)
 
         return render_template('index.html',
+                                name = Config(CONFIG_FILE).getName(),
                                 all_process_count =all_process_count,
                                 running_process_count =running_process_count,
                                 stopped_process_count =stopped_process_count,

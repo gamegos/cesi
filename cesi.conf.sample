@@ -18,3 +18,4 @@
 ;activity_log = <path_to_activity_log_file>
 ;host = <bind_ip>
 ;port = <bind_port>
+;name = <app_name>

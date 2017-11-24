@@ -51,6 +51,9 @@ class Config:
     def getHost(self):
         return str(self.cfg.get('cesi', 'host'))
 
+    def getPort(self):
+        return int(self.cfg.get('cesi', 'port'))
+
 class NodeConfig:
 
     def __init__(self, node_name, host, port, username, password):

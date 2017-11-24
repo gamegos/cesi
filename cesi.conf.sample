@@ -17,3 +17,4 @@
 ;database = <path_to_database_file>
 ;activity_log = <path_to_activity_log_file>
 ;host = <bind_ip>
+;port = <bind_port>

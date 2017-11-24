@@ -3,12 +3,16 @@ import ConfigParser
 from datetime import datetime, timedelta
 from flask import jsonify
 
+
+
 CONFIG_FILE = "/etc/cesi.conf"
 class Config:
-    
+    DEFAULT_PORT = '5000'
+    DEFAULT_NAME = 'CeSI'
+
     def __init__(self, CFILE):
         self.CFILE = CFILE
-        self.cfg = ConfigParser.ConfigParser()
+        self.cfg = ConfigParser.SafeConfigParser(defaults={'port': self.DEFAULT_PORT, 'name': self.DEFAULT_NAME})
         self.cfg.read(self.CFILE)
 
         self.node_list = []

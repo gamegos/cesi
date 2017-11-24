@@ -1,56 +1,81 @@
 <div ng-controller="NodesCtrl" class="content nodes-wrp">
 
     <div class="row">
-        <div class="col-md-2 col-sm-2 node-menu">
-            <h5>All Nodes</h5>
-            <div class="list-group">
-                <div class="list-group-item  list-group-item-action" ng-repeat="name in nodeNames">
-                    <label class="{{name}}">
-                        <input type="checkbox" ng-disabled="selectedGroups.length != 0" class="{{name}}" ng-model="checkboxModel[name]"> {{name}}</label>
+        <div class="col-lg-2 col-md-3 node-menu">
+            <div id="allnodes-nav" ng-show="nodeGrouping==''">
+                <h5>All Nodes</h5>
+                <div class="node-group">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="form-check" ng-repeat="name in nodeNames">
+                                <label class="form-check-label {{name}}">
+                                    <input type="checkbox" ng-disabled="selectedGroups.length != 0" class="form-check-input {{name}}" ng-model="checkboxModel[name]"> {{name}}</label>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="col-md-2 col-sm-2 node-menu" ng-repeat="(key,val) in environments">
-            <h5>{{key}}</h5>
-            <div class="list-group">
-                <div class="list-group-item  list-group-item-action" ng-repeat="name in val">
-                    <label class="{{name}}">
-                        <input type="checkbox" ng-disabled="selectedGroups.length != 0" class="{{name}}" ng-model="checkboxModel[name]"> {{name}}</label>
+            <div id="environments-nav" ng-show="nodeGrouping=='environments'">
+                <h5>Environments</h5>
+                <div class="node-group" ng-repeat="(key,val) in environments">
+                    <h6>{{key}}</h6>
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="form-check" ng-repeat="name in val">
+                                <label class="form-check-label {{name}}">
+                                    <input type="checkbox" ng-disabled="selectedGroups.length != 0" class="form-check-input {{name}}" ng-model="checkboxModel[name]"> {{name}}</label>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="col-md-2 col-sm-2 node-menu" ng-repeat="(key, val) in groups">
-            <h5 ng-click="val.checkAll();">{{key}}</h5>
-            <div class="list-group">
-                <div class="list-group-item  list-group-item-action" ng-repeat="env in val.envs">
-                    <label class="{{env.name}}">
-                        <input type="checkbox" class="{{env.name}}" ng-model="env.show" ng-change="showGroupEnv(env.show, env.name, key)"> {{env.name}}</label>
+            <div id="groups-nav" ng-show="nodeGrouping=='groups'">
+                <h5>Groups</h5>
+                <div class="node-group" ng-repeat="(key, val) in groups">
+                    <h5 ng-click="val.checkAll();">{{key}}</h5>
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="form-check" ng-repeat="env in val.envs">
+                                <label class="form-check-label {{env.name}}">
+                                    <input type="checkbox" class="form-check-input {{env.name}}" ng-model="env.show" ng-change="showGroupEnv(env.show, env.name, key)"> {{env.name}}</label>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
+
         </div>
 
-        <div class="col-md-10 col-sm-10">
+
+
+        <div class="col-lg-10 col-md-9">
 
             <div class="row buttons">
-                <div class="col-md-2">
+                <div class="col-sm-2 col-xs-4">
                     <button class="btn btn-primary btn-sm" ng-click="load()" ng-disabled="flag" value="">Refresh Page</button>
                 </div>
-                <div class="col-md-10" style="text-align:right">
+                <div class="col-sm-10 col-xs-8" style="text-align:right">
 
 
                     <button class="btn btn-success btn-sm" value="" ng-click="startAll()">
-                        <i class="fa fa-fw fa-play"></i> Start All</button>
+                        <i class="fa fa-fw fa-play"></i>
+                        <span class="d-none d-lg-inline">Start All</span>
+                    </button>
                     <button class="btn btn-danger btn-sm" ng-click="stopAll()">
-                        <i class="fa fa-fw fa-stop"></i> Stop All</button>
+                        <i class="fa fa-fw fa-stop"></i>
+                        <span class="d-none d-lg-inline">Stop All</span>
+                    </button>
                     <button class="btn btn-primary btn-sm" ng-click="restartAll()">
-                        <i class="fa fa-fw fa-refresh"></i> Restart All</button>
+                        <i class="fa fa-fw fa-refresh"></i>
+                        <span class="d-none d-lg-inline">Restart All</span>
+                    </button>
                 </div>
             </div>
 
 
-            <div ng-repeat="(nodeIndex, nodeName) in nodeNames track by $index" class="row nodes"  ng-if="checkboxModel[nodeName] && selectedGroups.length == 0">
+            <div ng-repeat="(nodeIndex, nodeName) in nodeNames track by $index" class="row nodes" ng-if="checkboxModel[nodeName] && selectedGroups.length == 0">
                 <div class="col-md-12">
 
                     <h4>Processes for {{nodeName}}</h4>
@@ -73,13 +98,21 @@
                                 <td data-title="State" filter="{ state: 'text'}" sortable="'state'">{{processStatus[nodeName + '/' + process.pid]? "UPDATING...":process.statename}}</td>
                                 <td style="text-align: right; white-space: nowrap">
                                     <button class="btn btn-primary btn-sm" ng-click="restart(nodeName, process)" ng-disabled="process.statename != 'RUNNING' || processStatus[nodeName + '/' + process.pid]">
-                                        <i class="fa fa-fw fa-refresh"></i> Restart</button>&nbsp;
+                                        <i class="fa fa-fw fa-refresh"></i>
+                                        <span class="d-none d-lg-inline"> Restart</span>
+                                    </button>&nbsp;
                                     <button class="btn btn-success btn-sm" ng-click="start(nodeName, process)" ng-disabled="process.statename == 'RUNNING' || processStatus[nodeName + '/' + process.pid]">
-                                        <i class="fa fa-fw fa-play"></i> Start</button>&nbsp;
+                                        <i class="fa fa-fw fa-play"></i>
+                                        <span class="d-none d-lg-inline"> Start</span>
+                                    </button>&nbsp;
                                     <button class="btn btn-danger btn-sm" ng-click="stop(nodeName, process)" ng-disabled="process.statename != 'RUNNING' || processStatus[nodeName + '/' + process.pid]">
-                                        <i class="fa fa-fw fa-stop"></i> Stop</button>&nbsp;
-                                    <button class="btn btn-info btn-sm" ng-click="getNodeLog(nodeName, process.group, process.name)"> 
-                                        <i class="fa fa-fw fa-info"></i> Log</button>&nbsp;
+                                        <i class="fa fa-fw fa-stop"></i>
+                                        <span class="d-none d-lg-inline"> Stop</span>
+                                    </button>&nbsp;
+                                    <button class="btn btn-info btn-sm" ng-click="getNodeLog(nodeName, process.group, process.name)">
+                                        <i class="fa fa-fw fa-info"></i>
+                                        <span class="d-none d-lg-inline"> Log</span>
+                                    </button>&nbsp;
                                 </td>
                             </tr>
                         </tbody>
@@ -102,24 +135,24 @@
                             <th></th>
                         </thead>
                         <tbody>
-                                <tr ng-repeat="process in groups[group].processes track by $index">
-                                    <td data-title="Name" filter="{ name: 'text'}" sortable="'name'">{{process[1]}}</td>
-                                    <td data-title="Pid" filter="{ pid: 'number'}" sortable="'pid'">{{process[0]}}</td>
-                                    <td data-title="Uptime" filter="{ uptime: 'time'}" sortable="'uptime'">{{process[3]}}</td>
-                                    <td data-title="State" filter="{ state: 'text'}" sortable="'state'">{{process[5]}}</td>
-                                    <td data-title="Envorinment" filter="{ envorinment: 'text'}" sortable="'envorinment'">{{process[6].join()}}</td>
-                                    <td style="text-align: right; white-space: nowrap">
-                                        <button class="btn btn-primary btn-sm" ng-click="restart(nodeName, process)" ng-disabled="process.statename != 'RUNNING' || processStatus[nodeName + '/' + process.pid]">
-                                            <i class="fa fa-fw fa-refresh"></i> Restart</button>&nbsp;
-                                        <button class="btn btn-success btn-sm" ng-click="start(nodeName, process)" ng-disabled="process.statename == 'RUNNING' || processStatus[nodeName + '/' + process.pid]">
-                                            <i class="fa fa-fw fa-play"></i> Start</button>&nbsp;
-                                        <button class="btn btn-danger btn-sm" ng-click="stop(nodeName, process)" ng-disabled="process.statename != 'RUNNING' || processStatus[nodeName + '/' + process.pid]">
-                                            <i class="fa fa-fw fa-stop"></i> Stop</button>&nbsp;
-                                        <button class="btn btn-info btn-sm" ng-click="getNodeLog(process[2], group, process[1])"> 
-                                            <i class="fa fa-fw fa-info"></i> Log</button>&nbsp;
-                                    </td>
-                                </tr>                        
-                            </tbody>
+                            <tr ng-repeat="process in groups[group].processes track by $index">
+                                <td data-title="Name" filter="{ name: 'text'}" sortable="'name'">{{process[1]}}</td>
+                                <td data-title="Pid" filter="{ pid: 'number'}" sortable="'pid'">{{process[0]}}</td>
+                                <td data-title="Uptime" filter="{ uptime: 'time'}" sortable="'uptime'">{{process[3]}}</td>
+                                <td data-title="State" filter="{ state: 'text'}" sortable="'state'">{{process[5]}}</td>
+                                <td data-title="Envorinment" filter="{ envorinment: 'text'}" sortable="'envorinment'">{{process[6].join()}}</td>
+                                <td style="text-align: right; white-space: nowrap">
+                                    <button class="btn btn-primary btn-sm" ng-click="restart(nodeName, process)" ng-disabled="process.statename != 'RUNNING' || processStatus[nodeName + '/' + process.pid]">
+                                        <i class="fa fa-fw fa-refresh"></i> Restart</button>&nbsp;
+                                    <button class="btn btn-success btn-sm" ng-click="start(nodeName, process)" ng-disabled="process.statename == 'RUNNING' || processStatus[nodeName + '/' + process.pid]">
+                                        <i class="fa fa-fw fa-play"></i> Start</button>&nbsp;
+                                    <button class="btn btn-danger btn-sm" ng-click="stop(nodeName, process)" ng-disabled="process.statename != 'RUNNING' || processStatus[nodeName + '/' + process.pid]">
+                                        <i class="fa fa-fw fa-stop"></i> Stop</button>&nbsp;
+                                    <button class="btn btn-info btn-sm" ng-click="getNodeLog(process[2], group, process[1])">
+                                        <i class="fa fa-fw fa-info"></i> Log</button>&nbsp;
+                                </td>
+                            </tr>
+                        </tbody>
                     </table>
                 </div>
             </div>

@@ -7,23 +7,22 @@ angular.module('cesiApp.nodes', [
 
     .config(function ($stateProvider) {
         $stateProvider.state('nodes', {
-            url: '/nodes',
+            url: '/nodes?grouping',
             controller: 'NodesCtrl',
             templateUrl: 'static/scripts/nodes/nodes.html'
         });
     })
 
 
-    .controller('NodesCtrl', ['$scope', 'cesiService', function ($scope, cesiService) {
-        $scope.nodeMenu = []
+    .controller('NodesCtrl', ['$scope', 'cesiService', '$stateParams', function ($scope, cesiService, $stateParams) {
+
+        $scope.nodeGrouping = ($stateParams.grouping + '').toLowerCase();
+        if($scope.nodeGrouping != 'groups' && $scope.nodeGrouping != 'environments') $scope.nodeGrouping = ''
 
         $scope.nodeNames = [];
         $scope.nodeMap = {};
 
         $scope.processStatus = {};
-
-        $scope.environments = [];
-        $scope.groups = [];
 
         $scope.checkboxModel = {};
 

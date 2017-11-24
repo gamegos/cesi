@@ -3,14 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    {% if name %}
-    <title>{{name}}</title>
-    {% else %}
-    <title>CeSI</title>
-    {% endif %}
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>{{name}}</title>
 
     <link rel="stylesheet" href="https://bootswatch.com/4/superhero/bootstrap.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css" rel="stylesheet" />
@@ -25,7 +18,7 @@
 </head>
 
 <body>
-    <div class="navbar navbar-expand-lg navbar-dark bg-primary" id="mainNav"  ng-controller="NavbarCtrl">
+    <div class="navbar navbar-expand-lg navbar-dark bg-primary" id="mainNav" ng-controller="NavbarCtrl">
         <div class="container">
             <a class="navbar-brand" href="/">{% if name %}{{name}}{% else %}CeSI{% endif %}&nbsp;&nbsp;&nbsp;</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive"
@@ -38,14 +31,29 @@
                     <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Dashboard">
                         <a class="nav-link" ui-sref="dashboard" ui-sref-active="active">
                             <i class="fa fa-fw fa-dashboard"></i>
-                            <span class="nav-link-text">Dashboard&nbsp;&nbsp;</span>
+                            <span class="nav-link-text hidden-sm-down">Dashboard&nbsp;&nbsp;</span>
                         </a>
                     </li>
 
                     <li class="nav-item" data-toggle="tooltip" data-placement="right" title="All Nodes">
-                        <a class="nav-link" ui-sref="nodes" ui-sref-active="active">
+                        <a class="nav-link" ui-sref="nodes({grouping: ''})" ui-sref-active="active">
                             <i class="fa fa-fw fa-sitemap"></i>
-                            <span class="nav-link-text">All Nodes</span>
+                            <span class="nav-link-text hidden-sm-down">All Nodes</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item" data-toggle="tooltip" data-placement="right" title="All Nodes">
+                        <a class="nav-link" ui-sref="nodes({grouping: 'groups'})" ui-sref-active="active">
+                            <i class="fa fa-fw fa-th-large"></i>
+                            <span class="nav-link-text hidden-sm-down">Groups</span>
+                        </a>
+                    </li>
+
+
+                    <li class="nav-item" data-toggle="tooltip" data-placement="right" title="All Nodes">
+                        <a class="nav-link" ui-sref="nodes({grouping: 'environments'})" ui-sref-active="active">
+                            <i class="fa fa-fw fa-tags"></i>
+                            <span class="nav-link-text hidden-sm-down">Environments</span>
                         </a>
                     </li>
                 </ul>
@@ -63,12 +71,12 @@
                                 <i class="fa fa-wrench"></i>&nbsp; Change Password </a>
 
                             <div ng-show="usertype=='Admin'">
-                            <div class="dropdown-divider"></div>
-                            
-                            <a ui-sref="users/add" class="dropdown-item adduser">
-                                <i class="fa fa-user-plus"></i>&nbsp; Add User </a>
-                            <a ui-sref="users/delete" class="dropdown-item deluser">
-                                <i class="fa fa-users"></i>&nbsp; Users </a>
+                                <div class="dropdown-divider"></div>
+
+                                <a ui-sref="users/add" class="dropdown-item adduser">
+                                    <i class="fa fa-user-plus"></i>&nbsp; Add User </a>
+                                <a ui-sref="users/delete" class="dropdown-item deluser">
+                                    <i class="fa fa-users"></i>&nbsp; Users </a>
                             </div>
                             <div class="dropdown-divider"></div>
                             <a href="" class="dropdown-item" ng-click="userLogout()">
@@ -81,7 +89,7 @@
         </div>
     </div>
 
-    <div class="container" id="wrapper">
+    <div class="container-fluid" id="wrapper">
         <ui-view></ui-view>
     </div>
 

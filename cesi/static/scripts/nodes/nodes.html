@@ -6,20 +6,31 @@
             <div class="list-group">
                 <div class="list-group-item  list-group-item-action" ng-repeat="name in nodeNames">
                     <label class="{{name}}">
-                        <input type="checkbox" class="{{name}}" ng-model="checkboxModel[name]"> {{name}}</label>
+                        <input type="checkbox" ng-disabled="selectedGroups.length != 0" class="{{name}}" ng-model="checkboxModel[name]"> {{name}}</label>
                 </div>
             </div>
         </div>
 
-        <div class="col-md-2 col-sm-2 node-menu" ng-repeat="env in environments">
-            <h5>{{env.name}}</h5>
+        <div class="col-md-2 col-sm-2 node-menu" ng-repeat="(key,val) in environments">
+            <h5>{{key}}</h5>
             <div class="list-group">
-                <div class="list-group-item  list-group-item-action" ng-repeat="name in env.nodes">
+                <div class="list-group-item  list-group-item-action" ng-repeat="name in val">
                     <label class="{{name}}">
-                        <input type="checkbox" class="{{name}}" ng-model="checkboxModel[name]"> {{name}}</label>
+                        <input type="checkbox" ng-disabled="selectedGroups.length != 0" class="{{name}}" ng-model="checkboxModel[name]"> {{name}}</label>
                 </div>
             </div>
         </div>
+
+        <div class="col-md-2 col-sm-2 node-menu" ng-repeat="(key, val) in groups">
+            <h5 ng-click="val.checkAll();">{{key}}</h5>
+            <div class="list-group">
+                <div class="list-group-item  list-group-item-action" ng-repeat="env in val.envs">
+                    <label class="{{env.name}}">
+                        <input type="checkbox" class="{{env.name}}" ng-model="env.show" ng-change="showGroupEnv(env.show, env.name, key)"> {{env.name}}</label>
+                </div>
+            </div>
+        </div>
+
         <div class="col-md-10 col-sm-10">
 
             <div class="row buttons">
@@ -39,7 +50,7 @@
             </div>
 
 
-            <div ng-repeat="(nodeIndex, nodeName) in nodeNames track by $index" class="row nodes"  ng-if="checkboxModel[nodeName]">
+            <div ng-repeat="(nodeIndex, nodeName) in nodeNames track by $index" class="row nodes"  ng-if="checkboxModel[nodeName] && selectedGroups.length == 0">
                 <div class="col-md-12">
 
                     <h4>Processes for {{nodeName}}</h4>
@@ -67,9 +78,48 @@
                                         <i class="fa fa-fw fa-play"></i> Start</button>&nbsp;
                                     <button class="btn btn-danger btn-sm" ng-click="stop(nodeName, process)" ng-disabled="process.statename != 'RUNNING' || processStatus[nodeName + '/' + process.pid]">
                                         <i class="fa fa-fw fa-stop"></i> Stop</button>&nbsp;
+                                    <button class="btn btn-info btn-sm" ng-click="getNodeLog(nodeName, process.group, process.name)"> 
+                                        <i class="fa fa-fw fa-info"></i> Log</button>&nbsp;
                                 </td>
                             </tr>
                         </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div ng-repeat="(groupIndex, group) in selectedGroups track by $index" class="row nodes">
+                <div class="col-md-12">
+
+                    <h4>Processes for group: {{group}}</h4>
+
+                    <table class="table table-hover table-striped table-sm">
+                        <thead class="thead-dark">
+                            <th>Name</th>
+                            <th>Pid</th>
+                            <th>Uptime</th>
+                            <th>State</th>
+                            <th>Envorinment</th>
+                            <th></th>
+                        </thead>
+                        <tbody>
+                                <tr ng-repeat="process in groups[group].processes track by $index">
+                                    <td data-title="Name" filter="{ name: 'text'}" sortable="'name'">{{process[1]}}</td>
+                                    <td data-title="Pid" filter="{ pid: 'number'}" sortable="'pid'">{{process[0]}}</td>
+                                    <td data-title="Uptime" filter="{ uptime: 'time'}" sortable="'uptime'">{{process[3]}}</td>
+                                    <td data-title="State" filter="{ state: 'text'}" sortable="'state'">{{process[5]}}</td>
+                                    <td data-title="Envorinment" filter="{ envorinment: 'text'}" sortable="'envorinment'">{{process[6].join()}}</td>
+                                    <td style="text-align: right; white-space: nowrap">
+                                        <button class="btn btn-primary btn-sm" ng-click="restart(nodeName, process)" ng-disabled="process.statename != 'RUNNING' || processStatus[nodeName + '/' + process.pid]">
+                                            <i class="fa fa-fw fa-refresh"></i> Restart</button>&nbsp;
+                                        <button class="btn btn-success btn-sm" ng-click="start(nodeName, process)" ng-disabled="process.statename == 'RUNNING' || processStatus[nodeName + '/' + process.pid]">
+                                            <i class="fa fa-fw fa-play"></i> Start</button>&nbsp;
+                                        <button class="btn btn-danger btn-sm" ng-click="stop(nodeName, process)" ng-disabled="process.statename != 'RUNNING' || processStatus[nodeName + '/' + process.pid]">
+                                            <i class="fa fa-fw fa-stop"></i> Stop</button>&nbsp;
+                                        <button class="btn btn-info btn-sm" ng-click="getNodeLog(process[2], group, process[1])"> 
+                                            <i class="fa fa-fw fa-info"></i> Log</button>&nbsp;
+                                    </td>
+                                </tr>                        
+                            </tbody>
                     </table>
                 </div>
             </div>

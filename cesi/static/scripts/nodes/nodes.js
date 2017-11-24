@@ -27,16 +27,43 @@ angular.module('cesiApp.nodes', [
 
         $scope.checkboxModel = {};
 
-        $scope.environments = [];
-        $scope.getEnvironments = function () {
+        $scope.environments = {};
+        $scope.groups = {};
+        $scope.selectedGroups = [];
+        $scope.getEnvironmentsAndGroups = function () {
             cesiService.dashboard().then(function (data) {
                 for (var i = 0; i < data.environment_name_list.length; i++) { 
-                    $scope.environments[i] = {"name":data.environment_name_list[i], "nodes":data.environment_list[i]}
-                    $scope.checkboxModel[data.environment_name_list[i]] = true
+                    $scope.environments[data.environment_name_list[i]] = data.environment_list[i]
+                }
+
+                for (var i = 0; i < data.g_environment_list.length; i++) { 
+                    $scope.groups[data.group_list[i]] = {"name":data.group_list[i], "envs":[], "envCount":0, "processes":[], "showAll":false, checkAll: function (argument) {
+                        if (!this.showAll) {    
+                            for (var j = 0; j < this.envs.length; j++) {
+                                
+                                if (this.envs[j].show == false) {
+                                    $scope.showGroupEnv(true, this.envs[j].name, this.name);
+                                    this.envs[j].show = true;
+                                }
+                            }
+                            this.showAll = true;
+                        } else {
+                            for (var j = 0; j < this.envs.length; j++) {
+                                if (this.envs[j].show == true) {
+                                    $scope.showGroupEnv(false, this.envs[j].name, this.name);
+                                    this.envs[j].show = false;
+                                }
+                            }
+                            this.showAll = false;
+                        }
+                    }};
+                    for (var j=0; j<data.g_environment_list[i].length; j++) {
+                        $scope.groups[data.group_list[i]].envs[j] = {"name":data.g_environment_list[i][j], "show":false}
+                    }
                 }
             });
 
-        };    
+        };
 
         $scope.load = function () {
             cesiService.load().then(function (data) {
@@ -49,6 +76,61 @@ angular.module('cesiApp.nodes', [
             });
 
         };
+
+        $scope.getNodeLog = function (node, group, name) {
+            cesiService.getnodelog(node, group, name).then(function (data) {
+                console.log(data);
+            });
+        };
+
+        $scope.showGroupEnv = function (check, env, group) {
+            if (check) {
+                if ($scope.groups[group].envCount == 0) {
+                    $scope.selectedGroups.push(group);
+                }
+                $scope.groups[group].envCount++;
+                cesiService.getenvironmentnodes(group, env).then(function (data) {
+                    data = data["process_list"];
+                    for (var i = 0; i < data.length; i++) {
+                    var found = false;
+                        for (var j = 0; j < $scope.groups[group].processes.length; j++) {
+                            if ($scope.groups[group].processes[j][0]== data[i][0] && $scope.groups[group].processes[j][2]== data[i][2]) {
+                                found = true;
+                                $scope.groups[group].processes[j][6].push(env)
+                                break;
+                            }
+                        }
+
+                        if (!found) {
+                            data[i][6] = [env]
+                            $scope.groups[group].processes.push(data[i])
+                        }
+                        
+                    }
+                });
+            } else {
+                $scope.groups[group].envCount--;
+                for (var i=0; i<$scope.groups[group].processes.length; i++) {
+                    var pro = $scope.groups[group].processes[i]
+                    var index = pro[6].indexOf(env);
+                    if (index > -1) {
+                        pro[6].splice(index, 1);
+                        if (pro[6].length == 0) {
+                            $scope.groups[group].processes.splice(i, 1);
+                            i -= 1;
+                        }
+                    }
+                }
+                if ($scope.groups[group].envCount == 0) {
+                    $scope.groups[group].processes = [];
+                    var index = $scope.selectedGroups.indexOf(group);
+                    if (index > -1) {
+                        $scope.selectedGroups.splice(index, 1);
+                    }
+                }
+                
+            }
+        }
 
 
         $scope.reload = function (name) {
@@ -128,7 +210,7 @@ angular.module('cesiApp.nodes', [
 
         //---------------------------------------------
 
-        $scope.getEnvironments();
+        $scope.getEnvironmentsAndGroups();
 
         $scope.load();
 

@@ -99,6 +99,30 @@ angular.module('cesiLib', [])
                 return deferred.promise;
             },
 
+            getnodelog: function (node, group, name) {
+                var deferred = $q.defer();
+                $http.get(host_ip + '/node/' + node + '/process/' + group + ':' + name + '/readlog')
+                    .then(function (response) {
+                        deferred.resolve(response.data);
+                    })
+                    .catch(function (response) {
+                        deferred.reject(response);
+                    });
+                return deferred.promise;
+            },
+
+            getenvironmentnodes: function (group, env) {
+                var deferred = $q.defer();
+                $http.get(host_ip + '/group/' + group + '/environment/' + env)
+                    .then(function (response) {
+                        deferred.resolve(response.data);
+                    })
+                    .catch(function (response) {
+                        deferred.reject(response);
+                    });
+                return deferred.promise;
+            },
+
             getusers: function () {
                 var deferred = $q.defer();
                 $http.get(host_ip + '/delete/user')

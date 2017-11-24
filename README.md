@@ -71,8 +71,6 @@ cesi-devel@googlegroups.com
 - Filter nodes from left menu
 - Group nodes by groups and environments
 - Do not use external adresses for javascript and css libraries 
-- Remove angular, vs from login page
-- Changeerror page template
 - Change server port with config
 - Change page title with config
 - Better format activity log (tabbed date, level, component, message)

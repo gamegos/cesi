@@ -30,6 +30,8 @@ angular.module('cesiApp.nodes', [
         $scope.environments = {};
         $scope.groups = {};
         $scope.selectedGroups = [];
+        $scope.logs = {}
+
         $scope.getEnvironmentsAndGroups = function () {
             cesiService.dashboard().then(function (data) {
                 for (var i = 0; i < data.environment_name_list.length; i++) { 
@@ -79,7 +81,11 @@ angular.module('cesiApp.nodes', [
 
         $scope.getNodeLog = function (node, group, name) {
             cesiService.getnodelog(node, group, name).then(function (data) {
-                console.log(data);
+                $scope.logs.nodeName = node
+                $scope.logs.processName = name
+                $scope.logs.logs = data.log
+                
+                $('#processLogsModal').modal({})
             });
         };
 

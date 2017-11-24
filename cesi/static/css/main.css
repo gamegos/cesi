@@ -16,3 +16,5 @@ body {font-size: .8rem;}
 .node-group {margin-top:1rem}
 
 .node-group .badge{font-size: 60%;}
+
+.logs {font-family: Courier New, Courier, monospace; white-space: pre-line;}

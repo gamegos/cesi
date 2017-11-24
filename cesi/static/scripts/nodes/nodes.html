@@ -94,19 +94,19 @@
                                 <td><strong>{{process.name}}</strong></td>
                                 <td>{{process.pid}}</td>
                                 <td>{{process.group}}</td>
-                                <td>{{process.now - process.start | secondsToTime}}</td>
+                                <td>{{(process.statename == "RUNNING")? (process.now - process.start | secondsToTime) : '-'}}</td>
                                 <td>
-                                    <span class="badge" ng-class="{'badge-success':process.statename=='RUNNING', 'badge-danger':process.statename=='STOPPED',  'badge-warning': processStatus[nodeName + '/' + process.pid]}">{{processStatus[nodeName + '/' + process.pid]? "UPDATING...":process.statename}}</span></td>
+                                    <span class="badge" ng-class="{'badge-success':process.statename=='RUNNING', 'badge-danger':process.statename=='STOPPED',  'badge-warning': processStatus[nodeName + '/' + process.name]}">{{processStatus[nodeName + '/' + process.name]? "UPDATING...":process.statename}}</span></td>
                                 <td style="text-align: right; white-space: nowrap">
-                                    <button class="btn btn-primary btn-sm" ng-click="restart(nodeName, process)" ng-disabled="process.statename != 'RUNNING' || processStatus[nodeName + '/' + process.pid]">
+                                    <button class="btn btn-primary btn-sm" ng-click="restart(nodeName, process)" ng-disabled="process.statename != 'RUNNING' || processStatus[nodeName + '/' + process.name]">
                                         <i class="fa fa-fw fa-refresh"></i>
                                         <span class="d-none d-lg-inline"> Restart</span>
                                     </button>&nbsp;
-                                    <button class="btn btn-success btn-sm" ng-click="start(nodeName, process)" ng-disabled="process.statename == 'RUNNING' || processStatus[nodeName + '/' + process.pid]">
+                                    <button class="btn btn-success btn-sm" ng-click="start(nodeName, process)" ng-disabled="process.statename == 'RUNNING' || processStatus[nodeName + '/' + process.name]">
                                         <i class="fa fa-fw fa-play"></i>
                                         <span class="d-none d-lg-inline"> Start</span>
                                     </button>&nbsp;
-                                    <button class="btn btn-danger btn-sm" ng-click="stop(nodeName, process)" ng-disabled="process.statename != 'RUNNING' || processStatus[nodeName + '/' + process.pid]">
+                                    <button class="btn btn-danger btn-sm" ng-click="stop(nodeName, process)" ng-disabled="process.statename != 'RUNNING' || processStatus[nodeName + '/' + process.name]">
                                         <i class="fa fa-fw fa-stop"></i>
                                         <span class="d-none d-lg-inline"> Stop</span>
                                     </button>&nbsp;
@@ -136,21 +136,30 @@
                             <th></th>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="process in groups[group].processes track by $index">
-                                <td data-title="Name" filter="{ name: 'text'}" sortable="'name'">{{process[1]}}</td>
-                                <td data-title="Pid" filter="{ pid: 'number'}" sortable="'pid'">{{process[0]}}</td>
-                                <td data-title="Uptime" filter="{ uptime: 'time'}" sortable="'uptime'">{{process[3]}}</td>
-                                <td data-title="State" filter="{ state: 'text'}" sortable="'state'">{{process[5]}}</td>
-                                <td data-title="Envorinment" filter="{ envorinment: 'text'}" sortable="'envorinment'">{{process[6].join()}}</td>
+                            <tr ng-repeat="pro in groups[group].processes track by $index" ng-init="nodeName = pro[2]">
+                                <td data-title="Name" filter="{ name: 'text'}" sortable="'name'">{{processes[pro[2] + ':' + pro[1]].name}}</td>
+                                <td data-title="Pid" filter="{ pid: 'number'}" sortable="'pid'">{{processes[pro[2] + ':' + pro[1]].pid}}</td>
+                                <td data-title="Uptime" filter="{ uptime: 'time'}" sortable="'uptime'">{{(processes[pro[2] + ':' + pro[1]].statename == "RUNNING")? (processes[pro[2] + ':' + pro[1]].now - processes[pro[2] + ':' + pro[1]].start | secondsToTime) : '-'}}</td>
+                                <td> 
+                                    <span class="badge" ng-class="{'badge-success':processes[pro[2] + ':' + pro[1]].statename=='RUNNING', 'badge-danger':processes[pro[2] + ':' + pro[1]].statename=='STOPPED',  'badge-warning': processStatus[nodeName + '/' + processes[pro[2] + ':' + pro[1]].name]}">{{processStatus[nodeName + '/' + processes[pro[2] + ':' + pro[1]].name]? "UPDATING...":processes[pro[2] + ':' + pro[1]].statename}}</span></td>
+                                <td data-title="Envorinment" filter="{ envorinment: 'text'}" sortable="'envorinment'">{{pro[6].join()}}</td>
                                 <td style="text-align: right; white-space: nowrap">
-                                    <button class="btn btn-primary btn-sm" ng-click="restart(nodeName, process)" ng-disabled="process.statename != 'RUNNING' || processStatus[nodeName + '/' + process.pid]">
-                                        <i class="fa fa-fw fa-refresh"></i> Restart</button>&nbsp;
-                                    <button class="btn btn-success btn-sm" ng-click="start(nodeName, process)" ng-disabled="process.statename == 'RUNNING' || processStatus[nodeName + '/' + process.pid]">
-                                        <i class="fa fa-fw fa-play"></i> Start</button>&nbsp;
-                                    <button class="btn btn-danger btn-sm" ng-click="stop(nodeName, process)" ng-disabled="process.statename != 'RUNNING' || processStatus[nodeName + '/' + process.pid]">
-                                        <i class="fa fa-fw fa-stop"></i> Stop</button>&nbsp;
-                                    <button class="btn btn-info btn-sm" ng-click="getNodeLog(process[2], group, process[1])">
-                                        <i class="fa fa-fw fa-info"></i> Log</button>&nbsp;
+                                    <button class="btn btn-primary btn-sm" ng-click="restart(nodeName, processes[pro[2] + ':' + pro[1]])" ng-disabled="processes[pro[2] + ':' + pro[1]].statename != 'RUNNING' || processStatus[nodeName + '/' + processes[pro[2] + ':' + pro[1]].name]">
+                                        <i class="fa fa-fw fa-refresh"></i>
+                                        <span class="d-none d-lg-inline"> Restart</span>
+                                    </button>&nbsp;
+                                    <button class="btn btn-success btn-sm" ng-click="start(nodeName, processes[pro[2] + ':' + pro[1]])" ng-disabled="processes[pro[2] + ':' + pro[1]].statename == 'RUNNING' || processStatus[nodeName + '/' + processes[pro[2] + ':' + pro[1]].name]">
+                                        <i class="fa fa-fw fa-play"></i>
+                                        <span class="d-none d-lg-inline"> Start</span>
+                                    </button>&nbsp;
+                                    <button class="btn btn-danger btn-sm" ng-click="stop(nodeName, processes[pro[2] + ':' + pro[1]])" ng-disabled="processes[pro[2] + ':' + pro[1]].statename != 'RUNNING' || processStatus[nodeName + '/' + processes[pro[2] + ':' + pro[1]].pid]">
+                                        <i class="fa fa-fw fa-stop"></i>
+                                        <span class="d-none d-lg-inline"> Stop</span>
+                                    </button>&nbsp;
+                                    <button class="btn btn-info btn-sm" ng-click="getNodeLog(nodeName, processes[pro[2] + ':' + pro[1]].group, processes[pro[2] + ':' + pro[1]].name)">
+                                        <i class="fa fa-fw fa-info"></i>
+                                        <span class="d-none d-lg-inline"> Log</span>
+                                    </button>&nbsp;
                                 </td>
                             </tr>
                         </tbody>

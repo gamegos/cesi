@@ -24,6 +24,7 @@ angular.module('cesiApp.nodes', [
         $scope.nodeMap = {};
 
         $scope.processStatus = {};
+        $scope.processes = {};
 
         $scope.checkboxModel = {};
 
@@ -100,7 +101,7 @@ angular.module('cesiApp.nodes', [
                     for (var i = 0; i < data.length; i++) {
                     var found = false;
                         for (var j = 0; j < $scope.groups[group].processes.length; j++) {
-                            if ($scope.groups[group].processes[j][0]== data[i][0] && $scope.groups[group].processes[j][2]== data[i][2]) {
+                            if ($scope.groups[group].processes[j][1]== data[i][1] && $scope.groups[group].processes[j][2]== data[i][2]) {
                                 found = true;
                                 $scope.groups[group].processes[j][6].push(env)
                                 break;
@@ -142,6 +143,9 @@ angular.module('cesiApp.nodes', [
         $scope.reload = function (name) {
             cesiService.reload(name).then(function (data) {
                 $scope.nodeMap[name] = data.process_info;
+                for (var i = 0; i < data.process_info.length; i++) {
+                    $scope.processes[name + ":" + data.process_info[i].name] = data.process_info[i];
+                }
 
                 /* example process_info
                     [{
@@ -176,31 +180,31 @@ angular.module('cesiApp.nodes', [
         }
 
         $scope.restart = function (nodeName, process) {
-            setStatus(nodeName, process.pid, true);
+            setStatus(nodeName, process.name, true);
             cesiService.restart(nodeName, process).then(function (data) {
                 updateProcessData(nodeName, process, data)
-                setStatus(nodeName, process.pid, false);
+                setStatus(nodeName, process.name, false);
             });
         };
 
         $scope.start = function (nodeName, process) {
-            setStatus(nodeName, process.pid, true);
+            setStatus(nodeName, process.name, true);
             cesiService.start(nodeName, process).then(function (data) {
                 updateProcessData(nodeName, process, data)
-                setStatus(nodeName, process.pid, true);
+                setStatus(nodeName, process.name, false);
             });
         };
 
         $scope.stop = function (nodeName, process) {
-            setStatus(nodeName, process.pid, true);
+            setStatus(nodeName, process.name, true);
             cesiService.stop(nodeName, process).then(function (data) {
                 updateProcessData(nodeName, process, data)
-                setStatus(nodeName, process.pid, true);
+                setStatus(nodeName, process.name, false);
             });
         };
 
-        function setStatus(nodeName, pid, flag) {
-            $scope.processStatus[nodeName + "/" + pid] = flag;
+        function setStatus(nodeName, name, flag) {
+            $scope.processStatus[nodeName + "/" + name] = flag;
         }
 
         function updateProcessData(nodeName, process, data) {
@@ -208,8 +212,9 @@ angular.module('cesiApp.nodes', [
 
             var node = $scope.nodeMap[nodeName];
             node.forEach(function (val, index) {
-                if (val.pid == process.pid) {
+                if (val.name == process.name) {
                     node[index] = data.data.data
+                    $scope.processes[nodeName + ":" + node[index].name] = node[index]
                 }
             })
         }

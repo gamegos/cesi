@@ -241,7 +241,7 @@ angular.module('cesiLib', [])
 
             restart: function (node, process) {
                 var deferred = $q.defer();
-                $http.get(path + node + '/process/' + process.name + ':' + process.group + '/restart')
+                $http.get(path + node + '/process/' + process.group + ':' + process.name + '/restart')
                     .then(function (response) {
                         deferred.resolve(response);
                     })
@@ -253,7 +253,7 @@ angular.module('cesiLib', [])
 
             start: function (node, process) {
                 var deferred = $q.defer();
-                $http.get(path + node + '/process/' + process.name + ':' + process.group + '/start')
+                $http.get(path + node + '/process/' + process.group + ':' + process.name + '/start')
                     .then(function (response) {
                         deferred.resolve(response);
                     })
@@ -265,7 +265,7 @@ angular.module('cesiLib', [])
 
             stop: function (node, process) {
                 var deferred = $q.defer();
-                $http.get(path + node + '/process/' + process.name + ':' + process.group + '/stop')
+                $http.get(path + node + '/process/' + process.group + ':' + process.name + '/stop')
                     .then(function (response) {
                         deferred.resolve(response);
                     })

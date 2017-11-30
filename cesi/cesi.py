@@ -2,10 +2,11 @@ import xmlrpclib
 import ConfigParser
 from datetime import datetime, timedelta
 from flask import jsonify
-
+import json
 
 
 CONFIG_FILE = "/etc/cesi.conf"
+
 class Config:
     DEFAULT_PORT = '5000'
     DEFAULT_NAME = 'CeSI'
@@ -89,6 +90,13 @@ class Node:
             self.process_list.append(ProcessInfo(p))
             self.process_dict2[p['group']+':'+p['name']] = ProcessInfo(p)
         self.process_dict = self.connection.supervisor.getAllProcessInfo()
+
+    def serialize(self):
+        return {
+            'long_name': self.long_name,
+            'name': self.name,
+            'process_dict': self.process_dict,
+        }
 
 
 class Connection:

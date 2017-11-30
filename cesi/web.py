@@ -136,6 +136,7 @@ def showInfo():
         group_list = []
         not_connected_node_list = []
         connected_node_list = []
+        node_map = {}
 
         node_name_list = Config(CONFIG_FILE).node_list
         node_count = len(node_name_list)
@@ -165,7 +166,9 @@ def showInfo():
                 if process.state==20:
                     running_process_count = running_process_count + 1
                 if process.state==0:
-                    stopped_process_count = stopped_process_count + 1 
+                    stopped_process_count = stopped_process_count + 1
+
+            node_map[node.name] = node.serialize()
 
         # get environment list 
         for env_name in environment_name_list:
@@ -201,7 +204,8 @@ def showInfo():
         connected_count = len(connected_node_list)
         not_connected_count = len(not_connected_node_list)
 
-        return jsonify(			all_process_count =all_process_count,
+        return jsonify(			node_map = node_map,
+                                all_process_count =all_process_count,
                                 running_process_count =running_process_count,
                                 stopped_process_count =stopped_process_count,
                                 node_count =node_count,

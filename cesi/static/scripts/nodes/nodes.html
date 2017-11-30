@@ -87,7 +87,20 @@
                             <th>Group</th>
                             <th>Uptime</th>
                             <th>State</th>
-                            <th></th>
+                            <th style="text-align: right; white-space: nowrap">
+                                <button class="btn btn-success btn-sm" value="" ng-click="startAllNode(nodeName)">
+                                    <i class="fa fa-fw fa-play"></i>
+                                    <span class="d-none d-lg-inline">Start All</span>
+                                </button>
+                                <button class="btn btn-danger btn-sm" ng-click="stopAllNode(nodeName)">
+                                    <i class="fa fa-fw fa-stop"></i>
+                                    <span class="d-none d-lg-inline">Stop All</span>
+                                </button>
+                                <button class="btn btn-primary btn-sm" ng-click="restartAllNode(nodeName)">
+                                    <i class="fa fa-fw fa-refresh"></i>
+                                    <span class="d-none d-lg-inline">Restart All</span>
+                                </button>
+                            </th>
                         </thead>
                         <tbody>
                             <tr ng-repeat="process in nodeMap[nodeName] track by $index">

@@ -167,6 +167,18 @@ angular.module('cesiApp.nodes', [
             });
         };
 
+        $scope.startAllNode = function (nodeName) {
+            cesiService.startAllNode(nodeName).then($scope.load());
+        };
+
+        $scope.stopAllNode = function (nodeName) {
+            cesiService.stopAllNode(nodeName).then($scope.load());
+        };
+
+        $scope.restartAllNode = function (nodeName) {
+            cesiService.restartAllNode(nodeName).then($scope.load());
+        };
+
         $scope.startAll = function () {
             cesiService.startAll().then($scope.load());
         }

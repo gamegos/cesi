@@ -355,6 +355,59 @@ def showNode(node_name):
         return jsonify(message = 'Session expired'), 403
 
 
+@app.route('/node/<node_name>/start')
+def startAllNode(node_name):
+    if session.get('logged_in'):
+        nodeconfig = Config(CONFIG_FILE).getNodeConfig(node_name)
+
+        try:
+            node = Node(nodeconfig)
+        except Exception as err:
+            pass
+
+        for process in node.process_list:
+            json_start(node_name, process.group + ":" + process.name)
+
+        return jsonify(status="success")
+    else:
+        return jsonify(message='Session expired'), 403
+
+
+@app.route('/node/<node_name>/stop')
+def stopAllNode(node_name):
+    if session.get('logged_in'):
+        nodeconfig = Config(CONFIG_FILE).getNodeConfig(node_name)
+
+        try:
+            node = Node(nodeconfig)
+        except Exception as err:
+            pass
+
+        for process in node.process_list:
+            json_stop(node_name, process.group + ":" + process.name)
+
+        return jsonify(status="success")
+    else:
+        return jsonify(message='Session expired'), 403
+
+
+@app.route('/node/<node_name>/restart')
+def restartAllNode(node_name):
+    if session.get('logged_in'):
+        nodeconfig = Config(CONFIG_FILE).getNodeConfig(node_name)
+
+        try:
+            node = Node(nodeconfig)
+        except Exception as err:
+            pass
+
+        for process in node.process_list:
+            json_restart(node_name, process.group + ":" + process.name)
+
+        return jsonify(status="success")
+    else:
+        return jsonify(message='Session expired'), 403
+
 
 @app.route('/node/all/start')
 def startAll():

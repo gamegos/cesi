@@ -51,6 +51,42 @@ angular.module('cesiLib', [])
                 return deferred.promise;
             },
 
+            startAllNode: function (nodeName) {
+                var deferred = $q.defer();
+                $http.get(host_ip + '/node/' + nodeName + '/start')
+                    .then(function (response) {
+                        deferred.resolve(response.data);
+                    })
+                    .catch(function (response) {
+                        deferred.reject(response);
+                    });
+                return deferred.promise;
+            },
+
+            stopAllNode: function (nodeName) {
+                var deferred = $q.defer();
+                $http.get(host_ip + '/node/' + nodeName + '/stop')
+                    .then(function (response) {
+                        deferred.resolve(response.data);
+                    })
+                    .catch(function (response) {
+                        deferred.reject(response);
+                    });
+                return deferred.promise;
+            },
+
+            restartAllNode: function (nodeName) {
+                var deferred = $q.defer();
+                $http.get(host_ip + '/node/' + nodeName + '/restart')
+                    .then(function (response) {
+                        deferred.resolve(response.data);
+                    })
+                    .catch(function (response) {
+                        deferred.reject(response);
+                    });
+                return deferred.promise;
+            },
+
             startAll: function () {
                 var deferred = $q.defer();
                 $http.get(host_ip + '/node/all/start')

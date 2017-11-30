@@ -33,6 +33,8 @@ angular.module('cesiApp.nodes', [
         $scope.selectedGroups = [];
         $scope.logs = {}
 
+        $scope.isAllHidden = true;
+
         $scope.getEnvironmentsAndGroups = function () {
             cesiService.dashboard().then(function (data) {
                 for (var i = 0; i < data.environment_name_list.length; i++) { 

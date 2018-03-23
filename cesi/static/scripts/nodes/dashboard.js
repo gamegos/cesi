@@ -41,14 +41,14 @@ angular.module('cesiApp.dashboard', [
 
     $scope.refresh = function () {
       cesiService.dashboard().then(function (data) {
-        $scope.environment.nodeCount = data['node_count'];
-        $scope.environment.processCount = data['all_process_count'];
-        $scope.nodes.nodeCount = data['node_count'];
-        $scope.nodes.connected = data['connected_count'];
-        $scope.nodes.notConnected = data['not_connected_count'];
-        $scope.process.processCount = data['all_process_count'];
-        $scope.process.running = data['running_process_count'];
-        $scope.process.stoped = data['stopped_process_count'];
+        $scope.environment.nodeCount = data.nodeCount;
+        $scope.environment.processCount = data.processInfo.count;
+        $scope.nodes.nodeCount = data.nodeCount;
+        $scope.nodes.connected = data.nodes.connected.length;
+        $scope.nodes.notConnected = data.nodes.not_connected.length;
+        $scope.process.processCount = data.processInfo.count;
+        $scope.process.running = data.processInfo.running;
+        $scope.process.stoped = data.processInfo.count - data.processInfo.running;
         refreshButton.disabled = false;
         //refreshButton.innerHTML = "<strong>Refresh</strong>";
       });

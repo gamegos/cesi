@@ -1,6 +1,7 @@
 from flask import Flask, render_template, url_for, redirect, jsonify, request, g, session, flash
 from cesi import Config, Connection, Node, ProcessInfo, JsonValue
 from datetime import datetime
+from passlib.hash import argon2
 import cesi 
 import xmlrpclib
 import sqlite3
@@ -90,7 +91,7 @@ def control():
                            message = "Username is not  avaible ")
         else:
             cur.execute("select * from userinfo where username=?",(username,))
-            if password == cur.fetchall()[0][1]:
+            if argon2.verify(password, cur.fetchall()[0][1]):
                 session['username'] = username
                 session['logged_in'] = True
                 cur.execute("select * from userinfo where username=?",(username,))
@@ -448,7 +449,7 @@ def adduserhandler():
             else:
                 if request.form['usertype'] == "Admin":
                     usertype = 0
-                elif request.form['usertype'] == "Standart User":
+                elif request.form['usertype'] == "Standard User":
                     usertype = 1
                 elif request.form['usertype'] == "Only Log":
                     usertype = 2
@@ -459,7 +460,7 @@ def adduserhandler():
                 cur.execute("select * from userinfo where username=?",(username,))
                 if not cur.fetchall():
                     if password == confirmpassword:
-                        cur.execute("insert into userinfo values(?, ?, ?)", (username, password, usertype,))
+                        cur.execute("insert into userinfo values(?, ?, ?)", (username, argon2.hash(password), usertype,))
                         get_db().commit()
                         add_log = open(get_activity_log(), "a")
                         add_log.write("%s - New user added.\n"%( datetime.now().ctime() ))
@@ -512,10 +513,10 @@ def changepasswordhandler(username):
             cur = get_db().cursor()
             cur.execute("select password from userinfo where username=?",(username,))
             ar=[str(r[0]) for r in cur.fetchall()]
-            if request.form['old'] == ar[0]:
+            if argon2.verify(request.form['old'], ar[0]):
                 if request.form['new'] == request.form['confirm']:
                     if request.form['new'] != "":
-                        cur.execute("update userinfo set password=? where username=?",[request.form['new'], username])
+                        cur.execute("update userinfo set password=? where username=?",[argon2.hash(request.form['new']), username])
                         get_db().commit()
                         add_log = open(get_activity_log(), "a")
                         add_log.write("%s - %s user change own password.\n"%( datetime.now().ctime(), session['username']))

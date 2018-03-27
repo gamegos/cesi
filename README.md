@@ -2,6 +2,8 @@
 
 cesi is a web interface provides manage [supervizors][1] from same interface.
 
+For an updated version please visit https://github.com/gamegos/cesi/tree/v2_api
+
 ## Dependencies
 
 * Python

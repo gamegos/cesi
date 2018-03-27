@@ -65,7 +65,6 @@ angular.module('cesiApp.nodes', [
                 data.groups.forEach(groupName =>                     
                     cesiService.getgroup(groupName)
                     .then(groupData => {
-                        console.log(groupData)
                         $scope.groups[groupName] = {
                             processes: [],
                             nodes: [],
@@ -77,7 +76,6 @@ angular.module('cesiApp.nodes', [
                         }
                         $scope.groups[groupName].processes = $scope.updateProcesses($scope.groups[groupName].checked, groupName)
 
-                        console.log($scope.groups)
                     }))
 
                 $scope.nodes = data.processes
@@ -87,36 +85,6 @@ angular.module('cesiApp.nodes', [
                         $scope.processes[nodeName + ':' + processName] = data.processes[nodeName][processName]))
             });
         };
-
-        /*
-
-        for (var i = 0; i < data.g_environment_list.length; i++) { 
-            $scope.groups[data.group_list[i]] = {"name":data.group_list[i], "envs":[], "envCount":0, "processes":[], "showAll":false, checkAll: function (argument) {
-                if (!this.showAll) {    
-                    for (var j = 0; j < this.envs.length; j++) {
-                        
-                        if (this.envs[j].show == false) {
-                            $scope.showGroupEnv(true, this.envs[j].name, this.name);
-                            this.envs[j].show = true;
-                        }
-                    }
-                    this.showAll = true;
-                } else {
-                    for (var j = 0; j < this.envs.length; j++) {
-                        if (this.envs[j].show == true) {
-                            $scope.showGroupEnv(false, this.envs[j].name, this.name);
-                            this.envs[j].show = false;
-                        }
-                    }
-                    this.showAll = false;
-                }
-            }};
-            for (var j=0; j<data.g_environment_list[i].length; j++) {
-                $scope.groups[data.group_list[i]].envs[j] = {"name":data.g_environment_list[i][j], "show":false}
-            }
-        }
-
-        */
 
         $scope.load = function () {
             cesiService.getNodes().then(function (data) {
@@ -142,49 +110,49 @@ angular.module('cesiApp.nodes', [
         };
 
         $scope.startAllNode = function (nodeName) {
-            cesiService.startAllNode(nodeName).then($scope.load());
+            cesiService.startAllNode(nodeName).then($scope.getEnvironmentsAndGroups());
         };
 
         $scope.stopAllNode = function (nodeName) {
-            cesiService.stopAllNode(nodeName).then($scope.load());
+            cesiService.stopAllNode(nodeName).then($scope.getEnvironmentsAndGroups());
         };
 
         $scope.restartAllNode = function (nodeName) {
-            cesiService.restartAllNode(nodeName).then($scope.load());
+            cesiService.restartAllNode(nodeName).then($scope.getEnvironmentsAndGroups());
         };
 
         $scope.startAll = function () {
-            cesiService.startAll().then($scope.load());
+            cesiService.startAll().then($scope.getEnvironmentsAndGroups());
         }
 
         $scope.stopAll = function () {
-            cesiService.stopAll().then($scope.load());
+            cesiService.stopAll().then($scope.getEnvironmentsAndGroups());
         }
 
         $scope.restartAll = function () {
-            cesiService.restartAll().then($scope.load());
+            cesiService.restartAll().then($scope.getEnvironmentsAndGroups());
         }
 
         $scope.restart = function (nodeName, process) {
             setStatus(nodeName, process.name, true);
-            cesiService.restart(nodeName, process).then(function (data) {
-                updateProcessData(nodeName, process, data)
+            cesiService.restart(nodeName, process).then(function () {
+                updateProcessData(nodeName, process)
                 setStatus(nodeName, process.name, false);
             });
         };
 
         $scope.start = function (nodeName, process) {
             setStatus(nodeName, process.name, true);
-            cesiService.start(nodeName, process).then(function (data) {
-                updateProcessData(nodeName, process, data)
+            cesiService.start(nodeName, process).then(function () {
+                updateProcessData(nodeName, process)
                 setStatus(nodeName, process.name, false);
             });
         };
 
         $scope.stop = function (nodeName, process) {
             setStatus(nodeName, process.name, true);
-            cesiService.stop(nodeName, process).then(function (data) {
-                updateProcessData(nodeName, process, data)
+            cesiService.stop(nodeName, process).then(function () {
+                updateProcessData(nodeName, process)
                 setStatus(nodeName, process.name, false);
             });
         };
@@ -193,15 +161,15 @@ angular.module('cesiApp.nodes', [
             $scope.processStatus[nodeName + "/" + name] = flag;
         }
 
-        function updateProcessData(nodeName, process, data) {
-            if (!data || !data.data || !data.data.data) return;
-
-            var node = $scope.nodeMap[nodeName];
-            node.forEach(function (val, index) {
-                if (val.name == process.name) {
-                    node[index] = data.data.data
-                    $scope.processes[nodeName + ":" + node[index].name] = node[index]
-                }
+        function updateProcessData(nodeName, process) {
+            cesiService.getprocessdata(nodeName, process.name)
+            .then(data => {
+                var nodes = {...$scope.nodes}
+                nodes[nodeName][process.name] = data
+                $scope.nodes = nodes
+                var groups = {...$scope.groups}
+                groups[process.group].processes.forEach((val, index) => val.name === process.name && val.node === process.node ? groups[process.group].processes[index] = data : null)
+                $scope.groups = groups
             })
         }
 

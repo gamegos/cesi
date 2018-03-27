@@ -105,7 +105,7 @@
                                 <td><strong>{{process.name}}</strong></td>
                                 <td>{{process.pid}}</td>
                                 <td>{{process.group}}</td>
-                                <td>{{(process.statename == "RUNNING")? (process.now - process.start | secondsToTime) : '-'}}</td>
+                                <td>{{(process.statename == "RUNNING")? (process.uptime) : '-'}}</td>
                                 <td>
                                     <span class="badge" ng-class="{'badge-success':process.statename=='RUNNING', 'badge-danger':process.statename=='STOPPED',  'badge-warning': processStatus[nodeName + '/' + process.name]}">{{processStatus[nodeName + '/' + process.name]? "UPDATING...":process.statename}}</span></td>
                                 <td style="text-align: right; white-space: nowrap">
@@ -147,11 +147,11 @@
                             <th></th>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="process in groups[key].processes track by $index" ng-show="process.group == key" >
+                            <tr ng-repeat="process in groups[key].processes track by $index" ng-show="process.group == key" ng-init="nodeName = process.node" >
                                 <td><strong>{{process.name}}</strong></td>
                                 <td>{{process.pid}}</td>
                                 <td>{{process.group}}</td>
-                                <td>{{(process.statename == "RUNNING")? (process.now - process.start | secondsToTime) : '-'}}</td>
+                                <td>{{(process.statename == "RUNNING")? (process.uptime) : '-'}}</td>
                                 <td>
                                     <span class="badge" ng-class="{'badge-success':process.statename=='RUNNING', 'badge-danger':process.statename=='STOPPED',  'badge-warning': processStatus[nodeName + '/' + process.name]}">{{processStatus[nodeName + '/' + process.name]? "UPDATING...":process.statename}}</span></td>
                                 <td style="text-align: right; white-space: nowrap">

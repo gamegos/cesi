@@ -45,6 +45,18 @@ angular.module('cesiLib', [])
                 return deferred.promise;
             },
 
+            getprocessdata: function(nodeName, processName){
+                var deferred = $q.defer();
+                $http.get(version + '/nodes/' + nodeName + '/processes/' + processName )
+                    .then(function (response) {
+                        deferred.resolve(response.data);
+                    })
+                    .catch(function (response) {
+                        deferred.reject(response);
+                    });
+                return deferred.promise;
+            },
+
             changepassword: function (data) {
                 var deferred = $q.defer();
                 $http({
@@ -78,7 +90,7 @@ angular.module('cesiLib', [])
 
             startAllNode: function (nodeName) {
                 var deferred = $q.defer();
-                $http.get(version + '/nodes/' + nodeName + '/start')
+                $http.get(version + '/nodes/' + nodeName + '/all-processes/start')
                     .then(function (response) {
                         deferred.resolve(response.data);
                     })
@@ -90,7 +102,7 @@ angular.module('cesiLib', [])
 
             stopAllNode: function (nodeName) {
                 var deferred = $q.defer();
-                $http.get(version + '/nodes/' + nodeName + '/stop')
+                $http.get(version + '/nodes/' + nodeName + '/all-processes/stop')
                     .then(function (response) {
                         deferred.resolve(response.data);
                     })
@@ -102,7 +114,7 @@ angular.module('cesiLib', [])
 
             restartAllNode: function (nodeName) {
                 var deferred = $q.defer();
-                $http.get(version + '/nodes/' + nodeName + '/restart')
+                $http.get(version + '/nodes/' + nodeName + '/all-processes/restart')
                     .then(function (response) {
                         deferred.resolve(response.data);
                     })
@@ -199,7 +211,7 @@ angular.module('cesiLib', [])
 
             getnodelog: function (node, group, name) {
                 var deferred = $q.defer();
-                $http.get(version + '/nodes/' + node + '/process/' + group + ':' + name + '/readlog')
+                $http.get(version + '/nodes/' + node + '/processes/' + name + '/log')
                     .then(function (response) {
                         deferred.resolve(response.data);
                     })
@@ -211,7 +223,7 @@ angular.module('cesiLib', [])
 
             getusers: function () {
                 var deferred = $q.defer();
-                $http.get(version + '/delete/user')
+                $http.get(version + '/user')
                     .then(function (response) {
                         deferred.resolve(response.data);
                     })
@@ -259,7 +271,6 @@ angular.module('cesiLib', [])
             },
 
             login: function (data) {
-                console.log($.param(data));
                 var deferred = $q.defer();
                 $http({
                         method: 'POST',
@@ -279,7 +290,6 @@ angular.module('cesiLib', [])
             },
 
             add: function (data) {
-                console.log($.param(data));
                 var deferred = $q.defer();
                 $http({
                         method: 'POST',
@@ -313,7 +323,7 @@ angular.module('cesiLib', [])
 
             restart: function (node, process) {
                 var deferred = $q.defer();
-                $http.get(version + '/nodes/' + node + '/process/' + process.group + ':' + process.name + '/restart')
+                $http.get(version + '/nodes/' + node + '/processes/' + process.name + '/restart')
                     .then(function (response) {
                         deferred.resolve(response);
                     })
@@ -325,7 +335,7 @@ angular.module('cesiLib', [])
 
             start: function (node, process) {
                 var deferred = $q.defer();
-                $http.get(version + '/nodes/' + node + '/process/' + process.group + ':' + process.name + '/start')
+                $http.get(version + '/nodes/' + node + '/processes/' + process.name + '/start')
                     .then(function (response) {
                         deferred.resolve(response);
                     })
@@ -337,7 +347,7 @@ angular.module('cesiLib', [])
 
             stop: function (node, process) {
                 var deferred = $q.defer();
-                $http.get(version + '/nodes/' + node + '/process/' + process.group + ':' + process.name + '/stop')
+                $http.get(version + '/nodes/' + node + '/processes/' + process.name + '/stop')
                     .then(function (response) {
                         deferred.resolve(response);
                     })

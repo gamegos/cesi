@@ -29,8 +29,8 @@ angular.module('cesiLib', [])
                     data.processInfo = Object.keys(data.processes)
                     .reduce((a, c) => {
                       var n = {...a}
-                      Object.keys(data.processes[c]).forEach(process => {
-                        if(process.state === 20) n.running++;
+                      Object.keys(data.processes[c]).forEach(processName => {
+                        if(data.processes[c][processName].state === 20) n.running++;
                         n.count++;
                       })
                       return n

@@ -43,13 +43,14 @@ angular.module('cesiApp.nodes', [
                 $scope.environments[checkedEnvName].nodes)
             .reduce((a, c) => {
                 c.forEach(nodeName => 
+                    $scope.nodes[nodeName] ?
                     Object.keys($scope.nodes[nodeName])
                     .map(processName => 
                         $scope.processes[nodeName + ':' + processName])
                     .forEach(process => 
                         process.group === groupName
                         ? a.push(process)
-                        : null))
+                        : null) : null)
                 return a
             }, [])
         ))

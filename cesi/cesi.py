@@ -89,12 +89,17 @@ class Node:
         self.password = node_config.password
         self.process_list=[]
         self.process_dict2={}
-        for p in self.connection.supervisor.getAllProcessInfo():
-            self.process_list.append(ProcessInfo(p))
-            self.process_dict2[p['group']+':'+p['name']] = ProcessInfo(p)
-        self.process_dict = self.connection.supervisor.getAllProcessInfo()
         self.processes = {}
-        self.is_connected = False
+        try:
+            for p in self.connection.supervisor.getAllProcessInfo():
+                self.process_list.append(ProcessInfo(p))
+                self.process_dict2[p['group']+':'+p['name']] = ProcessInfo(p)
+            self.process_dict = self.connection.supervisor.getAllProcessInfo()
+            self.is_connected = True
+
+        except Exception as e:
+            self.process_dict = {}
+            self.is_connected = False
 
     def serialize(self):
 
@@ -124,7 +129,7 @@ class Node:
             return self.processes
 
         except Exception as _:
-            return None
+            return {}
 
 class Connection:
 

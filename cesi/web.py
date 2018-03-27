@@ -66,9 +66,11 @@ def get_node_names():
         for nodename in cesi['nodes']:
             n = cesi['nodes'][nodename]
             try:
-                _ = Node(NodeConfig("node:" + n['name'], n['host'], n['port'], n['username'], n['password']))
-                if nodename not in connected:
+                node = Node(NodeConfig("node:" + n['name'], n['host'], n['port'], n['username'], n['password']))
+                if node.is_connected and nodename not in connected:
                     connected.append(nodename)
+                elif nodename not in not_connected:
+                    not_connected.append(nodename)
 
             except Exception as _:
                  if nodename not in not_connected:

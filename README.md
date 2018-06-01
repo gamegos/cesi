@@ -34,6 +34,10 @@ Then run these commands to install CeSI
 
     # Download the project
     git clone https://github.com/Gamegos/cesi
+
+    # Or download and decompress the latest version at https://github.com/gamegos/cesi/releases
+    # wget -qO- https://github.com/gamegos/cesi/archive/v2.0.0.tar.gz  | tar -xzf-
+
     cd cesi
 
     # Create user database
@@ -87,8 +91,16 @@ Please change password after first login!
 
 ## TODO
 
-- Docs
-- Do not use external adresses for javascript and css libraries 
-- Better format activity log (tabbed date, level, component, message)
-- Auto refresh page
-- Option to select different templates
+- [ ] Fix user related api endpoints
+- [ ] Fix node log view
+- [ ] Refactor the usage of config
+- [ ] Rewrite dockerfile and publish image on docker hub under gamegos
+- [ ] Improve Docs
+- [ ] Do not use external adresses for javascript and css libraries 
+- [ ] Use a logging lib
+- [ ] Better format for activity logs (tabbed date, level, component, message)
+- [ ] Auto refresh page
+- [ ] Option to select different templates
+- [ ] Upgrade flask
+- [ ] Add tests
+- [ ] CI integration

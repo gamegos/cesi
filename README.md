@@ -1,61 +1,80 @@
-#cesi ( Centralized Supervisor Interface )
+CeSI (Centralized Supervisor Interface)
+=======================================
 
-cesi is a web interface provides manage [supervizors][1] from same interface.
+CeSI is a web interface for managing multiple [supervisors][1] from the same 
+place. 
 
-## Dependencies
+Supervisor has its own web UI but managing multiple supervisor installations is 
+hard with seperate UIs (If you are using the UI of course :). CeSI aims to solve 
+this problem by creating a centralized web UI, based on the RPC interface of 
+Supervisor.
 
-* Python
-* Flask
-* sqlite3
+<p align="center">
+<img src="./docs/screenshots/all-nodes.png" title="All Nodes" width="800" height="509" />
+</p>
 
 ## Installation
 
-    $sudo apt-get install sqlite3 python python-flask
+For running CeSI inside a docker container without installation see "Usage" 
+section.
 
-    $git clone https://github.com/Gamegos/cesi
+**Prerequisites:**
 
-    $cd cesi
+- Python
+- Flask
+- sqlite3
 
-    $sqlite3 path/to/userinfo.db < userinfo.sql
+You can install these dependencies on Ubuntu with:
+
+    sudo apt-get install sqlite3 python python-flask
+
+**Installation**
+
+Then run these commands to install CeSI
+
+    # Download the project
+    git clone https://github.com/Gamegos/cesi
+    cd cesi
+
+    # Create user database
+    sqlite3 path/to/userinfo.db < ../userinfo.sql
+
+    # Create config file
+    cp cesi.conf.sample cesi.conf
 
 ## Configuration
 
-Fill cesi.conf
+Update cesi.conf for your environment. Config file documentation can be found 
+inside sample file.
 
-    #cp cesi.conf /etc/cesi.conf
+Then copy it under "/etc" folder
 
-## Run Project
+    cp cesi.conf /etc/cesi.conf
 
-    $python web.py
+or create a symbolic link
 
-## Run With Docker
+    ln -s $PWD/cesi.conf /etc/cesi.conf
 
-If you would like to run image, you must copy your config file in local pc in /etc/ directory.
+
+## Usage
+
+Run
+
+    python web.py
+
+Or if you would like to run image, you must copy your config file in local pc in 
+/etc/ directory.
 
     docker run -d -p 5000:5000 -v /path/to/config/:/etc/ burcina/docker-cesi
 
 
-## First Login
+### First Login
 
 Please change password after first login!
 
-Username : admin
+- **Username:** admin
+- **Password:** admin
 
-Password : admin
-
-## Mailing list
-
-cesi-commit@googlegroups.com
-
-cesi-devel@googlegroups.com
-
-
-## Screenshots
-
-![Dashboard](https://github.com/GulsahKose/cesi/blob/master/screenshots/image2)
-
-
-![Showall](https://github.com/GulsahKose/cesi/blob/master/screenshots/image1)
 
 ## Blog
 
@@ -68,8 +87,8 @@ cesi-devel@googlegroups.com
 
 ## TODO
 
+- Docs
 - Do not use external adresses for javascript and css libraries 
 - Better format activity log (tabbed date, level, component, message)
-- Fix batch action buttons 
 - Auto refresh page
 - Option to select different templates

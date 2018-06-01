@@ -8,4 +8,6 @@
 * Matěj Koudelka (@hxpro)
 * Lewis Cowper
 * Gustavo Kawamoto (@gkawamoto)
-
+* Alp Hekimoğlu (@alphekimoglu)
+* Atakan Çiçek (@hatakancicek)
+* Özgür Çınar (@ozgio)

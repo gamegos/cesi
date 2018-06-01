@@ -1,21 +1,67 @@
+; This is the main CeSI configuration file. It contains CeSI web application and 
+; supervisord information to connect
+;
+; [node] is the configuration part for supervisord nodes. 
+; node_name: Id of the node to use in UI and config. Only english letters, 
+;            numbers and underscore can be used. Node names must be unique
+; username:  The username configured by supervisord. Set nothing if no username 
+;            is configured
+; password: The password configured by supervisord. Set nothing if no username 
+;           is configured
+; host:     Host of the RPC interface of supervisord
+; port:     Port of the RPC interface of supervisord
+;
+
+; Repeat this config for multiple nodes as necessary
+;
+; Example:
+;
+;[node:webapp]
+;username =
+;password =
+;host = 127.0.0.1
+;port = 9001
+;
+;[node:monitoring]
+;username =
+;password =
+;host = 127.0.0.1
+;port = 9002
+
 [node:<node_name>]
-;username = <username>
-;password = <password>
-;host = <hostname>
-;port = <port>
+username = <username>
+password = <password>
+host = <hostname>
+port = <port>
 
-[node:<node_name2>]
-;username = <username>
-;password = <password>
-;host = <hostname>
-;port = <port>
-
+; Environments provides logical grouping of supervisord nodes. It can be used as 
+; filtering option in the UI. 
+;
+; environment_name: Name of the environment. Must be unique. Only english letters, 
+;                   numbers and underscore can be used.
+; members:          Node names which environment contains, defined above. Names 
+;                   must be seperated with comma. A node can be in multiple 
+;                   environments
+;
 ;[environment:<environment_name>]
 ;members = <node_name>, <node_name2>
 
-;[cesi]
-;database = <path_to_database_file>
-;activity_log = <path_to_activity_log_file>
-;host = <bind_ip>
-;port = <bind_port>
-;name = <app_name>
+; This is the CeSI's own configuration.
+[cesi]
+; sqlite3 file for user database
+database = userinfo.db
+
+; File path for CeSI logs
+activity_log = /var/logs/cesi/activity.log
+
+; Host of the web application
+host = localhost
+
+; Port of the web application
+port = 5000
+
+; Application name. This is shown on the header of the page
+name = CeSI
+
+; Bootstrap theme from bootswatch.com. Currently only superhero is supported.
+theme = superhero

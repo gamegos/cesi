@@ -4,31 +4,49 @@ let version = '/v2'
 
 angular.module('cesiLib', [])
     .factory('cesiService', ['$http', '$q', '$rootScope', function ($http, $q, $rootScope) {
-        return {
+        let postFormHeaders = {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+        let service = {
+            request: function(method, path, data, headers){
+                let deferred = $q.defer();
+                let req = {
+                    method: method,
+                    url: version + path
+                }
+                if(data) req.data = data;
+                if(headers) req.headers = headers;
+
+                $http(req)
+                    .then(function (response) {
+                        deferred.resolve(response.data);
+                    })
+                    .catch(function (response) {
+                        deferred.reject(response);
+                    });
+                return deferred.promise;
+            },
 
             dashboard: function () {
                 let data = {processes: {}}
-                var deferred = $q.defer();
-                Promise.all(['/nodes', '/environments', '/groups'].map(path =>
-                    $http.get(version + path)))
+                let deferred = $q.defer();
+                Promise.all(['/nodes', '/environments', '/groups'].map(path => service.request('GET', path)))
                 .then(function (responses) {
-                    var [nodes, environments, groups] = responses
-                    data.nodes = nodes.data.nodes;
-                    data.environments = environments.data.environments;
-                    data.groups = groups.data.groups;
-                    return Promise.all(data.nodes.connected.map(node =>
-                        $http.get(version + '/nodes/' + node + '/processes')
-                    ))
+                    let [nodes, environments, groups] = responses
+                    data.nodes = nodes.nodes;
+                    data.environments = environments.environments;
+                    data.groups = groups.groups;
+                    return Promise.all(data.nodes.connected.map(node => service.request('GET', '/nodes/' + node + '/processes')))
                 })
                 .then(function (responses) {
-                    var processes = responses.forEach((process, index) => 
-                        data.processes[data.nodes.connected[index]] = process.data.processes
-                    )
+                    let processes = responses.forEach((process, index) => {
+                        data.processes[data.nodes.connected[index]] = process.processes
+                    })
 
                     data.nodeCount = data.nodes.connected.length + data.nodes.not_connected.length
                     data.processInfo = Object.keys(data.processes)
                     .reduce((a, c) => {
-                      var n = {...a}
+                      let n = {...a}
                       Object.keys(data.processes[c]).forEach(processName => {
                         if(data.processes[c][processName].state === 20) n.running++;
                         n.count++;
@@ -46,319 +64,105 @@ angular.module('cesiLib', [])
             },
 
             getprocessdata: function(nodeName, processName){
-                var deferred = $q.defer();
-                $http.get(version + '/nodes/' + nodeName + '/processes/' + processName )
-                    .then(function (response) {
-                        deferred.resolve(response.data);
-                    })
-                    .catch(function (response) {
-                        deferred.reject(response);
-                    });
-                return deferred.promise;
+                return service.request("GET", '/nodes/' + nodeName + '/processes/' + processName)
             },
 
             changepassword: function (data) {
-                var deferred = $q.defer();
-                $http({
-                        method: 'POST',
-                        url: version + '/change/password/' + ($rootScope.username || "") + '/handler',
-                        data: $.param(data),
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded'
-                        }
-                    })
-                    .then(function (response) {
-                        deferred.resolve(response.data);
-                    })
-                    .catch(function (response) {
-                        deferred.reject(response);
-                    });
-                return deferred.promise;
+                let path = '/change/password/' + ($rootScope.username || "") + '/handler'
+                return service.request('POST', path, $.param(data), postFormHeaders);
             },
 
             userInfo: function () {
-                var deferred = $q.defer();
-                $http.get(version + '/userinfo')
-                    .then(function (response) {
-                        deferred.resolve(response.data);
-                    })
-                    .catch(function (response) {
-                        deferred.reject(response);
-                    });
-                return deferred.promise;
+                return service.request("GET", '/userinfo');
             },
 
             startAllNode: function (nodeName) {
-                var deferred = $q.defer();
-                $http.get(version + '/nodes/' + nodeName + '/all-processes/start')
-                    .then(function (response) {
-                        deferred.resolve(response.data);
-                    })
-                    .catch(function (response) {
-                        deferred.reject(response);
-                    });
-                return deferred.promise;
+                return service.request("GET", '/nodes/' + nodeName + '/all-processes/start');
             },
 
             stopAllNode: function (nodeName) {
-                var deferred = $q.defer();
-                $http.get(version + '/nodes/' + nodeName + '/all-processes/stop')
-                    .then(function (response) {
-                        deferred.resolve(response.data);
-                    })
-                    .catch(function (response) {
-                        deferred.reject(response);
-                    });
-                return deferred.promise;
+                return service.request("GET", '/nodes/' + nodeName + '/all-processes/stop');
             },
 
             restartAllNode: function (nodeName) {
-                var deferred = $q.defer();
-                $http.get(version + '/nodes/' + nodeName + '/all-processes/restart')
-                    .then(function (response) {
-                        deferred.resolve(response.data);
-                    })
-                    .catch(function (response) {
-                        deferred.reject(response);
-                    });
-                return deferred.promise;
+                return service.request("GET", '/nodes/' + nodeName + '/all-processes/restart');
             },
 
             startAll: function () {
-                var deferred = $q.defer();
-                $http.get(version + '/node/all/start')
-                    .then(function (response) {
-                        deferred.resolve(response.data);
-                    })
-                    .catch(function (response) {
-                        deferred.reject(response);
-                    });
-                return deferred.promise;
+                return service.request("GET", '/node/all/start');
             },
 
             stopAll: function () {
-                var deferred = $q.defer();
-                $http.get(version + '/node/all/stop')
-                    .then(function (response) {
-                        deferred.resolve(response.data);
-                    })
-                    .catch(function (response) {
-                        deferred.reject(response);
-                    });
-                return deferred.promise;
+                return service.request("GET", '/node/all/stop');
             },
 
             restartAll: function () {
-                var deferred = $q.defer();
-                $http.get(version + '/node/all/restart')
-                    .then(function (response) {
-                        deferred.resolve(response.data);
-                    })
-                    .catch(function (response) {
-                        deferred.reject(response);
-                    });
-                return deferred.promise;
+                return service.request("GET", '/node/all/restart');
             },
 
 
             getNodes: function () {
-                var deferred = $q.defer();
-                $http.get(version + '/nodes')
-                    .then(function (response) {
-                        deferred.resolve(response.data);
-                    })
-                    .catch(function (response) {
-                        deferred.reject(response);
-                    });
-                return deferred.promise;
+                return service.request("GET", '/nodes');
             },
 
             getenvironments: function () {
-                var deferred = $q.defer();
-                $http.get(version + '/environments')
-                    .then(function (response) {
-                        deferred.resolve(response.data);
-                    })
-                    .catch(function (response) {
-                        deferred.reject(response);
-                    });
-                return deferred.promise;
+                return service.request("GET", '/environments');
             },
 
             getenvironment: function (name) {
-                var deferred = $q.defer();
-                $http.get(version + '/environments/' + name)
-                    .then(function (response) {
-                        deferred.resolve(response.data);
-                    })
-                    .catch(function (response) {
-                        deferred.reject(response);
-                    });
-                return deferred.promise;
+                return service.request("GET", '/environments/' + name);
             },
 
             getgroup: function (name) {
-                var deferred = $q.defer();
-                $http.get(version + '/groups/' + name)
-                    .then(function (response) {
-                        deferred.resolve(response.data);
-                    })
-                    .catch(function (response) {
-                        deferred.reject(response);
-                    });
-                return deferred.promise;
+                return service.request("GET", '/groups/' + name);
             },
 
             getnodelog: function (node, group, name) {
-                var deferred = $q.defer();
-                $http.get(version + '/nodes/' + node + '/processes/' + name + '/log')
-                    .then(function (response) {
-                        deferred.resolve(response.data);
-                    })
-                    .catch(function (response) {
-                        deferred.reject(response);
-                    });
-                return deferred.promise;
+                return service.request("GET", '/nodes/' + node + '/processes/' + name + '/log');
             },
 
             getusers: function () {
-                var deferred = $q.defer();
-                $http.get(version + '/user')
-                    .then(function (response) {
-                        deferred.resolve(response.data);
-                    })
-                    .catch(function (response) {
-                        deferred.reject(response);
-                    });
-                return deferred.promise;
+                return service.request("GET", '/user');
             },
 
             deleteuser: function (username) {
-                var deferred = $q.defer();
-                $http.get(version + '/delete/user/' + username)
-                    .then(function (response) {
-                        deferred.resolve(response.data);
-                    })
-                    .catch(function (response) {
-                        deferred.reject(response);
-                    });
-                return deferred.promise;
+                return service.request("GET", '/delete/user/' + username);
             },
 
             log: function () {
-                var deferred = $q.defer();
-                $http.get(version + '/activitylog')
-                    .then(function (response) {
-                        deferred.resolve(response.data);
-                    })
-                    .catch(function (response) {
-                        deferred.reject(response);
-                    });
-                return deferred.promise;
+                return service.request("GET", '/activitylog');
             },
 
             reload: function (node) {
-                var deferred = $q.defer();
-                $http.get(version + '/nodes/' + node)
-                    .then(function (response) {
-
-                        deferred.resolve(response.data);
-                    })
-                    .catch(function (response) {
-                        deferred.reject(response);
-                    });
-                return deferred.promise;
+                return service.request("GET", '/nodes/' + node);
             },
 
             login: function (data) {
-                var deferred = $q.defer();
-                $http({
-                        method: 'POST',
-                        url: version + '/login/control',
-                        data: $.param(data),
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded'
-                        }
-                    })
-                    .then(function (response) {
-                        deferred.resolve(response.data);
-                    })
-                    .catch(function (response) {
-                        deferred.reject(response);
-                    });
-                return deferred.promise;
+                return service.request('POST', '/login/control', $.param(data), postFormHeaders);
             },
 
             add: function (data) {
-                var deferred = $q.defer();
-                $http({
-                        method: 'POST',
-                        url: version + '/add/user/handler',
-                        data: $.param(data),
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded'
-                        }
-                    })
-                    .then(function (response) {
-                        deferred.resolve(response.data);
-                    })
-                    .catch(function (response) {
-                        deferred.reject(response);
-                    });
-                return deferred.promise;
+                return service.request('POST','/add/user/handler', $.param(data), postFormHeaders);
             },
 
             logout: function () {
-                var deferred = $q.defer();
-                $http.get('/logout')
-                    .then(function (response) {
-                        deferred.resolve(response.data);
-                    })
-                    .catch(function (response) {
-                        deferred.reject(response);
-                    });
-                return deferred.promise;
+                return service.request("GET", '/logout');
             },
 
-
             restart: function (node, process) {
-                var deferred = $q.defer();
-                $http.get(version + '/nodes/' + node + '/processes/' + process.name + '/restart')
-                    .then(function (response) {
-                        deferred.resolve(response);
-                    })
-                    .catch(function (response) {
-                        deferred.reject(response);
-                    });
-                return deferred.promise;
+                return service.request("GET", '/nodes/' + node + '/processes/' + process.name + '/restart');
             },
 
             start: function (node, process) {
-                var deferred = $q.defer();
-                $http.get(version + '/nodes/' + node + '/processes/' + process.name + '/start')
-                    .then(function (response) {
-                        deferred.resolve(response);
-                    })
-                    .catch(function (response) {
-                        deferred.reject(response);
-                    });
-                return deferred.promise;
+                return service.request("GET", '/nodes/' + node + '/processes/' + process.name + '/start');
             },
 
             stop: function (node, process) {
-                var deferred = $q.defer();
-                $http.get(version + '/nodes/' + node + '/processes/' + process.name + '/stop')
-                    .then(function (response) {
-                        deferred.resolve(response);
-                    })
-                    .catch(function (response) {
-                        deferred.reject(response);
-                    });
-                return deferred.promise;
-
-                //return $http.get('http://127.0.0.1:5000/node/srv2/process/'+process.name+':'+process.group+'/stop')
+                return service.request("GET", '/nodes/' + node + '/processes/' + process.name + '/stop');
             }
+            
         };
 
+        return service;
 
     }])

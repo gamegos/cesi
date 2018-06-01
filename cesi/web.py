@@ -551,7 +551,7 @@ def login():
     return render_template('login.html', code = code, name = Config(CONFIG_FILE).getName())
 
 # Logout action
-@app.route('/logout', methods = ['GET', 'POST'])
+@app.route('/{}/logout'.format(VERSION), methods = ['GET', 'POST'])
 def logout():
     add_log = open(ACTIVITY_LOG, "a")
     add_log.write("%s - %s logged out.\n"%( datetime.now().ctime(), session['username'] ))

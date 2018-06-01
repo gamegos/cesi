@@ -121,7 +121,6 @@ angular.module('cesiApp.navbar', [
       cesiService.getusers().then(function (data) {
         $scope.users = [];
         for (var i = 0; i < data['names'].length; i++) {
-
           $scope.users.push({
             name: data['names'][i],
             type: findType(data['types'][i])
@@ -136,6 +135,7 @@ angular.module('cesiApp.navbar', [
         switch (data.status) {
           case "success":
             notify($scope, "success", "User '" + arg + "' is Deleted");
+            $scope.refresh();
             break;
           case "error":
             notify($scope, "danger", data.message);
@@ -145,7 +145,6 @@ angular.module('cesiApp.navbar', [
             break;
         }
       });
-      $scope.refresh();
     };
 
     $scope.refresh();

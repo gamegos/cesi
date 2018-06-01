@@ -5,6 +5,8 @@ import xmlrpclib
 import sqlite3
 import mmap
 import os
+import argparse
+import sys
 
 
 app = Flask(__name__)
@@ -558,9 +560,143 @@ def logout():
     session.clear()
     return redirect('/login')
 
+# Delete user method for only admin type user
+@app.route('/{}/user'.format(VERSION))
+def user_list():
+    if session.get('logged_in'):
+        if session['usertype'] == 0:
+            cur = get_db().cursor()
+            cur.execute("select username, type from userinfo")
+            users = cur.fetchall();
+            usernamelist =[str(element[0]) for element in users]
+            usertypelist =[str(element[1]) for element in users]
+            return jsonify(status = 'success',
+                           names = usernamelist,
+                           types = usertypelist)
+        else:
+            add_log = open(ACTIVITY_LOG, "a")
+            add_log.write("%s - Unauthorized user request for delete user event. Delete user event fail .\n"%( datetime.now().ctime() ))
+            return jsonify(status = 'error')
+    else:
+        return jsonify(message='Session expired'), 403        
+
+@app.route('/{}/delete/user/<username>'.format(VERSION))
+def del_user_handler(username):
+    if session.get('logged_in'):
+        if session['usertype'] == 0:
+            if username != "admin":
+                cur = get_db().cursor()
+                cur.execute("delete from userinfo where username=?",[username])
+                get_db().commit()
+                add_log = open(ACTIVITY_LOG, "a")
+                add_log.write("%s - %s user deleted .\n"%( datetime.now().ctime(), username ))
+                return jsonify(status = "success")
+            else:
+                add_log = open(ACTIVITY_LOG, "a")
+                add_log.write("%s - %s  user request for delete admin user. Delete admin user event fail .\n"%( datetime.now().ctime(), session['username'] ))
+                return jsonify(status = "error",
+                               message= "Admin can't delete")
+        else:
+            add_log = open(ACTIVITY_LOG, "a")
+            add_log.write("%s - %s is unauthorized user for request to delete a user. Delete event fail .\n"%( datetime.now().ctime(), session['username'] ))
+            return jsonify(status = "error",
+                           message = "Only Admin can delete a user")
+    else:
+        add_log = open(ACTIVITY_LOG, "a")
+        add_log.write("%s - Illegal request for delete user event.\n"%( datetime.now().ctime()))
+        return jsonify(message='Session expired'), 403
+
+# Writes new user information to database
+@app.route('/{}/add/user/handler'.format(VERSION), methods = ['GET', 'POST'])
+def adduserhandler():
+    if session.get('logged_in'):
+        if session['usertype'] == 0:
+            username = request.form['username']
+            password = request.form['password']
+            confirmpassword = request.form['confirmpassword']
+
+            if username == "" or password == "" or confirmpassword == "":
+                return jsonify( status = "null",
+                                message = "Please enter value")
+            else:
+                if request.form['usertype'] == "Admin":
+                    usertype = 0
+                elif request.form['usertype'] == "Standart User":
+                    usertype = 1
+                elif request.form['usertype'] == "Only Log":
+                    usertype = 2
+                elif request.form['usertype'] == "Read Only":
+                    usertype = 3
+
+                cur = get_db().cursor()
+                cur.execute("select * from userinfo where username=?",(username,))
+                if not cur.fetchall():
+                    if password == confirmpassword:
+                        cur.execute("insert into userinfo values(?, ?, ?)", (username, password, usertype,))
+                        get_db().commit()
+                        add_log = open(ACTIVITY_LOG, "a")
+                        add_log.write("%s - New user added.\n"%( datetime.now().ctime() ))
+                        return jsonify(status = "success",
+                                       message ="User added")
+                    else:
+                        add_log = open(ACTIVITY_LOG, "a")
+                        add_log.write("%s - Passwords didn't match at add user event.\n"%( datetime.now().ctime() ))
+                        return jsonify(status = "warning",
+                                       message ="Passwords didn't match")
+                else:
+                    add_log = open(ACTIVITY_LOG, "a")
+                    add_log.write("%s - Username is avaible at add user event.\n"%( datetime.now().ctime() ))
+                    return jsonify(status = "warning",
+                                   message ="Username is avaible. Please select different username")
+        else:
+            add_log = open(ACTIVITY_LOG, "a")
+            add_log.write("%s - %s is unauthorized user for request to add user event. Add user event fail .\n"%( datetime.now().ctime(), session['username'] ))
+            return jsonify(status = "error",
+                           message = "Only Admin can add a user")
+    else:
+        add_log = open(ACTIVITY_LOG, "a")
+        add_log.write("%s - Illegal request for add user event.\n"%( datetime.now().ctime()))
+        return jsonify(message='Session expired'), 403
+
+
+@app.route('/{}/change/password/<username>/handler'.format(VERSION), methods=['POST'])
+def changepasswordhandler(username):
+    if session.get('logged_in'):
+        if session['username'] == username:
+            cur = get_db().cursor()
+            cur.execute("select password from userinfo where username=?",(username,))
+            ar=[str(r[0]) for r in cur.fetchall()]
+            if request.form['old'] == ar[0]:
+                if request.form['new'] == request.form['confirm']:
+                    if request.form['new'] != "":
+                        cur.execute("update userinfo set password=? where username=?",[request.form['new'], username])
+                        get_db().commit()
+                        add_log = open(ACTIVITY_LOG, "a")
+                        add_log.write("%s - %s user change own password.\n"%( datetime.now().ctime(), session['username']))
+                        return jsonify(status = "success")
+                    else:
+                        return jsonify(status = "null",
+                                       message = "Please enter valid value")
+                else:
+                    add_log = open(ACTIVITY_LOG, "a")
+                    add_log.write("%s - Passwords didn't match for %s 's change password event. Change password event fail .\n"%( datetime.now().ctime(), session['username']))
+                    return jsonify(status = "error", message = "Passwords didn't match")
+            else:
+                add_log = open(ACTIVITY_LOG, "a")
+                add_log.write("%s - Old password is wrong for %s 's change password event. Change password event fail .\n"%( datetime.now().ctime(), session['username']))
+                return jsonify(status = "error", message = "Old password is wrong")
+        else:
+            add_log = open(ACTIVITY_LOG, "a")
+            add_log.write("%s - %s user request to change %s 's password. Change password event fail\n"%( datetime.now().ctime(), session['username'], username))
+            return jsonify(status = "error", message = "You can only change own password.")
+    else:
+        add_log = open(ACTIVITY_LOG, "a")
+        add_log.write("%s - Illegal request for change %s 's password event.\n"%( datetime.now().ctime(), username))
+        return jsonify(message='Session expired'), 403
+
 @app.route('/')
 def showMain():
-# get user type
+    # get user type
     if session.get('logged_in'):
         if session['usertype']==0:
             usertype = "Admin"
@@ -595,3 +731,30 @@ except xmlrpclib.Fault as err:
     print "A fault occurred"
     print "Fault code: %d" % err.faultCode
     print "Fault string: %s" % err.faultString
+
+
+def main(args=()):
+    parser = argparse.ArgumentParser(description='Cesi web server')
+
+    # parser.add_argument('--config', default=CONFIG_FILE,
+    #                     type=str, help='config file')
+    parser.add_argument('-d', '--debug', default=False, action='store_true',
+                        help='debug mode')
+    parser.add_argument('-r', '--use-reloader', default=False, action='store_true',
+                        help='reload if app code changes (dev mode)')
+
+    args = parser.parse_args()
+
+    # CONFIG_FILE = args.config
+
+    try:
+        app.run(debug=args.debug, use_reloader=args.use_reloader, host=HOST, port=Config(CONFIG_FILE).getPort())
+    except xmlrpclib.Fault as err:
+        print "A xmlrpclib fault occurred"
+        print "Code: %d" % err.faultCode
+        print "String: %s" % err.faultString
+    except:
+        print("Unexpected error:", sys.exc_info()[0])
+        
+if __name__ == '__main__':
+    main(args=sys.argv)

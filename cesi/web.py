@@ -548,7 +548,7 @@ def control():
 @app.route('/login', methods = ['GET', 'POST'])
 def login():
     code = request.args.get('code', '')
-    return render_template('login.html', code=code)
+    return render_template('login.html', code = code, name = Config(CONFIG_FILE).getName())
 
 # Logout action
 @app.route('/logout', methods = ['GET', 'POST'])

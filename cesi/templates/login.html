@@ -8,13 +8,12 @@
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/favicon.ico') }}">
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
-    <title>CESI Login</title>
+    <title>{{name}} Login</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link rel="stylesheet" href="https://bootswatch.com/4/superhero/bootstrap.css">
 
-    <!--     Fonts and icons     -->
     <link href='http://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
 </head>
 
@@ -24,7 +23,7 @@
             <div class="col-md-4 col-sm-12"></div>
             <div class="col-md-4 col-sm-12">
 
-                <h3 class="panel-title">CeSI Sign In</h3>
+                <h3 class="panel-title">{{name}} Sign In</h3>
 
                 {% if code %}
                 <div class="alert alert-danger">

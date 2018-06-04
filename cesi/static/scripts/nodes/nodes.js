@@ -111,27 +111,27 @@ angular.module('cesiApp.nodes', [
         };
 
         $scope.startAllNode = function (nodeName) {
-            cesiService.startAllNode(nodeName).then($scope.getEnvironmentsAndGroups());
+            cesiService.startAllNode(nodeName).then($scope.getEnvironmentsAndGroups);
         };
 
         $scope.stopAllNode = function (nodeName) {
-            cesiService.stopAllNode(nodeName).then($scope.getEnvironmentsAndGroups());
+            cesiService.stopAllNode(nodeName).then($scope.getEnvironmentsAndGroups);
         };
 
         $scope.restartAllNode = function (nodeName) {
-            cesiService.restartAllNode(nodeName).then($scope.getEnvironmentsAndGroups());
+            cesiService.restartAllNode(nodeName).then($scope.getEnvironmentsAndGroups);
         };
 
         $scope.startAll = function () {
-            cesiService.startAll().then($scope.getEnvironmentsAndGroups());
+            cesiService.startAll().then($scope.getEnvironmentsAndGroups);
         }
 
         $scope.stopAll = function () {
-            cesiService.stopAll().then($scope.getEnvironmentsAndGroups());
+            cesiService.stopAll().then($scope.getEnvironmentsAndGroups);
         }
 
         $scope.restartAll = function () {
-            cesiService.restartAll().then($scope.getEnvironmentsAndGroups());
+            cesiService.restartAll().then($scope.getEnvironmentsAndGroups);
         }
 
         $scope.restart = function (nodeName, process) {

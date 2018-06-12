@@ -722,6 +722,9 @@ def page_not_found(error):
     return render_template('page_not_found.html'), 404
 
 def main(args=()):
+    if os.geteuid() != 0:
+        exit("You need to have root privileges to run this script.\nPlease try again, this time using 'sudo'. Exiting.")
+
     parser = argparse.ArgumentParser(description='Cesi web server')
 
     """

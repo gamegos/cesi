@@ -1,12 +1,34 @@
-from flask import Flask, render_template, redirect, jsonify, request, g, session
-from cesi import Config, Node, CONFIG_FILE, JsonValue, cesi, NodeConfig, get_groups, get_group_details
-from datetime import datetime
-import xmlrpclib
-import sqlite3
-import mmap
 import os
-import argparse
 import sys
+import mmap
+import sqlite3
+import argparse
+import xmlrpclib
+from datetime import datetime
+
+from flask import (
+    Flask,
+    render_template,
+    redirect,
+    jsonify,
+    request,
+    g,
+    session
+)
+
+from cesi import (
+    Config,
+    Node,
+    CONFIG_FILE,
+    JsonValue,
+    cesi,
+    NodeConfig,
+    get_groups,
+    get_group_details
+)
+from decorators import (
+    is_user_logged_in
+)
 
 
 app = Flask(__name__)
@@ -36,126 +58,103 @@ def close_connection(_):
 
 
 @app.route('/{}/environments'.format(VERSION))
+@is_user_logged_in
 def get_env_names():
-    if session.get('logged_in'):
-        env_list = []
-        for k in cesi['environments']:
-            env_list.append(k)
-        return jsonify(environments=env_list)
+    env_list = []
+    for k in cesi['environments']:
+        env_list.append(k)
 
-    else:
-        return jsonify(message='Session expired'), 403
-
+    return jsonify(environments=env_list)
 
 @app.route('/{}/environments/<env_name>'.format(VERSION))
+@is_user_logged_in
 def get_env_nodes(env_name):
-    if session.get('logged_in'):
-        try:
-            return jsonify(nodes=cesi['environments'][env_name])
+    try:
+        return jsonify(nodes=cesi['environments'][env_name])
 
-        except Exception as _:
-            return jsonify(message="Wrong environment name")
-
-    else:
-        return jsonify(message='Session expired'), 403
-
+    except Exception as _:
+        return jsonify(message="Wrong environment name")
 
 @app.route('/{}/nodes'.format(VERSION))
+@is_user_logged_in
 def get_node_names():
-    if session.get('logged_in'):
-        connected = []
-        not_connected = []
-        for nodename in cesi['nodes']:
-            n = cesi['nodes'][nodename]
-            try:
-                node = Node(NodeConfig("node:" + n['name'], n['host'], n['port'], n['username'], n['password']))
-                if node.is_connected and nodename not in connected:
-                    connected.append(nodename)
-                elif nodename not in not_connected:
+    connected = []
+    not_connected = []
+    for nodename in cesi['nodes']:
+        n = cesi['nodes'][nodename]
+        try:
+            node = Node(NodeConfig("node:" + n['name'], n['host'], n['port'], n['username'], n['password']))
+            if node.is_connected and nodename not in connected:
+                connected.append(nodename)
+            elif nodename not in not_connected:
+                not_connected.append(nodename)
+
+        except Exception as _:
+                if nodename not in not_connected:
                     not_connected.append(nodename)
 
-            except Exception as _:
-                 if nodename not in not_connected:
-                     not_connected.append(nodename)
-
-        return jsonify(nodes={'connected': connected, 'not_connected': not_connected})
-
-    else:
-        return jsonify(message='Session expired'), 403
-
+    return jsonify(nodes={'connected': connected, 'not_connected': not_connected})
 
 @app.route('/{}/nodes/<node_name>'.format(VERSION))
+@is_user_logged_in
 def get_node(node_name):
-    if session.get('logged_in'):
+    try:
+        n = cesi['nodes'][node_name]
         try:
-            n = cesi['nodes'][node_name]
-            try:
-                _ = Node(NodeConfig("node:" + n['name'], n['host'], n['port'], n['username'], n['password']))
-                return jsonify({
-                                'name': n['name'],
-                                'host': n['host'],
-                                'port': n['port'],
-                                'connected': True
-                            })
-
-            except Exception as _:
-                return jsonify({
-                                'name': n['name'],
-                                'host': n['host'],
-                                'port': n['port'],
-                                'connected': False
-                            })
+            _ = Node(NodeConfig("node:" + n['name'], n['host'], n['port'], n['username'], n['password']))
+            return jsonify({
+                'name': n['name'],
+                'host': n['host'],
+                'port': n['port'],
+                'connected': True
+            })
 
         except Exception as _:
-            return jsonify(message="Wrong node name")
+            return jsonify({
+                'name': n['name'],
+                'host': n['host'],
+                'port': n['port'],
+                'connected': False
+            })
 
-    else:
-        return jsonify(message='Session expired'), 403
-
+    except Exception as _:
+        return jsonify(message="Wrong node name")
 
 @app.route('/{}/nodes/<node_name>/processes'.format(VERSION))
+@is_user_logged_in
 def get_node_processes(node_name):
-    if session.get('logged_in'):
-        try:
-            n = cesi['nodes'][node_name]
+    try:
+        n = cesi['nodes'][node_name]
 
-        except Exception as _:
-            return jsonify(message="Wrong node name")
+    except Exception as _:
+        return jsonify(message="Wrong node name")
 
-        try:
-            node = Node(NodeConfig("node:" + n['name'], n['host'], n['port'], n['username'], n['password']))
-            return jsonify(processes=node.get_processes())
+    try:
+        node = Node(NodeConfig("node:" + n['name'], n['host'], n['port'], n['username'], n['password']))
+        return jsonify(processes=node.get_processes())
 
-        except Exception as _:
-            return jsonify(message="Node is not connected")
-
-    else:
-        return jsonify(message='Session expired'), 403
-
+    except Exception as _:
+        return jsonify(message="Node is not connected")
 
 @app.route('/{}/nodes/<node_name>/processes/<pro_name>'.format(VERSION))
+@is_user_logged_in
 def get_process(node_name, pro_name):
-    if session.get('logged_in'):
+    try:
+        n = cesi['nodes'][node_name]
+
+    except Exception as _:
+        return jsonify(message="Wrong node name")
+
+    try:
+        node = Node(NodeConfig("node:" + n['name'], n['host'], n['port'], n['username'], n['password']))
         try:
-            n = cesi['nodes'][node_name]
+            return jsonify(node.get_processes()[pro_name])
 
         except Exception as _:
-            return jsonify(message="Wrong node name")
+            return jsonify(message="Wrong process name")
 
-        try:
-            node = Node(NodeConfig("node:" + n['name'], n['host'], n['port'], n['username'], n['password']))
-            try:
-                return jsonify(node.get_processes()[pro_name])
-
-            except Exception as _:
-                return jsonify(message="Wrong process name")
-
-        except Exception as _:
-            return jsonify(message="Node is not connected")
-
-    else:
-        return jsonify(message='Session expired'), 403
-
+    except Exception as _:
+        return jsonify(message="Node is not connected")
 
 @app.route('/{}/nodes/<node_name>/processes/<process_name>/start'.format(VERSION))
 def start_process(node_name, process_name):
@@ -308,23 +307,20 @@ def process_read_log(node_name, process_name):
 
 
 @app.route('/{}/nodes/<node_name>/all-processes'.format(VERSION))
+@is_user_logged_in
 def get_node_all_processes(node_name):
-    if session.get('logged_in'):
-        try:
-            n = cesi['nodes'][node_name]
+    try:
+        n = cesi['nodes'][node_name]
 
-        except Exception as _:
-            return jsonify(message="Wrong node name")
+    except Exception as _:
+        return jsonify(message="Wrong node name")
 
-        try:
-            node = Node(NodeConfig("node:" + n['name'], n['host'], n['port'], n['username'], n['password']))
-            return jsonify(processes=node.get_processes())
+    try:
+        node = Node(NodeConfig("node:" + n['name'], n['host'], n['port'], n['username'], n['password']))
+        return jsonify(processes=node.get_processes())
 
-        except Exception as _:
-            return jsonify(message="Node is not connected")
-
-    else:
-        return jsonify(message='Session expired'), 403
+    except Exception as _:
+        return jsonify(message="Node is not connected")
 
 
 @app.route('/{}/nodes/<node_name>/all-processes/start'.format(VERSION))
@@ -462,21 +458,15 @@ def restart_all_process(node_name):
 
 
 @app.route('/{}/groups'.format(VERSION))
+@is_user_logged_in
 def get_group_names():
-    if session.get('logged_in'):
-        return jsonify(groups=get_groups(cesi))
-
-    else:
-        return jsonify(message='Session expired'), 403
+    return jsonify(groups=get_groups(cesi))
 
 
 @app.route('/{}/groups/<group_name>'.format(VERSION))
+@is_user_logged_in
 def get_group_information(group_name):
-    if session.get('logged_in'):
-        return jsonify(get_group_details(cesi, group_name))
-
-    else:
-        return jsonify(message='Session expired'), 403
+    return jsonify(get_group_details(cesi, group_name))
 
 
 @app.route('/{}/activitylog'.format(VERSION))
@@ -507,14 +497,10 @@ def get_log_tail():
             return jsonify(status="error",
                            message="Activity log file is empty")
 
-
 @app.route('/{}/userinfo'.format(VERSION))
+@is_user_logged_in
 def user_info():
-   if session.get('logged_in'):
-       return jsonify(username=session['username'], usertypecode=session['usertype'])
-   else:
-      return jsonify(message='Session expired'), 403
-
+    return jsonify(username=session['username'], usertypecode=session['usertype'])
 
 # Username and password control
 @app.route('/login/control', methods = ['POST'])
@@ -562,23 +548,21 @@ def logout():
 
 # Delete user method for only admin type user
 @app.route('/{}/user'.format(VERSION))
+@is_user_logged_in
 def user_list():
-    if session.get('logged_in'):
-        if session['usertype'] == 0:
-            cur = get_db().cursor()
-            cur.execute("select username, type from userinfo")
-            users = cur.fetchall();
-            usernamelist =[str(element[0]) for element in users]
-            usertypelist =[str(element[1]) for element in users]
-            return jsonify(status = 'success',
-                           names = usernamelist,
-                           types = usertypelist)
-        else:
-            add_log = open(ACTIVITY_LOG, "a")
-            add_log.write("%s - Unauthorized user request for delete user event. Delete user event fail .\n"%( datetime.now().ctime() ))
-            return jsonify(status = 'error')
+    if session['usertype'] == 0:
+        cur = get_db().cursor()
+        cur.execute("select username, type from userinfo")
+        users = cur.fetchall();
+        usernamelist =[str(element[0]) for element in users]
+        usertypelist =[str(element[1]) for element in users]
+        return jsonify(status = 'success',
+                        names = usernamelist,
+                        types = usertypelist)
     else:
-        return jsonify(message='Session expired'), 403        
+        add_log = open(ACTIVITY_LOG, "a")
+        add_log.write("%s - Unauthorized user request for delete user event. Delete user event fail .\n"%( datetime.now().ctime() ))
+        return jsonify(status = 'error')
 
 @app.route('/{}/delete/user/<username>'.format(VERSION))
 def del_user_handler(username):

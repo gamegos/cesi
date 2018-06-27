@@ -412,39 +412,37 @@ def get_log_tail():
 def user_info():
     return jsonify(username=session['username'], usertypecode=session['usertype'])
 
-# Username and password control
-@app.route('/login/control', methods = ['POST'])
-def control():
-    username = request.form['username']
-    password = request.form['password']
-    cur = get_db().cursor()
-    cur.execute("select * from userinfo where username=?",(username,))
-#if query returns an empty list
-    if not cur.fetchall():
-        session.clear()
-        add_log = open(ACTIVITY_LOG, "a")
-        add_log.write("%s - Login fail. Username is not available.\n"%( datetime.now().ctime() ))
-        return redirect('/login?code=invalid')
-    else:
-        cur.execute("select * from userinfo where username=?",(username,))
-        
-        if password == cur.fetchall()[0][1]:
-            session['username'] = username
-            session['logged_in'] = True
-            cur.execute("select * from userinfo where username=?",(username,))
-            session['usertype'] = cur.fetchall()[0][2]
-            add_log = open(ACTIVITY_LOG, "a")
-            add_log.write("%s - %s logged in.\n"%( datetime.now().ctime(), session['username'] ))
-            return redirect('/')
-        else:
-            session.clear()
-            add_log = open(ACTIVITY_LOG, "a")
-            add_log.write("%s - Login fail. Invalid password.\n"%( datetime.now().ctime() ))
-            return redirect('/login?code=invalid')
-
-# Render login page
+# Render login page or username, password control
 @app.route('/login', methods = ['GET', 'POST'])
 def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        cur = get_db().cursor()
+        cur.execute("select * from userinfo where username=?",(username,))
+    #if query returns an empty list
+        if not cur.fetchall():
+            session.clear()
+            add_log = open(ACTIVITY_LOG, "a")
+            add_log.write("%s - Login fail. Username is not available.\n"%( datetime.now().ctime() ))
+            return redirect('/login?code=invalid')
+        else:
+            cur.execute("select * from userinfo where username=?",(username,))
+
+            if password == cur.fetchall()[0][1]:
+                session['username'] = username
+                session['logged_in'] = True
+                cur.execute("select * from userinfo where username=?",(username,))
+                session['usertype'] = cur.fetchall()[0][2]
+                add_log = open(ACTIVITY_LOG, "a")
+                add_log.write("%s - %s logged in.\n"%( datetime.now().ctime(), session['username'] ))
+                return redirect('/')
+            else:
+                session.clear()
+                add_log = open(ACTIVITY_LOG, "a")
+                add_log.write("%s - Login fail. Invalid password.\n"%( datetime.now().ctime() ))
+                return redirect('/login?code=invalid')
+
     code = request.args.get('code', '')
     return render_template('login.html', code = code, name = Config(CONFIG_FILE).getName())
 

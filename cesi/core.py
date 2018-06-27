@@ -295,7 +295,6 @@ class Node:
                 return True
             except (xmlrpc.client.ProtocolError, xmlrpc.client.Fault, Exception) as e:
                 print(e)
-                return False
     
         print(f"No, node isn't connected. {self.name}")
         return False
@@ -357,7 +356,7 @@ class Node:
 
     def serialize_processes(self):
         return {
-            'processes': {p.name:p.serialize() for p in self.processes},
+            'processes': [p.serialize() for p in self.processes],
         }
 
     def serialize(self):

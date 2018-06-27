@@ -31,6 +31,9 @@ from decorators import (
     is_admin_or_normal_user,
     is_admin
 )
+from util import (
+    ActivityLog
+)
 
 
 app = Flask(__name__)
@@ -42,6 +45,7 @@ ACTIVITY_LOG = Config(CONFIG_FILE).getActivityLog()
 HOST = Config(CONFIG_FILE).getHost()
 VERSION = "v2"
 
+activity = None
 
 # Database connection
 def get_db():
@@ -423,8 +427,7 @@ def login():
     #if query returns an empty list
         if not cur.fetchall():
             session.clear()
-            add_log = open(ACTIVITY_LOG, "a")
-            add_log.write("%s - Login fail. Username is not available.\n"%( datetime.now().ctime() ))
+            activity.logger.info("Login fail. Username is not available.")
             return redirect('/login?code=invalid')
         else:
             cur.execute("select * from userinfo where username=?",(username,))
@@ -434,13 +437,11 @@ def login():
                 session['logged_in'] = True
                 cur.execute("select * from userinfo where username=?",(username,))
                 session['usertype'] = cur.fetchall()[0][2]
-                add_log = open(ACTIVITY_LOG, "a")
-                add_log.write("%s - %s logged in.\n"%( datetime.now().ctime(), session['username'] ))
+                activity.logger.info("{} logged in.".format(session['username']))
                 return redirect('/')
             else:
                 session.clear()
-                add_log = open(ACTIVITY_LOG, "a")
-                add_log.write("%s - Login fail. Invalid password.\n"%( datetime.now().ctime() ))
+                activity.logger.info("Login fail. Invalid password.")
                 return redirect('/login?code=invalid')
 
     code = request.args.get('code', '')
@@ -449,8 +450,7 @@ def login():
 # Logout action
 @app.route('/{}/logout'.format(VERSION), methods = ['GET', 'POST'])
 def logout():
-    add_log = open(ACTIVITY_LOG, "a")
-    add_log.write("%s - %s logged out.\n"%( datetime.now().ctime(), session['username'] ))
+    activity.logger.info("{} logged out".format(session['username']))
     session.clear()
     return redirect('/login')
 
@@ -607,7 +607,8 @@ def main(args=()):
     args = parser.parse_args()
 
     # CONFIG_FILE = args.config
-
+    global activity
+    activity = ActivityLog(log_path=ACTIVITY_LOG)
     try:
         app.run(
             debug=args.debug,

@@ -22,8 +22,8 @@ cesi = Cesi.getInstance()
 activity = ActivityLog.getInstance()
 
 @users.route('/', methods=['GET'])
-@is_user_logged_in()
-@is_admin("Unauthorized user request for delete user event. Delete user event fail.")
+@is_user_logged_in("Illegal request for display users event.")
+@is_admin("Unauthorized user request for display users event. Display users event fail.")
 def user_list():
     cur = get_db().cursor()
     cur.execute("select username, type from userinfo")

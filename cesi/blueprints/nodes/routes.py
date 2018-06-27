@@ -68,7 +68,7 @@ def get_process(node_name, process_name):
 
 @nodes.route('/<node_name>/processes/<process_name>/start')
 @is_user_logged_in("Illegal request for start to {node_name} node's {process_name} process.")
-@is_admin_or_normal_user("{user} is unauthorized user request for start.Start event fail for {node_name} node's {process_name} process.")
+@is_admin_or_normal_user("Unauthorized user request for start.Start event fail for {node_name} node's {process_name} process.")
 def start_process(node_name, process_name):
     node = cesi.get_node_or_400(node_name)
     if node.is_connected:
@@ -84,7 +84,7 @@ def start_process(node_name, process_name):
 
 @nodes.route('/<node_name>/processes/<process_name>/stop')
 @is_user_logged_in("Illegal request for stop to {node_name} node's {process_name} process.")
-@is_admin_or_normal_user("{user} is unauthorized user request for stop.Stop event fail for {node_name} node's {process_name} process.")
+@is_admin_or_normal_user("Unauthorized user request for stop.Stop event fail for {node_name} node's {process_name} process.")
 def stop_process(node_name, process_name):
     node = cesi.get_node_or_400(node_name)
     if node.is_connected:
@@ -100,7 +100,7 @@ def stop_process(node_name, process_name):
 
 @nodes.route('/<node_name>/processes/<process_name>/restart')
 @is_user_logged_in("Illegal request for restart to {node_name} node's {process_name} process.")
-@is_admin_or_normal_user("{user} is unauthorized user request for restart.Restart event fail for {node_name} node's {process_name} process.")
+@is_admin_or_normal_user("Unauthorized user request for restart.Restart event fail for {node_name} node's {process_name} process.")
 def restart_process(node_name, process_name):
     node = cesi.get_node_or_400(node_name)
     if node.is_connected:
@@ -132,7 +132,7 @@ def read_process_log(node_name, process_name):
 
 @nodes.route('/<node_name>/all-processes/start')
 @is_user_logged_in("Illegal request for start to {node_name} node's all processes.")
-@is_admin_or_normal_user("{user} unauthorized user request for start.Start event fail for {node_name} node's all processes.")
+@is_admin_or_normal_user("Unauthorized user request for start.Start event fail for {node_name} node's all processes.")
 def start_all_process(node_name):
     node = cesi.get_node_or_400(node_name)
     if node.is_connected:
@@ -150,7 +150,7 @@ def start_all_process(node_name):
 
 @nodes.route('/<node_name>/all-processes/stop')
 @is_user_logged_in("Illegal request for stop to {node_name} node's all processes.")
-@is_admin_or_normal_user("{user} unauthorized user request for stop.Stop event fail for {node_name} node's all processes.")
+@is_admin_or_normal_user("Unauthorized user request for stop.Stop event fail for {node_name} node's all processes.")
 def stop_all_process(node_name):
     node = cesi.get_node_or_400(node_name)
     if node.is_connected:
@@ -168,7 +168,7 @@ def stop_all_process(node_name):
 
 @nodes.route('/<node_name>/all-processes/restart')
 @is_user_logged_in("Illegal request for restart to {node_name} node's all processes.")
-@is_admin_or_normal_user("{user} unauthorized user request for restart.Restart event fail for {node_name} node's all processes.")
+@is_admin_or_normal_user("Unauthorized user request for restart.Restart event fail for {node_name} node's all processes.")
 def restart_all_process(node_name):
     node = cesi.get_node_or_400(node_name)
     if node.is_connected:

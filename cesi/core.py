@@ -48,33 +48,31 @@ class Cesi:
     
     def drop_database(self):
         conn = self.get_db_connection()
-        if conn:
-            cur = conn.cursor()
-            cur.execute("""DROP TABLE userinfo""")
-            conn.commit()
-            conn.close()
+        cur = conn.cursor()
+        cur.execute("""DROP TABLE userinfo""")
+        conn.commit()
+        conn.close()
 
     def check_database(self):
         conn = self.get_db_connection()
-        if conn:
-            print("Connected Database!")
-            cur = conn.cursor()
-            # Check userinfo table
-            sql_create_userinfo_table = """create table if not exists userinfo(
-                username varchar(30) PRIMARY KEY NOT NULL,
-                password varchar(50) NOT NULL,
-                type INT NOT NULL);"""
-            cur.execute(sql_create_userinfo_table)
+        print("Connected Database!")
+        cur = conn.cursor()
+        # Check userinfo table
+        sql_create_userinfo_table = """create table if not exists userinfo(
+            username varchar(30) PRIMARY KEY NOT NULL,
+            password varchar(50) NOT NULL,
+            type INT NOT NULL);"""
+        cur.execute(sql_create_userinfo_table)
+        conn.commit()
+        # check admin user.
+        sql_insert_admin_user = """insert into userinfo values('admin', 'admin', 0);"""
+        try:
+            cur.execute(sql_insert_admin_user)
             conn.commit()
-            # check admin user.
-            sql_insert_admin_user = """insert into userinfo values('admin', 'admin', 0);"""
-            try:
-                cur.execute(sql_insert_admin_user)
-                conn.commit()
-            except Exception as e:
-                print(e)
+        except Exception as e:
+            print(e)
 
-            conn.close()
+        conn.close()
 
     def load_config(self):
         self.__cesi = CESI_DEFAULTS
@@ -164,8 +162,6 @@ class Cesi:
             return conn
         except Exception as e:
             sys.exit(e)
-        
-        return None
 
     def get_node(self, node_name):
         _nodes_iterator = filter(lambda n: n.name == node_name, self.nodes)

@@ -1,6 +1,13 @@
 import logging
 
-from flask import jsonify
+from flask import (
+    jsonify,
+    g
+)
+
+from core import (
+    Cesi
+)
 
 class ActivityLog:
     __instance = None
@@ -56,3 +63,11 @@ class JsonValue:
                        message = f"{node.name} {process_name} {event_name} event unsuccesfully",
                        nodename = node.name,
                        payload=payload)
+
+# Database connection
+def get_db():
+    cesi = Cesi.getInstance()
+    db = getattr(g, '_database', None)
+    if db is None:
+        db = g._database = cesi.get_db_connection()
+    return db

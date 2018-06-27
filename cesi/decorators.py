@@ -5,9 +5,7 @@ from flask import (
 from functools import wraps
 from datetime import datetime
 
-from util import (
-    ActivityLog
-)
+from loggers import ActivityLog
 
 def is_user_logged_in(log_message=""):
     def actual_decorator(f):

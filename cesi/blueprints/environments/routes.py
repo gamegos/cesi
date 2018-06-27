@@ -3,15 +3,9 @@ from flask import (
     jsonify,
 )
 
-from core import (
-    Cesi
-)
-from decorators import (
-    is_user_logged_in
-)
-from util import (
-    ActivityLog
-)
+from core import Cesi
+from decorators import is_user_logged_in
+from loggers import ActivityLog
 
 environments = Blueprint('environments', __name__)
 cesi = Cesi.getInstance()

@@ -5,17 +5,13 @@ from flask import (
     request
 )
 
-from core import (
-    Cesi
-)
+from core import Cesi
 from decorators import (
     is_user_logged_in,
     is_admin
 )
-from util import (
-    ActivityLog,
-    get_db
-)
+from util import get_db
+from loggers import ActivityLog
 
 users = Blueprint('users', __name__)
 cesi = Cesi.getInstance()

@@ -13,16 +13,14 @@ from flask import (
     session
 )
 
-from core import (
-    Cesi
-)
+from core import Cesi
 from decorators import (
     is_user_logged_in,
     is_admin,
     is_admin_or_normal_user
 )
+from loggers import ActivityLog
 from util import (
-    ActivityLog,
     JsonValue,
     get_db
 )

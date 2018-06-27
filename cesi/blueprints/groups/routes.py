@@ -3,15 +3,11 @@ from flask import (
     jsonify,
 )
 
-from core import (
-    Cesi
-)
+from core import Cesi
+from loggers import ActivityLog
 from decorators import (
     is_user_logged_in,
     is_admin
-)
-from util import (
-    ActivityLog
 )
 
 groups = Blueprint('groups', __name__)

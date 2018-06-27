@@ -31,8 +31,8 @@ def is_admin_or_normal_user(log_message=""):
         @wraps(f)
         def wrap(*args, **kwargs):
             activity = ActivityLog.getInstance()
-            usertype = session['usertype']
-            if usertype == 0 or usertype == 1:
+            usertypecode = session['usertypecode']
+            if usertypecode == 0 or usertypecode == 1:
                 return f(*args, **kwargs)
             else:
                 if not log_message == "":
@@ -50,8 +50,8 @@ def is_admin(log_message=""):
         @wraps(f)
         def wrap(*args, **kwargs):
             activity = ActivityLog.getInstance()
-            usertype = session['usertype']
-            if usertype == 0:
+            usertypecode = session['usertypecode']
+            if usertypecode == 0:
                 return f(*args, **kwargs)
             else:
                 if not log_message == "":

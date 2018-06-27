@@ -20,15 +20,21 @@ activity = ActivityLog.getInstance()
 @activitylogs.route('/')
 @is_user_logged_in()
 def get_activity_log():
-    with open(cesi.activity_log) as f:
-        data = f.readlines()
-        return jsonify(status="success",
-                        log=data)
+    try:
+        with open(cesi.activity_log) as f:
+            data = f.readlines()
+    except Exception as e:
+            return jsonify(status="error", message=str(e))
+
+    return jsonify(status="success", log=data)
 
 @activitylogs.route('/<int:limit>')
 @is_user_logged_in()
 def get_activity_log_with_limit(limit):
-    with open(cesi.activity_log) as f:
-        data = f.readlines()
-        return jsonify(status="success",
-                        log=data[-limit:])
+    try:
+        with open(cesi.activity_log) as f:
+            data = f.readlines()
+    except Exception as e:
+            return jsonify(status="error", message=str(e))
+
+    return jsonify(status="success", log=data[-limit:])

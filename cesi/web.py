@@ -93,16 +93,16 @@ def initdb():
 @app.route('/')
 def showMain():
     # get user type
-    if session.get('logged_in'):
-        username = session['username']
-        usertypecode = session['usertypecode']
-        return render_template('index.html',
-                                name = cesi.name,
-                                theme = cesi.theme,
-                                username = username,
-                                usertypecode = usertypecode)
-    else:
-         return redirect(url_for('login'))
+    if not session.get('logged_in'):
+        return redirect(url_for('login'))
+
+    username = session['username']
+    usertypecode = session['usertypecode']
+    return render_template('index.html',
+                            name = cesi.name,
+                            theme = cesi.theme,
+                            username = username,
+                            usertypecode = usertypecode)
 
 @app.errorhandler(404)
 def page_not_found(error):

@@ -30,7 +30,7 @@ def user_list():
 
 @users.route('/<username>/delete/', methods=["DELETE"])
 @is_user_logged_in("Illegal request for delete {username} user event.")
-@is_admin("{user} is unauthorized user for request to delete {username} user. Delete event fail.")
+@is_admin("Unauthorized user for request to delete {username} user. Delete event fail.")
 def delete_user(username):
     if username != "admin":
         cur = get_db().cursor()
@@ -46,7 +46,7 @@ def delete_user(username):
 # Writes new user information to database
 @users.route('/add/', methods = ['POST'])
 @is_user_logged_in("Illegal request for add user event.")
-@is_admin("{user} is unauthorized user for request to add user event. Add user event fail.")
+@is_admin("Unauthorized user for request to add user event. Add user event fail.")
 def adduserhandler():
     username = request.form['username']
     password = request.form['password']

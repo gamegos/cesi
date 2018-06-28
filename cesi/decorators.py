@@ -14,11 +14,12 @@ def is_user_logged_in(log_message=""):
             activity = ActivityLog.getInstance()
             if session.get('logged_in'):
                 return f(*args, **kwargs)
-            else:
-                if not log_message == "":
-                    message = log_message.format(**kwargs)
-                    activity.logger.error(message)
-                return jsonify(message='Session expired'), 403
+
+            if not log_message == "":
+                message = log_message.format(**kwargs)
+                activity.logger.error(message)
+
+            return jsonify(message='Session expired'), 403
 
         return wrap
 
@@ -33,11 +34,12 @@ def is_admin_or_normal_user(log_message=""):
             usertypecode = session['usertypecode']
             if usertypecode == 0 or usertypecode == 1:
                 return f(*args, **kwargs)
-            else:
-                if not log_message == "":
-                    message = log_message.format(**kwargs)
-                    activity.logger.error(f"{username}: {message}")
-                return jsonify(message='You are not authorized this action'), 403
+
+            if not log_message == "":
+                message = log_message.format(**kwargs)
+                activity.logger.error(f"{username}: {message}")
+
+            return jsonify(message='You are not authorized this action'), 403
 
         return wrap
 
@@ -52,11 +54,12 @@ def is_admin(log_message=""):
             usertypecode = session['usertypecode']
             if usertypecode == 0:
                 return f(*args, **kwargs)
-            else:
-                if not log_message == "":
-                    message = log_message.format(**kwargs)
-                    activity.logger.error(f"{username}: {message}")
-                return jsonify(message='You are not authorized this action'), 403
+
+            if not log_message == "":
+                message = log_message.format(**kwargs)
+                activity.logger.error(f"{username}: {message}")
+
+            return jsonify(message='You are not authorized this action'), 403
 
         return wrap
 

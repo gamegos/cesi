@@ -29,19 +29,20 @@ class Cesi:
         """ Static access method """
         if Cesi.__instance == None:
             Cesi()
+
         return Cesi.__instance
 
     def __init__(self, config_file_path='/etc/cesi.conf'):
         """ Config File Parsing"""
         if Cesi.__instance != None:
             raise Exception("This class is a singleton!")
-        else:
-            print("Parsing config file...")
-            Cesi.__config_file_path = config_file_path
-            # Defaults are problem. Defaults effects all sections.
-            self.load_config()
-            self.check_database()
-            Cesi.__instance = self
+
+        print("Parsing config file...")
+        Cesi.__config_file_path = config_file_path
+        # Defaults are problem. Defaults effects all sections.
+        self.load_config()
+        self.check_database()
+        Cesi.__instance = self
     
     def drop_database(self):
         conn = self.get_db_connection()

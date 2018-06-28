@@ -28,7 +28,7 @@ def user_list():
     return jsonify(status = 'success',
                     users = users)
 
-@users.route('/<username>/delete', methods=["DELETE"])
+@users.route('/<username>/delete/', methods=["DELETE"])
 @is_user_logged_in("Illegal request for delete {username} user event.")
 @is_admin("{user} is unauthorized user for request to delete {username} user. Delete event fail.")
 def delete_user(username):
@@ -44,7 +44,7 @@ def delete_user(username):
                         message= "Admin can't delete")
 
 # Writes new user information to database
-@users.route('/add', methods = ['POST'])
+@users.route('/add/', methods = ['POST'])
 @is_user_logged_in("Illegal request for add user event.")
 @is_admin("{user} is unauthorized user for request to add user event. Add user event fail.")
 def adduserhandler():
@@ -80,7 +80,7 @@ def adduserhandler():
             return jsonify(status = "warning",
                             message ="Username is not available. Please select different username")
 
-@users.route('/<username>/password', methods=['PUT'])
+@users.route('/<username>/password/', methods=['PUT'])
 @is_user_logged_in("Illegal request for change {username}'s password event.")
 def change_password(username):
     if session['username'] == username:

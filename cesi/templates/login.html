@@ -31,7 +31,7 @@
                 </div>
                 {% endif %}
 
-                <form id="loginForm" class="loginform" method="post" action="/login">
+                <form id="loginForm" class="loginform" method="post" action="{{ url_for('login') }}">
                     <fieldset>
                         <div class="form-group">
                             <input class="form-control" name="username" placeholder="Username" autofocus="">

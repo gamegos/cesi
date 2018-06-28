@@ -35,13 +35,13 @@ def get_node_names():
         }
     )
 
-@nodes.route('/<node_name>')
+@nodes.route('/<node_name>/')
 @is_user_logged_in()
 def get_node(node_name):
     node = cesi.get_node_or_400(node_name)
     return jsonify(node.serialize())
 
-@nodes.route('/<node_name>/processes')
+@nodes.route('/<node_name>/processes/')
 @is_user_logged_in()
 def get_node_processes(node_name):
     node = cesi.get_node_or_400(node_name)
@@ -50,7 +50,7 @@ def get_node_processes(node_name):
     else:
         return jsonify(message="Node is not connected")
 
-@nodes.route('/<node_name>/processes/<process_name>')
+@nodes.route('/<node_name>/processes/<process_name>/')
 @is_user_logged_in()
 def get_process(node_name, process_name):
     node = cesi.get_node_or_400(node_name)
@@ -60,7 +60,7 @@ def get_process(node_name, process_name):
     else:
         return jsonify(message="Node is not connected")
 
-@nodes.route('/<node_name>/processes/<process_name>/start')
+@nodes.route('/<node_name>/processes/<process_name>/start/')
 @is_user_logged_in("Illegal request for start to {node_name} node's {process_name} process.")
 @is_admin_or_normal_user("Unauthorized user request for start.Start event fail for {node_name} node's {process_name} process.")
 def start_process(node_name, process_name):
@@ -76,7 +76,7 @@ def start_process(node_name, process_name):
     else:
         return jsonify(message="Node is not connected")
 
-@nodes.route('/<node_name>/processes/<process_name>/stop')
+@nodes.route('/<node_name>/processes/<process_name>/stop/')
 @is_user_logged_in("Illegal request for stop to {node_name} node's {process_name} process.")
 @is_admin_or_normal_user("Unauthorized user request for stop.Stop event fail for {node_name} node's {process_name} process.")
 def stop_process(node_name, process_name):
@@ -92,7 +92,7 @@ def stop_process(node_name, process_name):
     else:
         return jsonify(message="Node is not connected")
 
-@nodes.route('/<node_name>/processes/<process_name>/restart')
+@nodes.route('/<node_name>/processes/<process_name>/restart/')
 @is_user_logged_in("Illegal request for restart to {node_name} node's {process_name} process.")
 @is_admin_or_normal_user("Unauthorized user request for restart.Restart event fail for {node_name} node's {process_name} process.")
 def restart_process(node_name, process_name):
@@ -108,7 +108,7 @@ def restart_process(node_name, process_name):
     else:
         return jsonify(message="Node is not connected")
 
-@nodes.route('/<node_name>/processes/<process_name>/log')
+@nodes.route('/<node_name>/processes/<process_name>/log/')
 @is_user_logged_in("Illegal request for read log to {node_name} node's {process_name} process.")
 def read_process_log(node_name, process_name):
     if session['usertype'] == 0 or session['usertype'] == 1 or session['usertype'] == 2:
@@ -124,7 +124,7 @@ def read_process_log(node_name, process_name):
         activity.logger.info("{} is unauthorized user request for read log. Read log event fail for {} node's {} process.".format(session['username'], node_name, process_name))
         return jsonify(status="error", message="You are not authorized for this action")
 
-@nodes.route('/<node_name>/all-processes/start')
+@nodes.route('/<node_name>/all-processes/start/')
 @is_user_logged_in("Illegal request for start to {node_name} node's all processes.")
 @is_admin_or_normal_user("Unauthorized user request for start.Start event fail for {node_name} node's all processes.")
 def start_all_process(node_name):
@@ -142,7 +142,7 @@ def start_all_process(node_name):
     else:
         return jsonify(message="Node is not connected")
 
-@nodes.route('/<node_name>/all-processes/stop')
+@nodes.route('/<node_name>/all-processes/stop/')
 @is_user_logged_in("Illegal request for stop to {node_name} node's all processes.")
 @is_admin_or_normal_user("Unauthorized user request for stop.Stop event fail for {node_name} node's all processes.")
 def stop_all_process(node_name):
@@ -160,7 +160,7 @@ def stop_all_process(node_name):
     else:
         return jsonify(message="Node is not connected")
 
-@nodes.route('/<node_name>/all-processes/restart')
+@nodes.route('/<node_name>/all-processes/restart/')
 @is_user_logged_in("Illegal request for restart to {node_name} node's all processes.")
 @is_admin_or_normal_user("Unauthorized user request for restart.Restart event fail for {node_name} node's all processes.")
 def restart_all_process(node_name):

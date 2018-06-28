@@ -16,7 +16,7 @@ activity = ActivityLog.getInstance()
 def get_environments():
     return jsonify(cesi.serialize_environments())
 
-@environments.route('/<env_name>')
+@environments.route('/<env_name>/')
 @is_user_logged_in()
 def get_environment_details(env_name):
     _environment = cesi.get_environment_or_400(env_name)

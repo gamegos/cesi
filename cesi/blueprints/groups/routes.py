@@ -31,7 +31,7 @@ def get_groups_tree():
     """
     return jsonify(groups=cesi.get_groups_tree())
 
-@groups.route('/<group_name>')
+@groups.route('/<group_name>/')
 @is_user_logged_in()
 @is_admin()
 def get_group_details(group_name):
@@ -51,7 +51,7 @@ def get_group_details(group_name):
     print(result)
     return jsonify(result)
 
-@groups.route('/<group_name>/node/<node_name>')
+@groups.route('/<group_name>/node/<node_name>/')
 @is_user_logged_in()
 @is_admin()
 def get_group_details_by_node_name(group_name, node_name):

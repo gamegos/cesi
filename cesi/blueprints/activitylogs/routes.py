@@ -22,7 +22,7 @@ def get_activity_log():
 
     return jsonify(status="success", log=data)
 
-@activitylogs.route('/<int:limit>')
+@activitylogs.route('/<int:limit>/')
 @is_user_logged_in()
 def get_activity_log_with_limit(limit):
     try:

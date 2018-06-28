@@ -10,7 +10,8 @@ from flask import (
     jsonify,
     request,
     g,
-    session
+    session,
+    url_for
 )
 
 from core import Cesi
@@ -46,7 +47,7 @@ def user_info():
     return jsonify(username=session['username'], usertypecode=session['usertypecode'])
 
 # Render login page or username, password control
-@app.route('/login', methods = ['GET', 'POST'])
+@app.route('/login/', methods = ['GET', 'POST'])
 def login():
     if request.method == 'POST':
         username = request.form['username']
@@ -77,13 +78,13 @@ def login():
     return render_template('login.html', code = code, name = cesi.name)
 
 # Logout action
-@app.route(f'/{VERSION}/logout', methods = ['GET', 'POST'])
+@app.route(f'/{VERSION}/logout/', methods = ['GET', 'POST'])
 def logout():
     activity.logger.error("{} logged out".format(session['username']))
     session.clear()
-    return redirect('/login')
+    return redirect(url_for('login'))
 
-@app.route(f'/{VERSION}/initdb')
+@app.route(f'/{VERSION}/initdb/')
 def initdb():
     cesi.drop_database()
     cesi.check_database()
@@ -101,7 +102,7 @@ def showMain():
                                 username = username,
                                 usertypecode = usertypecode)
     else:
-         return redirect('/login')
+         return redirect(url_for('login'))
 
 @app.errorhandler(404)
 def page_not_found(error):

@@ -78,7 +78,6 @@ class Cesi:
         self.__cesi = CESI_DEFAULTS
         self.nodes = []
         self.environments = []
-        self.groups = []
 
         self.config = configparser.ConfigParser()
         dataset = self.config.read(Cesi.__config_file_path)
@@ -120,12 +119,10 @@ class Cesi:
                     members_string=members_string
                 )
                 self.environments.append(_environment)
-            elif section.name[:5] == 'group':
-                # 'group:<name>'
-                name = section.name[6:]
-                self.groups.append(name[6:])
             else:
                 print(f"Unknowed section name: {section.name}")
+
+        self.fill_defaults_environment()
 
     @property
     def database(self): return self.__cesi['database']
@@ -156,6 +153,38 @@ class Cesi:
     @property
     def secret_key(self): return self.__cesi['secret_key']
 
+    @property
+    def groups(self):
+        result = {}
+        for node in self.nodes:
+            if node.is_connected:
+                for p in node.processes:
+                    result[p.group] = result.get(p.group, [])
+                    if node.name not in result[p.group]:
+                        result[p.group].append(node.name)
+            else:
+                print(f"{node.name} is not connected.")
+
+        print(result)
+        return result
+
+    def get_groups_tree(self):
+        __groups = self.groups
+        __result = {}
+        for env in self.environments:
+            print(env.name)
+            for group_name, node_names in __groups.items():
+                __result[group_name] = __result.get(group_name, {})
+                for node_name in node_names:
+                    environment = self.get_environment_by_node_name(node_name)
+                    if environment:
+                        __result[group_name][environment.name] = __result[group_name].get(environment.name, [])
+                        if node_name not in __result[group_name][environment.name]:
+                            __result[group_name][environment.name].append(node_name)
+
+        print(__result)
+        return __result
+
     def get_db_connection(self):
         try:
             conn = sqlite3.connect(self.database)
@@ -174,6 +203,18 @@ class Cesi:
         
         return _node
 
+    def fill_defaults_environment(self):
+        # fill defaults
+        empty_nodes = []
+        for node in self.nodes:
+            _environment = self.get_environment_by_node_name(node.name)
+            if not _environment:
+                empty_nodes.append(node.name)
+
+        environment = Environment(name="defaults")
+        environment.set_members(empty_nodes)
+        self.environments.append(environment)
+
     def get_environment(self, environment_name):
         _environment = filter(lambda e: e.name == environment_name, self.environments)
         return next(_environment, None)
@@ -184,6 +225,10 @@ class Cesi:
             abort(400, description="Wrong environment name")
         
         return _environment
+
+    def get_environment_by_node_name(self, node_name):
+        _environment = filter(lambda e: node_name in e.members, self.environments)
+        return next(_environment, None)
 
     def serialize_nodes(self):
         return {
@@ -247,9 +292,12 @@ class Process:
         return self.dictionary
 
 class Environment:
-    def __init__(self, name, members_string):
+    def __init__(self, name, members_string=""):
         self.name = name
         self.members = list(map(str.strip, members_string.split(',')))
+
+    def set_members(self, members):
+        self.members = members
 
     def serialize(self):
         return {
@@ -309,6 +357,14 @@ class Node:
             return abort(400, description="Wrong process name")
         
         return process
+
+    def get_processes_by_group_name(self, group_name):
+        __processes = []
+        for p in self.processes:
+            if p.group == group_name:
+                __processes.append(p)
+
+        return __processes
 
     def start_process(self, process_name):
         """ http://supervisord.org/api.html#supervisor.rpcinterface.SupervisorNamespaceRPCInterface.startProcess """

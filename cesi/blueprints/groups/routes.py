@@ -17,21 +17,58 @@ activity = ActivityLog.getInstance()
 @groups.route('/')
 @is_user_logged_in()
 @is_admin()
-def get_groups():
-    _groups = set()
-    for node in cesi.nodes:
-        if node.is_connected:
-            for p in node.processes:
-                _groups.add(p.group)
-        else:
-            print(f"{node.name} is not connected.")
-
-    # Set is not JSON serializable.
-    return jsonify(groups=list(_groups))
+def get_groups_tree():
+    """
+    {
+        "groups": {
+            "go": {
+                "aws": ["ec2-1", "ec2-2"],
+                "azure": ["machine-1", "machine-2"],
+                "defaults": []
+            }
+        }
+    }
+    """
+    return jsonify(groups=cesi.get_groups_tree())
 
 @groups.route('/<group_name>')
 @is_user_logged_in()
 @is_admin()
 def get_group_details(group_name):
-    return jsonify({})
-    #return jsonify(get_group_details(cesi, group_name))
+    groups = cesi.groups
+    group = groups.get(group_name, None)
+    if not group:
+        return jsonify(status="error", message="Wrong group name")
+
+    result = {}
+    for node_name in group:
+        n = cesi.get_node(node_name)
+        processes = n.get_processes_by_group_name(group_name)
+        result[n.name] = []
+        for p in processes:
+            result[n.name].append(p.serialize())
+
+    print(result)
+    return jsonify(result)
+
+@groups.route('/<group_name>/node/<node_name>')
+@is_user_logged_in()
+@is_admin()
+def get_group_details_by_node_name(group_name, node_name):
+    groups = cesi.groups
+    group = groups.get(group_name, None)
+    if not group:
+        return jsonify(status="error", message="Wrong group name")
+
+    if node_name not in group:
+        return jsonify(status="error", message="Wrong node name for group name")
+
+    result = {}
+    n = cesi.get_node(node_name)
+    processes = n.get_processes_by_group_name(group_name)
+    result[n.name] = []
+    for p in processes:
+        result[n.name].append(p.serialize())
+
+    print(result)
+    return jsonify(result)

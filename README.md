@@ -19,58 +19,43 @@ For running CeSI inside a docker container without installation see "Usage"
 section.
 
 **Prerequisites:**
-
-- Python
-- Flask
-- sqlite3
+- Python3
+- Pip
 
 You can install these dependencies on Ubuntu with:
 
-    sudo apt-get install sqlite3 python python-flask
+    sudo apt-get install python3 python3-pip
 
 **Installation**
 
 Then run these commands to install CeSI
 
-    # Download the project
-    git clone https://github.com/Gamegos/cesi
+```bash
+$ # Download the project
+$ git clone https://github.com/Gamegos/cesi
 
-    # Or download and decompress the latest version at https://github.com/gamegos/cesi/releases
-    # wget -qO- https://github.com/gamegos/cesi/archive/v2.0.0.tar.gz  | tar -xzf-
+$ # Or download and decompress the latest version at https://github.com/gamegos/cesi/releases
+$ # wget -qO- https://github.com/gamegos/cesi/archive/v2.0.0.tar.gz  | tar -xzf-
 
-    cd cesi
+$ cd cesi/cesi
 
-    # Create user database
-    sqlite3 path/to/userinfo.db < ../userinfo.sql
+$ # Create cesi.conf file and update cesi.conf for your environment.
+$ # Config file documentation can be found inside default file.
+$ cp cesi.default.conf path/to/cesi.conf
+$ vim path/to/cesi.conf
 
-    # Create config file
-    cp cesi.conf.sample cesi.conf
+$ # Install requirements
+$ sudo pip install -r requirements.txt
 
-## Configuration
-
-Update cesi.conf for your environment. Config file documentation can be found 
-inside sample file.
-
-Then copy it under "/etc" folder
-
-    cp cesi.conf /etc/cesi.conf
-
-or create a symbolic link
-
-    ln -s $PWD/cesi.conf /etc/cesi.conf
-
+$ # Run cesi
+$ python3 web.py --config path/to/cesi.conf
+```
 
 ## Usage
-
-Run
-
-    python web.py
-
-Or if you would like to run image, you must copy your config file in local pc in 
+if you would like to run image, you must copy your config file in local pc in 
 /etc/ directory.
 
     docker run -d -p 5000:5000 -v /path/to/config/:/etc/ burcina/docker-cesi
-
 
 ### First Login
 

@@ -2,7 +2,8 @@ from flask import (
     Blueprint,
     jsonify,
     session,
-    request
+    request,
+    g
 )
 
 from core import Cesi
@@ -10,7 +11,6 @@ from decorators import (
     is_user_logged_in,
     is_admin
 )
-from util import get_db
 from loggers import ActivityLog
 
 users = Blueprint('users', __name__)
@@ -21,7 +21,7 @@ activity = ActivityLog.getInstance()
 @is_user_logged_in("Illegal request for display users event.")
 @is_admin("Unauthorized user request for display users event. Display users event fail.")
 def user_list():
-    cur = get_db().cursor()
+    cur = g.db_conn.cursor()
     cur.execute("select username, type from userinfo")
     result = cur.fetchall()
     users = [ {'name': str(element[0]), 'type': str(element[1])} for element in result]
@@ -33,9 +33,9 @@ def user_list():
 @is_admin("Unauthorized user for request to delete {username} user. Delete event fail.")
 def delete_user(username):
     if username != "admin":
-        cur = get_db().cursor()
+        cur = g.db_conn.cursor()
         cur.execute("delete from userinfo where username=?",[username])
-        get_db().commit()
+        g.db_conn.commit()
         activity.logger.error("{} user deleted.".format(session['username']))
         return jsonify(status = "success")
     else:
@@ -61,12 +61,12 @@ def adduserhandler():
         return jsonify( status = "null",
                         message = "Please enter value")
     else:
-        cur = get_db().cursor()
+        cur = g.db_conn.cursor()
         cur.execute("select * from userinfo where username=?",(username,))
         if not cur.fetchall():
             if password == confirmpassword:
                 cur.execute("insert into userinfo values(?, ?, ?)", (username, password, usertype,))
-                get_db().commit()
+                g.db_conn.commit()
                 activity.logger.error("New user added({}).".format(session['username']))
                 return jsonify(status = "success",
                                 message ="User added")
@@ -87,14 +87,14 @@ def change_password(username):
         old_password = request.form['old']
         new_password = request.form['new']
         confirm_password = request.form['confirm']
-        cur = get_db().cursor()
+        cur = g.db_conn.cursor()
         cur.execute("select password from userinfo where username=?",(username,))
         ar=[str(r[0]) for r in cur.fetchall()]
         if old_password == ar[0]:
             if new_password == confirm_password:
                 if new_password != "":
                     cur.execute("update userinfo set password=? where username=?",[new_password, username])
-                    get_db().commit()
+                    g.db_conn.commit()
                     activity.logger.error("{} user change own password.".format(session['username']))
                     return jsonify(status = "success")
                 else:

@@ -21,10 +21,7 @@ from decorators import (
     is_admin_or_normal_user
 )
 from loggers import ActivityLog
-from util import (
-    JsonValue,
-    get_db
-)
+from util import JsonValue
 
 VERSION = "v2"
 
@@ -34,12 +31,15 @@ app.config.from_object(__name__)
 cesi = None
 activity = None
 
+# Open database connection
+@app.before_request
+def before_request():
+    g.db_conn = cesi.get_db_connection()
+
 # Close database connection
 @app.teardown_appcontext
 def close_connection(_):
-    db = getattr(g, '_database', None)
-    if db is not None:
-        db.close()
+    g.db_conn.close()
 
 @app.route(f'/{VERSION}/userinfo')
 @is_user_logged_in()
@@ -52,9 +52,9 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        cur = get_db().cursor()
+        cur = g.db_conn.cursor()
         cur.execute("select * from userinfo where username=?",(username,))
-    #if query returns an empty list
+        #if query returns an empty list
         if not cur.fetchall():
             session.clear()
             activity.logger.info("Login fail. Username is not available.")
@@ -115,13 +115,17 @@ def not_found(error):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Cesi web server')
 
-    parser.add_argument('-c', '--config',
-                        default="./cesi.default.conf",
-                        type=str,
-                        help='config file')
+    parser.add_argument(
+        '-c', '--config',
+        type=str,
+        help='config file'
+    )
 
     args = parser.parse_args()
-    cesi = Cesi(config_file_path=args.config)
+    if args.config:
+        cesi = Cesi(config_file_path=args.config)
+    else:
+        cesi = Cesi()
     activity = ActivityLog(log_path=cesi.activity_log)
     app.secret_key = cesi.secret_key
     
@@ -136,7 +140,7 @@ if __name__ == '__main__':
     app.register_blueprint(environments, url_prefix=f"/{VERSION}/environments")
     app.register_blueprint(groups, url_prefix=f"/{VERSION}/groups")
     app.register_blueprint(users, url_prefix=f"/{VERSION}/users")
-    
+
     app.run(
         host=cesi.host,
         port=cesi.port,

@@ -21,8 +21,8 @@ class Cesi:
         'debug': 'True',
         'secret_key': 'lalalala',
         'auto_reload': 'True',
-        'default_user': 'admin',
-        'default_password': 'admin',
+        'admin_username': 'admin',
+        'admin_password': 'admin',
     }
     
     @staticmethod
@@ -63,7 +63,7 @@ class Cesi:
         cur.execute(sql_create_userinfo_table)
         conn.commit()
         # check admin user.
-        sql_insert_admin_user = """insert into userinfo values('admin', 'admin', 0);"""
+        sql_insert_admin_user = f"""insert into userinfo values('{self.admin_username}', '{self.admin_password}', 0);"""
         try:
             cur.execute(sql_insert_admin_user)
             conn.commit()
@@ -95,7 +95,9 @@ class Cesi:
                     'database': section.get('database', self.__cesi['database']),
                     'debug': section.get('debug', self.__cesi['debug']),
                     'secret_key': section.get('secret_key', self.__cesi['secret_key']),
-                    'auto_reload': section.get('auto_reload', self.__cesi['auto_reload'])
+                    'auto_reload': section.get('auto_reload', self.__cesi['auto_reload']),
+                    'admin_username': section.get('admin_username', self.__cesi['admin_username']),
+                    'admin_password': section.get('admin_password', self.__cesi['admin_password']),
                 }
             elif section.name[:4] == 'node':
                 # 'node:<name>'
@@ -150,6 +152,12 @@ class Cesi:
 
     @property
     def secret_key(self): return self.__cesi['secret_key']
+
+    @property
+    def admin_username(self): return self.__cesi['admin_username']
+
+    @property
+    def admin_password(self): return self.__cesi['admin_password']
 
     @property
     def groups(self):

@@ -7,22 +7,23 @@ from flask import abort
 from .node import Node
 from .environment import Environment
 
-CESI_DEFAULTS = {
-    'host': 'localhost',
-    'port': '5000',
-    'name': 'CeSI',
-    'theme': 'superhero',
-    'activity_log': '/var/logs/cesi/activity.log',
-    'database': 'userinfo.db',
-    'debug': 'True',
-    'secret_key': 'lalalala',
-    'auto_reload': 'True',
-}
-
 class Cesi:
     """ Cesi """
     __instance = None
     __config_file_path = None
+    __defaults = {
+        'host': 'localhost',
+        'port': '5000',
+        'name': 'CeSI',
+        'theme': 'superhero',
+        'activity_log': '/var/logs/cesi/activity.log',
+        'database': 'userinfo.db',
+        'debug': 'True',
+        'secret_key': 'lalalala',
+        'auto_reload': 'True',
+        'default_user': 'admin',
+        'default_password': 'admin',
+    }
     
     @staticmethod
     def getInstance():
@@ -39,7 +40,6 @@ class Cesi:
 
         print("Parsing config file...")
         Cesi.__config_file_path = config_file_path
-        # Defaults are problem. Defaults effects all sections.
         self.load_config()
         self.check_database()
         Cesi.__instance = self
@@ -73,7 +73,7 @@ class Cesi:
         conn.close()
 
     def load_config(self):
-        self.__cesi = CESI_DEFAULTS
+        self.__cesi = Cesi.__defaults
         self.nodes = []
         self.environments = []
 

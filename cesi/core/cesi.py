@@ -199,8 +199,10 @@ class Cesi:
             sys.exit(e)
 
     def get_node(self, node_name):
-        _nodes_iterator = filter(lambda n: n.name == node_name, self.nodes)
-        return next(_nodes_iterator, None)
+        for n in self.nodes:
+            if n.name == node_name: return n
+
+        return None
 
     def get_node_or_400(self, node_name):
         _node = self.get_node(node_name)
@@ -222,8 +224,10 @@ class Cesi:
         self.environments.append(environment)
 
     def get_environment(self, environment_name):
-        _environment = filter(lambda e: e.name == environment_name, self.environments)
-        return next(_environment, None)
+        for e in self.environments:
+            if e.name == environment_name: return e
+
+        return None
 
     def get_environment_or_400(self, environment_name):
         _environment = self.get_environment(environment_name)

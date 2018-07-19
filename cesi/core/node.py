@@ -22,7 +22,7 @@ class Node:
                 _processes.append(_process)
 
             return _processes
-        
+
         except Exception as _:
             return []
 
@@ -38,7 +38,7 @@ class Node:
                 return True
             except (xmlrpc.client.ProtocolError, xmlrpc.client.Fault, Exception) as e:
                 print(e)
-    
+
         print(f"No, node isn't connected. {self.name}")
         return False
 
@@ -54,7 +54,7 @@ class Node:
         process = self.get_process(process_name)
         if not process:
             return abort(400, description="Wrong process name")
-        
+
         return process
 
     def get_processes_by_group_name(self, group_name):
@@ -66,7 +66,9 @@ class Node:
         return __processes
 
     def start_process(self, process_name):
-        """ http://supervisord.org/api.html#supervisor.rpcinterface.SupervisorNamespaceRPCInterface.startProcess """
+        """
+            http://supervisord.org/api.html#supervisor.rpcinterface.SupervisorNamespaceRPCInterface.startProcess 
+        """
         process = self.get_process_or_400(process_name)
         try:
             if self.connection.supervisor.startProcess(process.name):
@@ -92,7 +94,7 @@ class Node:
             status, msg = self.stop_process(process_name)
             if not status:
                 return status, msg
-        
+
         return self.start_process(process_name)
 
     def serialize_general(self):

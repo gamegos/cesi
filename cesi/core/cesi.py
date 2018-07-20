@@ -11,20 +11,9 @@ class Cesi:
     """ Cesi """
     __instance = None
     __config_file_path = None
-    __defaults = {
-        'host': 'localhost',
-        'port': '5000',
-        'name': 'CeSI',
-        'theme': 'superhero',
-        'activity_log': '/var/logs/cesi/activity.log',
-        'database': 'userinfo.db',
-        'debug': 'True',
-        'secret_key': 'lalalala',
-        'auto_reload': 'True',
-        'admin_username': 'admin',
-        'admin_password': 'admin',
-    }
-    
+    __necessary_fields = ['host', 'port', 'name', 'theme', 'activity_log', 'database', 'debug', 'auto_reload', 'admin_username', 'admin_password', 'secret_key']
+    __necessary_boolean_fields = ['debug', 'auto_reload']
+
     @staticmethod
     def getInstance():
         """ Static access method """
@@ -73,7 +62,7 @@ class Cesi:
         conn.close()
 
     def load_config(self):
-        self.__cesi = Cesi.__defaults
+        self.__cesi = {}
         self.nodes = []
         self.environments = []
 
@@ -85,8 +74,20 @@ class Cesi:
         for section_name in self.config.sections():
             section = self.config[section_name]
             if section.name == 'cesi':
-                # Update cesi configs
-                self.__cesi = { k: section.get(k, self.__cesi[k]) for k in self.__defaults.keys()}
+                for field in self.__necessary_fields:
+                    value = section.get(field, None)
+                    if value is None:
+                        sys.exit(f"Failed to read {Cesi.__config_file_path} file, Not found '{field}' field.")
+
+                    # Checking boolean field
+                    if field in self.__necessary_boolean_fields:
+                        if not value in ['True', 'False']:
+                            sys.exit(f"Failed to read {Cesi.__config_file_path} file, '{field}' field is not True or False.")
+
+                        value = True if self.__cesi[field] == 'True' else False
+
+                    self.__cesi[field] = value
+
             elif section.name[:4] == 'node':
                 # 'node:<name>'
                 clean_name = section.name[5:]
@@ -117,14 +118,6 @@ class Cesi:
             return self.__cesi[name]
         else:
             raise AttributeError
-
-    @property
-    def debug(self):
-        return True if self.__cesi['debug'] == 'True' else False
-
-    @property
-    def auto_reload(self):
-        return True if self.__cesi['auto_reload'] == 'True' else False
 
     @property
     def groups(self):

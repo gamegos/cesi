@@ -28,14 +28,14 @@ class Cesi:
     def getInstance():
         """ Static access method """
         if Cesi.__instance == None:
-            Cesi()
+            raise Exception("This class is a singleton! First you must create a cesi object.")
 
         return Cesi.__instance
 
-    def __init__(self, config_file_path='/etc/cesi.conf'):
+    def __init__(self, config_file_path):
         """ Config File Parsing"""
         if Cesi.__instance != None:
-            raise Exception("This class is a singleton!")
+            raise Exception("This class is a singleton! Once you need to create a cesi object.")
 
         print("Parsing config file...")
         Cesi.__config_file_path = config_file_path

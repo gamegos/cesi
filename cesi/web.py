@@ -118,14 +118,12 @@ if __name__ == '__main__':
     parser.add_argument(
         '-c', '--config',
         type=str,
-        help='config file'
+        help='config file',
+        required=True
     )
 
     args = parser.parse_args()
-    if args.config:
-        cesi = Cesi(config_file_path=args.config)
-    else:
-        cesi = Cesi()
+    cesi = Cesi(config_file_path=args.config)
     activity = ActivityLog(log_path=cesi.activity_log)
     app.secret_key = cesi.secret_key
     

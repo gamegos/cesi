@@ -11,8 +11,18 @@ class Cesi:
     """ Cesi """
     __instance = None
     __config_file_path = None
-    __necessary_fields = ['host', 'port', 'name', 'theme', 'activity_log', 'database', 'debug', 'auto_reload', 'admin_username', 'admin_password', 'secret_key']
-    __necessary_boolean_fields = ['debug', 'auto_reload']
+    __necessaries = {
+        'cesi': {
+            'fields': ['host', 'port', 'name', 'theme', 'activity_log', 'database', 'debug', 'auto_reload', 'admin_username', 'admin_password', 'secret_key'],
+            'boolean_fields': ['debug', 'auto_reload']
+        },
+        'node': {
+            'fields': ['host', 'port', 'username', 'password']
+        },
+        'environment': {
+            'fields': ['members']
+        }
+    }
 
     @staticmethod
     def getInstance():
@@ -61,30 +71,58 @@ class Cesi:
 
         conn.close()
 
+    def __check_config_file(self, config):
+        for section_name in config.sections():
+            section = config[section_name]
+            if section.name == 'cesi':
+                for field in self.__necessaries['cesi']['fields']:
+                    value = section.get(field, None)
+                    if value is None:
+                        sys.exit(f"Failed to read {Cesi.__config_file_path} file, Not found '{field}' field in Cesi section.")
+
+                    # Checking boolean field
+                    if field in self.__necessaries['cesi']['boolean_fields']:
+                        if not value in ['True', 'False']:
+                            sys.exit(f"Failed to read {Cesi.__config_file_path} file, '{field}' field is not True or False.")
+
+            elif section.name[:4] == 'node':
+                # 'node:<name>'
+                clean_name = section.name[5:]
+                for field in self.__necessaries['node']['fields']:
+                    value = section.get(field, None)
+                    if value is None:
+                        sys.exit(f"Failed to read {Cesi.__config_file_path} file, Not found '{field}' field in '{clean_name}' node section.")
+
+            elif section.name[:11] == 'environment':
+                # 'environtment:<name>'
+                clean_name = section.name[12:]
+                for field in self.__necessaries['environment']['fields']:
+                    value = section.get(field, None)
+                    if value is None:
+                        sys.exit(f"Failed to read {Cesi.__config_file_path} file, Not found '{field}' field in '{clean_name}' environment section.")
+
+            else:
+                sys.exit(f"Failed to open/find {Cesi.__config_file_path} file, Unknowed section name: '{section.name}' ")
+
     def load_config(self):
         self.__cesi = {}
         self.nodes = []
         self.environments = []
 
-        self.config = configparser.ConfigParser()
-        dataset = self.config.read(Cesi.__config_file_path)
+        config = configparser.ConfigParser()
+        dataset = config.read(Cesi.__config_file_path)
         if dataset == []:
             sys.exit(f"Failed to open/find {Cesi.__config_file_path} file")
 
-        for section_name in self.config.sections():
-            section = self.config[section_name]
+        self.__check_config_file(config)
+
+        for section_name in config.sections():
+            section = config[section_name]
             if section.name == 'cesi':
-                for field in self.__necessary_fields:
-                    value = section.get(field, None)
-                    if value is None:
-                        sys.exit(f"Failed to read {Cesi.__config_file_path} file, Not found '{field}' field.")
-
-                    # Checking boolean field
-                    if field in self.__necessary_boolean_fields:
-                        if not value in ['True', 'False']:
-                            sys.exit(f"Failed to read {Cesi.__config_file_path} file, '{field}' field is not True or False.")
-
-                        value = True if self.__cesi[field] == 'True' else False
+                for field in self.__necessaries['cesi']['fields']:
+                    value = section.get(field)
+                    if field in self.__necessaries['cesi']['boolean_fields']:
+                        value = True if value == 'True' else False
 
                     self.__cesi[field] = value
 
@@ -101,15 +139,15 @@ class Cesi:
                 self.nodes.append(_node)
             elif section.name[:11] == 'environment':
                 # 'environtment:<name>'
-                name = section.name[12:]
+                clean_name = section.name[12:]
                 members_string = section.get('members')
                 _environment = Environment(
-                    name=name,
+                    name=clean_name,
                     members_string=members_string
                 )
                 self.environments.append(_environment)
             else:
-                print(f"Unknowed section name: {section.name}")
+                pass
 
         self.fill_defaults_environment()
 

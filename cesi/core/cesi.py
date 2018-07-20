@@ -86,19 +86,7 @@ class Cesi:
             section = self.config[section_name]
             if section.name == 'cesi':
                 # Update cesi configs
-                self.__cesi = {
-                    'host': section.get('host', self.__cesi['host']),
-                    'port': section.get('port', self.__cesi['port']),
-                    'name': section.get('name', self.__cesi['name']),
-                    'theme': section.get('theme', self.__cesi['theme']),
-                    'activity_log': section.get('activity_log', self.__cesi['activity_log']),
-                    'database': section.get('database', self.__cesi['database']),
-                    'debug': section.get('debug', self.__cesi['debug']),
-                    'secret_key': section.get('secret_key', self.__cesi['secret_key']),
-                    'auto_reload': section.get('auto_reload', self.__cesi['auto_reload']),
-                    'admin_username': section.get('admin_username', self.__cesi['admin_username']),
-                    'admin_password': section.get('admin_password', self.__cesi['admin_password']),
-                }
+                self.__cesi = { k: section.get(k, self.__cesi[k]) for k in self.__defaults.keys()}
             elif section.name[:4] == 'node':
                 # 'node:<name>'
                 clean_name = section.name[5:]
@@ -124,23 +112,11 @@ class Cesi:
 
         self.fill_defaults_environment()
 
-    @property
-    def database(self): return self.__cesi['database']
-
-    @property
-    def host(self): return self.__cesi['host']
-
-    @property
-    def name(self): return self.__cesi['name']
-    
-    @property
-    def port(self): return self.__cesi['port']
-    
-    @property
-    def theme(self): return self.__cesi['theme']
-    
-    @property
-    def activity_log(self): return self.__cesi['activity_log']
+    def __getattr__(self, name):
+        if name in self.__cesi.keys():
+            return self.__cesi[name]
+        else:
+            raise AttributeError
 
     @property
     def debug(self):
@@ -149,15 +125,6 @@ class Cesi:
     @property
     def auto_reload(self):
         return True if self.__cesi['auto_reload'] == 'True' else False
-
-    @property
-    def secret_key(self): return self.__cesi['secret_key']
-
-    @property
-    def admin_username(self): return self.__cesi['admin_username']
-
-    @property
-    def admin_password(self): return self.__cesi['admin_password']
 
     @property
     def groups(self):
@@ -237,8 +204,10 @@ class Cesi:
         return _environment
 
     def get_environment_by_node_name(self, node_name):
-        _environment = filter(lambda e: node_name in e.members, self.environments)
-        return next(_environment, None)
+        for e in self.environments:
+            if node_name in e.members: return e
+
+        return None
 
     def serialize_nodes(self):
         return {

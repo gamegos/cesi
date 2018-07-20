@@ -15,14 +15,8 @@ class Node:
 
     @property
     def processes(self):
-        _processes = []
         try:
-            for p in self.connection.supervisor.getAllProcessInfo():
-                _process = Process(p)
-                _processes.append(_process)
-
-            return _processes
-
+            return [ Process(_p) for _p in self.connection.supervisor.getAllProcessInfo() ]
         except Exception as _:
             return []
 
@@ -58,12 +52,7 @@ class Node:
         return process
 
     def get_processes_by_group_name(self, group_name):
-        __processes = []
-        for p in self.processes:
-            if p.group == group_name:
-                __processes.append(p)
-
-        return __processes
+        return [ p for p in self.processes if p.group == group_name ]
 
     def start_process(self, process_name):
         """

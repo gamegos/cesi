@@ -21,6 +21,24 @@ from run import app, VERSION
 cesi = Cesi.getInstance()
 activity = ActivityLog.getInstance()
 
+# Open database connection
+@app.before_request
+def before_request():
+    g.db_conn = cesi.get_db_connection()
+
+# Close database connection
+@app.teardown_appcontext
+def close_connection(_):
+    g.db_conn.close()
+
+@app.errorhandler(404)
+def page_not_found(error):
+    return render_template('page_not_found.html'), 404
+
+@app.errorhandler(400)
+def not_found(error):
+    return jsonify(message=error.description)
+
 @app.route(f'/{VERSION}/userinfo')
 @is_user_logged_in()
 def user_info():

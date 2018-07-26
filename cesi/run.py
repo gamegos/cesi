@@ -1,10 +1,10 @@
+#!/usr/bin/env python3
 import argparse
 
 from flask import Flask
 
 from core import Cesi
 from loggers import ActivityLog
-from util import JsonValue
 
 VERSION = "v2"
 

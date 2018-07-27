@@ -40,7 +40,6 @@ class Cesi:
         print("Parsing config file...")
         Cesi.__config_file_path = config_file_path
         self.load_config()
-        self.check_database()
         Cesi.__instance = self
     
     def drop_database(self):
@@ -104,7 +103,16 @@ class Cesi:
             else:
                 sys.exit(f"Failed to open/find {Cesi.__config_file_path} file, Unknowed section name: '{section.name}' ")
 
+    def reload(self):
+        print("Reloading...")
+        self.load_config()
+        print("Reloaded.")
+
     def load_config(self):
+        self.parse_config()
+        self.check_database()
+
+    def parse_config(self):
         self.__cesi = {}
         self.nodes = []
         self.environments = []

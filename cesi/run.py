@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import argparse
+import signal
 
 from flask import Flask
 
@@ -39,6 +40,8 @@ if __name__ == '__main__':
     app.register_blueprint(environments, url_prefix=f"/{VERSION}/environments")
     app.register_blueprint(groups, url_prefix=f"/{VERSION}/groups")
     app.register_blueprint(users, url_prefix=f"/{VERSION}/users")
+
+    signal.signal(signal.SIGHUP, lambda signum, frame: cesi.reload())
 
     app.run(
         host=cesi.host,

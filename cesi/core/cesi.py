@@ -13,7 +13,7 @@ class Cesi:
     __config_file_path = None
     __necessaries = {
         'cesi': {
-            'fields': ['host', 'port', 'name', 'theme', 'activity_log', 'database', 'debug', 'auto_reload', 'admin_username', 'admin_password', 'secret_key'],
+            'fields': ['host', 'port', 'name', 'theme', 'activity_log', 'database', 'debug', 'auto_reload', 'admin_username', 'admin_password'],
             'boolean_fields': ['debug', 'auto_reload']
         },
         'node': {

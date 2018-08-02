@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import argparse
 import signal
+import os
 
 from flask import Flask
 
@@ -11,6 +12,7 @@ VERSION = "v2"
 
 app = Flask(__name__)
 app.config.from_object(__name__)
+app.secret_key = os.urandom(24)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Cesi web server')
@@ -25,7 +27,6 @@ if __name__ == '__main__':
     args = parser.parse_args()
     cesi = Cesi(config_file_path=args.config)
     activity = ActivityLog(log_path=cesi.activity_log)
-    app.secret_key = cesi.secret_key
     
     from routes import *
 

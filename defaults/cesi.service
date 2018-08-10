@@ -1,0 +1,14 @@
+[Unit]
+Description=cesi
+
+[Service]
+Environment=
+ExecStart=/opt/cesi/cesi/run.py --config /etc/cesi.conf
+ExecReload=/bin/kill -HUP $MAINPID
+KillSignal=TERM
+User=cesi
+WorkingDirectory=/opt/cesi
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

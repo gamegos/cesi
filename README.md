@@ -30,25 +30,46 @@ You can install these dependencies on Ubuntu with:
 
 Then run these commands to install CeSI
 
+***Option 1***
+
 ```bash
-$ # Download the project
-$ git clone https://github.com/Gamegos/cesi
+$ # Download the project to /opt/cesi directory
+$ sudo git clone https://github.com/Gamegos/cesi /opt/cesi
 
-$ # Or download and decompress the latest version at https://github.com/gamegos/cesi/releases
-$ # wget -qO- https://github.com/gamegos/cesi/archive/v2.0.0.tar.gz  | tar -xzf-
+$ cd /opt/cesi
 
-$ cd cesi/cesi
+$ # Install Requirement Packages Into Global Enviroment
+$ sudo pip install -r requirements.txt
 
 $ # Create cesi.conf file and update cesi.conf for your environment.
 $ # Config file documentation can be found inside default file.
-$ cp cesi.default.conf path/to/cesi.conf
+$ cp defaults/cesi.conf path/to/cesi.conf
 $ vim path/to/cesi.conf
 
-$ # Install requirements
+$ # Run cesi
+$ python3 cesi/run.py --config path/to/cesi.conf
+```
+
+***Option 2***
+```
+$ # Download the project to /opt/cesi directory
+$ sudo git clone https://github.com/Gamegos/cesi /opt/cesi
+
+$ cd /opt/cesi
+
+$ # Install Requirement Packages Into Global Enviroment
 $ sudo pip install -r requirements.txt
 
-$ # Run cesi
-$ python3 web.py --config path/to/cesi.conf
+$ # Create cesi.conf file and update cesi.conf for your environment.
+$ # Config file documentation can be found inside default file.
+$ sudo cp defaults/cesi.conf /etc/cesi.conf
+$ sudo vim /etc/cesi.conf
+
+$ # Run cesi as a service
+$ sudo cp defaults/cesi.service /etc/systemd/system/cesi.service
+$ vim /etc/systemd/system/cesi.service
+
+$ sudo systemctl start cesi
 ```
 
 ## Usage
@@ -76,7 +97,7 @@ Please change password after first login!
 
 ## TODO
 
-- [ ] Fix user related api endpoints
+- [X] Fix user related api endpoints
 - [ ] Fix node log view
 - [ ] Refactor the usage of config
 - [ ] Rewrite dockerfile and publish image on docker hub under gamegos
@@ -86,6 +107,6 @@ Please change password after first login!
 - [ ] Better format for activity logs (tabbed date, level, component, message)
 - [ ] Auto refresh page
 - [ ] Option to select different templates
-- [ ] Upgrade flask
+- [X] Upgrade flask
 - [ ] Add tests
 - [ ] CI integration

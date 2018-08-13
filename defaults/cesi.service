@@ -6,7 +6,7 @@ Environment=
 ExecStart=/opt/cesi/cesi/run.py --config /etc/cesi.conf
 ExecReload=/bin/kill -HUP $MAINPID
 KillSignal=TERM
-User=cesi
+User=root
 WorkingDirectory=/opt/cesi
 Restart=on-failure
 

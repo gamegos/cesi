@@ -1,0 +1,13 @@
+[Unit]
+Description=Cesi application
+After=network.target
+
+[Service]
+User=$USER
+ExecStart=/usr/bin/python /opt/cesi/cesi/web.py
+WorkingDirectory=/opt/cesi/
+Restart=on-failure
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

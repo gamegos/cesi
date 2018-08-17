@@ -27,7 +27,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     cesi = Cesi(config_file_path=args.config)
     activity = ActivityLog(log_path=cesi.activity_log)
-    
+
     from routes import *
 
     # or dynamic import
@@ -36,11 +36,11 @@ if __name__ == '__main__':
     from blueprints.environments.routes import environments
     from blueprints.groups.routes import groups
     from blueprints.users.routes import users
-    app.register_blueprint(nodes, url_prefix=f"/{VERSION}/nodes")
-    app.register_blueprint(activitylogs, url_prefix=f"/{VERSION}/activitylogs")
-    app.register_blueprint(environments, url_prefix=f"/{VERSION}/environments")
-    app.register_blueprint(groups, url_prefix=f"/{VERSION}/groups")
-    app.register_blueprint(users, url_prefix=f"/{VERSION}/users")
+    app.register_blueprint(nodes, url_prefix="/{}/nodes".format(VERSION))
+    app.register_blueprint(activitylogs, url_prefix="/{}/activitylogs".format(VERSION))
+    app.register_blueprint(environments, url_prefix="/{}/environments".format(VERSION))
+    app.register_blueprint(groups, url_prefix="/{}/groups".format(VERSION))
+    app.register_blueprint(users, url_prefix="/{}/users".format(VERSION))
 
     signal.signal(signal.SIGHUP, lambda signum, frame: cesi.reload())
 

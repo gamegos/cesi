@@ -28,12 +28,12 @@ class Node:
         if self.connection:
             try:
                 self.connection.system.listMethods()
-                print(f"Yes, node connected. {self.name}")
+                print("Yes, node connected. {}".format(self.name))
                 return True
             except (xmlrpc.client.ProtocolError, xmlrpc.client.Fault, Exception) as e:
                 print(e)
 
-        print(f"No, node isn't connected. {self.name}")
+        print("No, node isn't connected. {}".format(self.name))
         return False
 
     def get_process(self, process_name):
@@ -56,7 +56,7 @@ class Node:
 
     def start_process(self, process_name):
         """
-            http://supervisord.org/api.html#supervisor.rpcinterface.SupervisorNamespaceRPCInterface.startProcess 
+            http://supervisord.org/api.html#supervisor.rpcinterface.SupervisorNamespaceRPCInterface.startProcess
         """
         process = self.get_process_or_400(process_name)
         try:
@@ -107,4 +107,4 @@ class Node:
         return dict(_serialized_general, **_serialized_processes)
 
     def full_name(self):
-        return f"node:{self.name}"
+        return "node:{}".format(self.name)

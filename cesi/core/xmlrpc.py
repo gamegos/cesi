@@ -4,9 +4,9 @@ class XmlRpc:
     @staticmethod
     def connection(host, port, username, password):
         if username == "" and password == "":
-            address = f"http://{host}:{port}/RPC2"
+            address = "http://{0}:{1}/RPC2".format(host, port)
         else:
-            address = f"http://{username}:{password}@{host}:{port}/RPC2"
+            address = "http://{0}:{1}@{2}:{3}/RPC2".format(username, password, host, port)
 
         try:
             return xmlrpc.client.ServerProxy(address)

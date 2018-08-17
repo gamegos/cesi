@@ -39,7 +39,7 @@ def page_not_found(error):
 def not_found(error):
     return jsonify(message=error.description)
 
-@app.route(f'/{VERSION}/userinfo')
+@app.route('/{}/userinfo'.format(VERSION))
 @is_user_logged_in()
 def user_info():
     return jsonify(username=session['username'], usertypecode=session['usertypecode'])
@@ -76,13 +76,13 @@ def login():
     return render_template('login.html', code = code, name = cesi.name)
 
 # Logout action
-@app.route(f'/{VERSION}/logout/', methods = ['GET', 'POST'])
+@app.route('/{}/logout/'.format(VERSION), methods = ['GET', 'POST'])
 def logout():
     activity.logger.error("{} logged out".format(session['username']))
     session.clear()
     return redirect(url_for('login'))
 
-@app.route(f'/{VERSION}/initdb/')
+@app.route('/{}/initdb/'.format(VERSION))
 def initdb():
     cesi.drop_database()
     cesi.check_database()

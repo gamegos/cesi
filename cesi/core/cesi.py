@@ -41,7 +41,7 @@ class Cesi:
         Cesi.__config_file_path = config_file_path
         self.load_config()
         Cesi.__instance = self
-    
+
     def drop_database(self):
         conn = self.get_db_connection()
         cur = conn.cursor()
@@ -61,7 +61,7 @@ class Cesi:
         cur.execute(sql_create_userinfo_table)
         conn.commit()
         # check admin user.
-        sql_insert_admin_user = f"""insert into userinfo values('{self.admin_username}', '{self.admin_password}', 0);"""
+        sql_insert_admin_user = """insert into userinfo values('{username}', '{password}', 0);""".format(username=self.admin_username, password=self.admin_password)
         try:
             cur.execute(sql_insert_admin_user)
             conn.commit()
@@ -77,12 +77,12 @@ class Cesi:
                 for field in self.__necessaries['cesi']['fields']:
                     value = section.get(field, None)
                     if value is None:
-                        sys.exit(f"Failed to read {Cesi.__config_file_path} file, Not found '{field}' field in Cesi section.")
+                        sys.exit("Failed to read {0} file, Not found '{1}' field in Cesi section.".format(Cesi.__config_file_path, field))
 
                     # Checking boolean field
                     if field in self.__necessaries['cesi']['boolean_fields']:
                         if not value in ['True', 'False']:
-                            sys.exit(f"Failed to read {Cesi.__config_file_path} file, '{field}' field is not True or False.")
+                            sys.exit("Failed to read {0} file, '{1}' field is not True or False.".format(Cesi.__config_file_path, field))
 
             elif section.name[:4] == 'node':
                 # 'node:<name>'
@@ -90,7 +90,7 @@ class Cesi:
                 for field in self.__necessaries['node']['fields']:
                     value = section.get(field, None)
                     if value is None:
-                        sys.exit(f"Failed to read {Cesi.__config_file_path} file, Not found '{field}' field in '{clean_name}' node section.")
+                        sys.exit("Failed to read {0} file, Not found '{1}' field in '{2}' node section.".format(Cesi.__config_file_path, field, clean_name))
 
             elif section.name[:11] == 'environment':
                 # 'environtment:<name>'
@@ -98,10 +98,10 @@ class Cesi:
                 for field in self.__necessaries['environment']['fields']:
                     value = section.get(field, None)
                     if value is None:
-                        sys.exit(f"Failed to read {Cesi.__config_file_path} file, Not found '{field}' field in '{clean_name}' environment section.")
+                        sys.exit("Failed to read {0} file, Not found '{1}' field in '{2}' environment section.".format(Cesi.__config_file_path, field, clean_name))
 
             else:
-                sys.exit(f"Failed to open/find {Cesi.__config_file_path} file, Unknowed section name: '{section.name}' ")
+                sys.exit("Failed to open/find {0} file, Unknowed section name: '{1}'".format(Cesi.__config_file_path, section.name))
 
     def reload(self):
         print("Reloading...")
@@ -120,7 +120,7 @@ class Cesi:
         config = configparser.ConfigParser()
         dataset = config.read(Cesi.__config_file_path)
         if dataset == []:
-            sys.exit(f"Failed to open/find {Cesi.__config_file_path} file")
+            sys.exit("Failed to open/find {0} file".format(Cesi.__config_file_path))
 
         self.__check_config_file(config)
 
@@ -175,7 +175,7 @@ class Cesi:
                     if node.name not in result[p.group]:
                         result[p.group].append(node.name)
             else:
-                print(f"{node.name} is not connected.")
+                print("{} is not connected.".format(node.name))
 
         print(result)
         return result
@@ -214,7 +214,7 @@ class Cesi:
         _node = self.get_node(node_name)
         if _node is None:
             abort(400, description="Wrong node name")
-        
+
         return _node
 
     def fill_defaults_environment(self):
@@ -239,7 +239,7 @@ class Cesi:
         _environment = self.get_environment(environment_name)
         if _environment is None:
             abort(400, description="Wrong environment name")
-        
+
         return _environment
 
     def get_environment_by_node_name(self, node_name):

@@ -37,7 +37,7 @@ def is_admin_or_normal_user(log_message=""):
 
             if not log_message == "":
                 message = log_message.format(**kwargs)
-                activity.logger.error(f"{username}: {message}")
+                activity.logger.error("{0}: {1}".format(username, message))
 
             return jsonify(message='You are not authorized this action'), 403
 
@@ -57,7 +57,7 @@ def is_admin(log_message=""):
 
             if not log_message == "":
                 message = log_message.format(**kwargs)
-                activity.logger.error(f"{username}: {message}")
+                activity.logger.error("{0}: {1}".format(username, message))
 
             return jsonify(message='You are not authorized this action'), 403
 

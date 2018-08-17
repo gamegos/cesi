@@ -11,7 +11,7 @@ class JsonValue:
 
         return jsonify(status=status,
                        code=code,
-                       message = f"{node.name} {process_name} {event_name} event succesfully",
+                       message = "{0} {1} {2} event succesfully".format(node.name, process_name, event_name),
                        nodename = node.name,
                        processname = process_name,
                        data = node.get_process(process_name).serialize())
@@ -26,6 +26,6 @@ class JsonValue:
 
         return jsonify(status=status,
                        code=code,
-                       message = f"{node.name} {process_name} {event_name} event unsuccesfully",
+                       message = "{0} {1} {2} event succesfully".format(node.name, process_name, event_name),
                        nodename = node.name,
                        payload=payload)

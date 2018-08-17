@@ -1,4 +1,4 @@
-#cesi ( Centralized Supervisor Interface )
+# cesi ( Centralized Supervisor Interface )
 
 cesi is a web interface provides manage [supervizors][1] from same interface.
 
@@ -6,37 +6,48 @@ For an updated version please visit https://github.com/gamegos/cesi/tree/v2_api
 
 ## Dependencies
 
-* Python
+* Python2
 * Flask
 * sqlite3
 
 ## Installation
 
-    $sudo apt-get install sqlite3 python python-flask
+```bash
+$ # Install dependencies
+$ sudo apt-get install sqlite3 python python-flask     # on Ubuntu
 
-    $git clone https://github.com/Gamegos/cesi
+$ # # Download the project
+$ sudo git clone https://github.com/gamegos/cesi /opt/cesi
 
-    $cd cesi
+$ # Create user database
+$ sudo sqlite3 /opt/cesi/userinfo.db < /opt/cesi/userinfo.sql
 
-    $sqlite3 path/to/userinfo.db < userinfo.sql
+$ # Create cesi.conf file.
+$ sudo cp /opt/cesi/defaults/cesi.conf /etc/cesi.conf
 
-## Configuration
+$ # If you want to change configuration of cesi, update cesi.conf for your environment.
+$ sudo vim /etc/cesi.conf
+```
 
-Fill cesi.conf
+## Usage
 
-    #cp cesi.conf /etc/cesi.conf
+```bash
+$ # Run with command line
+$ sudo python /opt/cesi/cesi/web.py
 
-## Run Project
-
-    $python web.py
+$ # Run as a service
+$ sudo cp /opt/cesi/defaults/cesi.service /etc/systemd/system/cesi.service
+$ sudo systemctl daemon-reload
+$ sudo systemctl start cesi
+```
 
 ## First Login
 
 Please change password after first login!
 
-Username : admin
+- **Username**: admin
 
-Password : admin
+- **Password** : admin
 
 ## Mailing list
 

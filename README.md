@@ -19,60 +19,52 @@ For running CeSI inside a docker container without installation see "Usage"
 section.
 
 **Prerequisites:**
-- Python3
-- Pip
+- Python3 (+3.4)
+- Pip3
 
-You can install these dependencies on Ubuntu with:
+**Install Dependencies**
 
-    sudo apt-get install python3 python3-pip
+```bash
+$ # On Ubuntu [18.04, 16.04, 14.04]
+$ sudo apt-get install git python3 python3-pip
+$ # On Centos 7
+$ sudo yum install git python34 python34-pip
+$ # On Fedora 28
+$ sudo dnf install git python3 python3-pip
+```
 
 **Installation**
 
 Then run these commands to install CeSI
 
-***Option 1***
-
 ```bash
 $ # Download the project to /opt/cesi directory
-$ sudo git clone https://github.com/Gamegos/cesi /opt/cesi
+$ sudo git clone https://github.com/gamegos/cesi /opt/cesi
 
 $ cd /opt/cesi
 
 $ # Install Requirement Packages Into Global Enviroment
-$ sudo pip install -r requirements.txt
+$ sudo pip3 install -r requirements.txt
 
 $ # Create cesi.conf file and update cesi.conf for your environment.
 $ # Config file documentation can be found inside default file.
-$ cp defaults/cesi.conf path/to/cesi.conf
-$ vim path/to/cesi.conf
+$ # (You must create cesi.conf in the etc directory for cesi.service)
+$ sudo cp /opt/cesi/defaults/cesi.conf /etc/cesi.conf
 
-$ # Run cesi
-$ python3 cesi/run.py --config path/to/cesi.conf
-```
-
-***Option 2***
-```
-$ # Download the project to /opt/cesi directory
-$ sudo git clone https://github.com/Gamegos/cesi /opt/cesi
-
-$ cd /opt/cesi
-
-$ # Install Requirement Packages Into Global Enviroment
-$ sudo pip install -r requirements.txt
-
-$ # Create cesi.conf file and update cesi.conf for your environment.
-$ # Config file documentation can be found inside default file.
-$ sudo cp defaults/cesi.conf /etc/cesi.conf
-$ sudo vim /etc/cesi.conf
-
-$ # Run cesi as a service
-$ sudo cp defaults/cesi.service /etc/systemd/system/cesi.service
-$ vim /etc/systemd/system/cesi.service
-
-$ sudo systemctl start cesi
 ```
 
 ## Usage
+
+```bash
+$ # Run with command line
+$ sudo python3 /opt/cesi/cesi/run.py --config path/to/cesi.conf
+
+$ # Run as a service
+$ sudo cp /opt/cesi/defaults/cesi.service /etc/systemd/system/cesi.service
+$ sudo systemctl daemon-reload
+$ sudo systemctl start cesi
+```
+
 if you would like to run image, you must copy your config file in local pc in 
 /etc/ directory.
 

@@ -14,7 +14,10 @@ For an updated version please visit https://github.com/gamegos/cesi/tree/v2_api
 
 ```bash
 $ # Install dependencies
-$ sudo apt-get install sqlite3 python python-flask     # on Ubuntu
+$ # On Ubuntu 18.04
+$ sudo apt-get install sqlite3 python python-flask
+$ # On Centos 7
+$ sudo yum install git python-flask
 
 $ # # Download the project
 $ sudo git clone https://github.com/gamegos/cesi /opt/cesi

@@ -7,7 +7,6 @@ User=root
 ExecStart=/usr/bin/python /opt/cesi/cesi/web.py
 WorkingDirectory=/opt/cesi/
 Restart=on-failure
-RemainAfterExit=yes
 
 [Install]
 WantedBy=multi-user.target

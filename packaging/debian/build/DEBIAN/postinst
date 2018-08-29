@@ -1,0 +1,10 @@
+#!/bin/bash
+
+tar xf "../source/cesi.tar.gz" -C "/opt/"
+cp /opt/cesi/defaults/cesi.conf /etc/cesi.conf
+sqlite3 /opt/cesi/userinfo.db < /opt/cesi/userinfo.sql
+cp /opt/cesi/defaults/cesi.service /etc/systemd/system/cesi.service
+
+systemctl daemon-reload
+systemctl start cesi
+

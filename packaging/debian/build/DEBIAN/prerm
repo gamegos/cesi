@@ -1,0 +1,11 @@
+#!/bin/bash
+
+if [ "$1" = "remove" ]; then
+       systemctl stop cesi
+       systemctl disable cesi
+       rm -rf /opt/cesi
+       rm -rf /etc/systemd/system/cesi.service
+       rm -rf /etc/cesi.conf
+       systemctl daemon-reload
+       systemctl reset-failed
+fi

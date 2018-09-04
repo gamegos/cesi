@@ -61,10 +61,10 @@ cesi-devel@googlegroups.com
 
 ## Screenshots
 
-![Dashboard](https://github.com/GulsahKose/cesi/blob/master/screenshots/image2)
+![Dashboard](https://github.com/GulsahKose/cesi/raw/master/screenshots/image2)
 
 
-![Showall](https://github.com/GulsahKose/cesi/blob/master/screenshots/image1)
+![Showall](https://github.com/GulsahKose/cesi/raw/master/screenshots/image1)
 
 ## Blog
 

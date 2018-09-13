@@ -37,12 +37,14 @@ if __name__ == '__main__':
     from blueprints.groups.routes import groups
     from blueprints.users.routes import users
     from blueprints.auth.routes import auth
+    from blueprints.profile.routes import profile
     app.register_blueprint(nodes, url_prefix="/{}/nodes".format(VERSION))
     app.register_blueprint(activitylogs, url_prefix="/{}/activitylogs".format(VERSION))
     app.register_blueprint(environments, url_prefix="/{}/environments".format(VERSION))
     app.register_blueprint(groups, url_prefix="/{}/groups".format(VERSION))
     app.register_blueprint(users, url_prefix="/{}/users".format(VERSION))
     app.register_blueprint(auth, url_prefix="/{}/auth".format(VERSION))
+    app.register_blueprint(profile, url_prefix="/{}/profile".format(VERSION))
 
     signal.signal(signal.SIGHUP, lambda signum, frame: cesi.reload())
 

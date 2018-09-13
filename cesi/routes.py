@@ -39,48 +39,10 @@ def page_not_found(error):
 def not_found(error):
     return jsonify(message=error.description)
 
-@app.route('/{}/userinfo'.format(VERSION))
+@app.route('/{}/userinfo/'.format(VERSION))
 @is_user_logged_in()
 def user_info():
     return jsonify(username=session['username'], usertypecode=session['usertypecode'])
-
-# Render login page or username, password control
-@app.route('/login/', methods = ['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        cur = g.db_conn.cursor()
-        cur.execute("select * from userinfo where username=?",(username,))
-        #if query returns an empty list
-        if not cur.fetchall():
-            session.clear()
-            activity.logger.info("Login fail. Username is not available.")
-            return redirect('/login?code=invalid')
-        else:
-            cur.execute("select * from userinfo where username=?",(username,))
-
-            if password == cur.fetchall()[0][1]:
-                session['username'] = username
-                session['logged_in'] = True
-                cur.execute("select * from userinfo where username=?",(username,))
-                session['usertypecode'] = cur.fetchall()[0][2]
-                activity.logger.info("{} logged in.".format(session['username']))
-                return redirect('/')
-            else:
-                session.clear()
-                activity.logger.info("Login fail. Invalid password.")
-                return redirect('/login?code=invalid')
-
-    code = request.args.get('code', '')
-    return render_template('login.html', code = code, name = cesi.name)
-
-# Logout action
-@app.route('/{}/logout/'.format(VERSION), methods = ['GET', 'POST'])
-def logout():
-    activity.logger.error("{} logged out".format(session['username']))
-    session.clear()
-    return redirect(url_for('login'))
 
 @app.route('/{}/initdb/'.format(VERSION))
 def initdb():

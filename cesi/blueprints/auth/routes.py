@@ -2,7 +2,6 @@ from flask import (
     Blueprint,
     jsonify,
     session,
-    redirect,
     request,
     g
 )
@@ -20,32 +19,24 @@ activity = ActivityLog.getInstance()
 
 @auth.route('/login/', methods = ['POST'])
 def login():
-    username = request.form['username']
-    password = request.form['password']
+    data = request.get_json()
+    req_username, req_password = data.get('username'), data.get('password')
     cur = g.db_conn.cursor()
-    cur.execute("select * from userinfo where username=?",(username,))
-    #if query returns an empty list
-    if not cur.fetchall():
+    cur.execute("select * from userinfo where username=? and password=?",(req_username, req_password))
+    result = cur.fetchall()
+    if not result:
         session.clear()
-        activity.logger.info("Login fail. Username is not available.")
-        return redirect('/login?code=invalid')
-    else:
-        cur.execute("select * from userinfo where username=?",(username,))
+        return jsonify(status="error", message="Invalid username/password")
 
-        if password == cur.fetchall()[0][1]:
-            session['username'] = username
-            session['logged_in'] = True
-            cur.execute("select * from userinfo where username=?",(username,))
-            session['usertypecode'] = cur.fetchall()[0][2]
-            activity.logger.info("{} logged in.".format(session['username']))
-            return redirect('/')
-        else:
-            session.clear()
-            activity.logger.info("Login fail. Invalid password.")
-            return redirect('/login?code=invalid')
+    username, _, usertype = result[0]
+    session['username'] = username
+    session['logged_in'] = True
+    session['usertypecode'] = usertype
+    activity.logger.info("{} logged in.".format(session['username']))
+    return jsonify(status="success", message="Valid username/password")
 
 @auth.route('/logout/', methods = ['POST'])
 def logout():
     activity.logger.error("{} logged out".format(session['username']))
     session.clear()
-    return redirect(url_for('login'))
+    return jsonify(status="success", message="Logout")

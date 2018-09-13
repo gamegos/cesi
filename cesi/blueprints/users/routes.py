@@ -23,20 +23,7 @@ def user_list():
     users = controllers.get_users()
     return jsonify(status='success', users=users)
 
-@users.route('/<username>/delete/', methods=["DELETE"])
-@is_user_logged_in("Illegal request for delete {username} user event.")
-@is_admin("Unauthorized user for request to delete {username} user. Delete event fail.")
-def delete_user(username):
-    if username == "admin":
-        activity.logger.error("{} user request for delete admin user. Delete admin user event fail.".format(session['username']))
-        return jsonify(status="error", message="Admin can't be deleted")
-
-    controllers.delete_user(username)
-    activity.logger.error("{} user deleted.".format(session['username']))
-    return jsonify(status="success")
-
-# Writes new user information to database
-@users.route('/add/', methods = ['POST'])
+@users.route('/', methods = ['POST'])
 @is_user_logged_in("Illegal request for add user event.")
 @is_admin("Unauthorized user for request to add user event. Add user event fail.")
 def adduserhandler():
@@ -62,6 +49,18 @@ def adduserhandler():
         print(e)
         activity.logger.error("Username is not available. Please select different username")
         return jsonify(status="warning", message="Username is not available. Please select different username")
+
+@users.route('/<username>/', methods=["DELETE"])
+@is_user_logged_in("Illegal request for delete {username} user event.")
+@is_admin("Unauthorized user for request to delete {username} user. Delete event fail.")
+def delete_user(username):
+    if username == "admin":
+        activity.logger.error("{} user request for delete admin user. Delete admin user event fail.".format(session['username']))
+        return jsonify(status="error", message="Admin can't be deleted")
+
+    controllers.delete_user(username)
+    activity.logger.error("{} user deleted.".format(session['username']))
+    return jsonify(status="success")
 
 @users.route('/<username>/password/', methods=['PUT'])
 @is_user_logged_in("Illegal request for change {username}'s password event.")

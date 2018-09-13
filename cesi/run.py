@@ -10,7 +10,7 @@ from loggers import ActivityLog
 
 VERSION = "v2"
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='ui/build', static_url_path='', template_folder='ui/build')
 app.config.from_object(__name__)
 app.secret_key = os.urandom(24)
 

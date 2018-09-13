@@ -33,7 +33,7 @@ def close_connection(_):
 
 @app.errorhandler(404)
 def page_not_found(error):
-    return render_template('page_not_found.html'), 404
+    return jsonify(message='page not found')
 
 @app.errorhandler(400)
 def not_found(error):
@@ -90,14 +90,4 @@ def initdb():
 
 @app.route('/')
 def showMain():
-    # get user type
-    if not session.get('logged_in'):
-        return redirect(url_for('login'))
-
-    username = session['username']
-    usertypecode = session['usertypecode']
-    return render_template('index.html',
-                            name = cesi.name,
-                            theme = cesi.theme,
-                            username = username,
-                            usertypecode = usertypecode)
+    return render_template('index.html')

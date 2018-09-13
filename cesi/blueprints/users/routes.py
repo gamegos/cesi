@@ -6,12 +6,12 @@ from flask import (
     g
 )
 
-from core import Cesi
 from decorators import (
     is_user_logged_in,
     is_admin
 )
 from loggers import ActivityLog
+import controllers
 
 users = Blueprint('users', __name__)
 activity = ActivityLog.getInstance()
@@ -20,10 +20,7 @@ activity = ActivityLog.getInstance()
 @is_user_logged_in("Illegal request for display users event.")
 @is_admin("Unauthorized user request for display users event. Display users event fail.")
 def user_list():
-    cur = g.db_conn.cursor()
-    cur.execute("select username, type from userinfo")
-    result = cur.fetchall()
-    users = [ {'name': str(element[0]), 'type': str(element[1])} for element in result]
+    users = controllers.get_users()
     return jsonify(status='success', users=users)
 
 @users.route('/<username>/delete/', methods=["DELETE"])
@@ -34,9 +31,7 @@ def delete_user(username):
         activity.logger.error("{} user request for delete admin user. Delete admin user event fail.".format(session['username']))
         return jsonify(status="error", message="Admin can't be deleted")
 
-    cur = g.db_conn.cursor()
-    cur.execute("delete from userinfo where username=?",[username])
-    g.db_conn.commit()
+    controllers.delete_user(username)
     activity.logger.error("{} user deleted.".format(session['username']))
     return jsonify(status="success")
 
@@ -59,10 +54,8 @@ def adduserhandler():
     elif not new_user['password'] == new_user['confirm_password']:
         return jsonify(status="warning", message="Passwords didn't match")
 
-    cur = g.db_conn.cursor()
     try:
-        cur.execute("insert into userinfo values(?, ?, ?)", (new_user['username'], new_user['password'], new_user['usertype'],))
-        g.db_conn.commit()
+        controllers.add_user(new_user['username'], new_user['password'], new_user['usertype'])
         activity.logger.error("New user added({}).".format(session['username']))
         return jsonify(status="success", message="User added")
     except Exception as e:
@@ -88,14 +81,11 @@ def change_password(username):
         return jsonify(status="error", message="Passwords didn't match")
 
     # Maybe there isn't any user for the username
-    cur = g.db_conn.cursor()
-    cur.execute("select * from userinfo where username=? and password=?",(username, old_password))
-    result = cur.fetchall()
+    result = controllers.validate_user(username, old_password)
     if not result:
         activity.logger.error("Old password is wrong for {} 's change password event. Change password event fail.".format(session['username']))
         return jsonify(status="error", message="Old password is wrong")
 
-    cur.execute("update userinfo set password=? where username=?",[new_password, username])
-    g.db_conn.commit()
+    controllers.update_user_password(username, new_password)
     activity.logger.error("{} user change own password.".format(session['username']))
     return jsonify(status="success")

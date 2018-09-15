@@ -7,6 +7,19 @@ def get_users():
     users = [ {'name': str(element[0]), 'type': str(element[1])} for element in result]
     return users
 
+def get_user(username):
+    cur = g.db_conn.cursor()
+    cur.execute("select * from userinfo where username=?",(username,))
+    result = cur.fetchall()
+    if not result:
+        return {}
+
+    user = {
+        'name': result[0][0],
+        'type': result[0][1]
+    }
+    return user
+
 def delete_user(username):
     cur = g.db_conn.cursor()
     cur.execute("delete from userinfo where username=?",[username])

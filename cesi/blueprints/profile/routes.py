@@ -15,8 +15,9 @@ activity = ActivityLog.getInstance()
 @profile.route('/', methods=['GET'])
 @is_user_logged_in("Illegal request to get your own information")
 def get_own_info():
-    users = controllers.get_users(session['username'])
-    return jsonify(status='success', users=users)
+    user = controllers.get_user(session['username'])
+    print(user)
+    return jsonify(status='success', user=user)
 
 @profile.route('/password/', methods=['PUT'])
 @is_user_logged_in("Illegal request to change your own password.")

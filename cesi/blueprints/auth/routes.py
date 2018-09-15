@@ -34,6 +34,10 @@ def login():
 
 @auth.route('/logout/', methods = ['POST'])
 def logout():
-    activity.logger.error("{} logged out".format(session['username']))
+    username = session.get('username')
+    if username is None:
+        return jsonify(status="error", message="You haven't already entered")
+
+    activity.logger.error("{} logged out".format(username))
     session.clear()
     return jsonify(status="success", message="Logout")

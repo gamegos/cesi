@@ -1,13 +1,16 @@
 import logging
 
+
 class ActivityLog:
     __instance = None
 
-    def __init__(self,
-                log_name="activitiy",
-                log_path="activitiy.log",
-                log_format="%(asctime)s [%(levelname)s]: %(message)s",
-                log_level=logging.INFO):
+    def __init__(
+        self,
+        log_name="activitiy",
+        log_path="activitiy.log",
+        log_format="%(asctime)s [%(levelname)s]: %(message)s",
+        log_level=logging.INFO,
+    ):
         if ActivityLog.__instance != None:
             raise Exception("This class is a singleton!")
 

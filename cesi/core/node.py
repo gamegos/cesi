@@ -4,6 +4,7 @@ from flask import abort
 from .xmlrpc import XmlRpc
 from .process import Process
 
+
 class Node:
     def __init__(self, name, host, port, username, password):
         self.name = name
@@ -11,12 +12,16 @@ class Node:
         self.port = port
         self.username = username
         self.password = password
-        self.connection = XmlRpc.connection(self.host, self.port, self.username, self.password)
+        self.connection = XmlRpc.connection(
+            self.host, self.port, self.username, self.password
+        )
 
     @property
     def processes(self):
         try:
-            return [ Process(_p) for _p in self.connection.supervisor.getAllProcessInfo() ]
+            return [
+                Process(_p) for _p in self.connection.supervisor.getAllProcessInfo()
+            ]
         except Exception as _:
             return []
 
@@ -52,7 +57,7 @@ class Node:
         return process
 
     def get_processes_by_group_name(self, group_name):
-        return [ p for p in self.processes if p.group == group_name ]
+        return [p for p in self.processes if p.group == group_name]
 
     def start_process(self, process_name):
         """
@@ -88,18 +93,16 @@ class Node:
 
     def serialize_general(self):
         return {
-            'name': self.name,
-            'host': self.host,
-            'port': self.port,
-            'username': self.username,
-            'password': self.password,
-            'connected': self.is_connected
+            "name": self.name,
+            "host": self.host,
+            "port": self.port,
+            "username": self.username,
+            "password": self.password,
+            "connected": self.is_connected,
         }
 
     def serialize_processes(self):
-        return {
-            'processes': [p.serialize() for p in self.processes],
-        }
+        return {"processes": [p.serialize() for p in self.processes]}
 
     def serialize(self):
         _serialized_general = self.serialize_general()

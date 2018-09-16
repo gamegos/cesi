@@ -1,20 +1,15 @@
-from flask import (
-    Blueprint,
-    jsonify,
-)
+from flask import Blueprint, jsonify
 
 from core import Cesi
 from loggers import ActivityLog
-from decorators import (
-    is_user_logged_in,
-    is_admin
-)
+from decorators import is_user_logged_in, is_admin
 
-groups = Blueprint('groups', __name__)
+groups = Blueprint("groups", __name__)
 cesi = Cesi.getInstance()
 activity = ActivityLog.getInstance()
 
-@groups.route('/')
+
+@groups.route("/")
 @is_user_logged_in()
 @is_admin()
 def get_groups_tree():
@@ -31,7 +26,8 @@ def get_groups_tree():
     """
     return jsonify(groups=cesi.get_groups_tree())
 
-@groups.route('/<group_name>/')
+
+@groups.route("/<group_name>/")
 @is_user_logged_in()
 @is_admin()
 def get_group_details(group_name):
@@ -51,7 +47,8 @@ def get_group_details(group_name):
     print(result)
     return jsonify(result)
 
-@groups.route('/<group_name>/node/<node_name>/')
+
+@groups.route("/<group_name>/node/<node_name>/")
 @is_user_logged_in()
 @is_admin()
 def get_group_details_by_node_name(group_name, node_name):

@@ -7,35 +7,48 @@ from flask import abort
 from .node import Node
 from .environment import Environment
 
+
 class Cesi:
     """ Cesi """
+
     __instance = None
     __config_file_path = None
     __necessaries = {
-        'cesi': {
-            'fields': ['host', 'port', 'name', 'theme', 'activity_log', 'database', 'debug', 'auto_reload', 'admin_username', 'admin_password'],
-            'boolean_fields': ['debug', 'auto_reload']
+        "cesi": {
+            "fields": [
+                "host",
+                "port",
+                "name",
+                "theme",
+                "activity_log",
+                "database",
+                "debug",
+                "auto_reload",
+                "admin_username",
+                "admin_password",
+            ],
+            "boolean_fields": ["debug", "auto_reload"],
         },
-        'node': {
-            'fields': ['host', 'port', 'username', 'password']
-        },
-        'environment': {
-            'fields': ['members']
-        }
+        "node": {"fields": ["host", "port", "username", "password"]},
+        "environment": {"fields": ["members"]},
     }
 
     @staticmethod
     def getInstance():
         """ Static access method """
         if Cesi.__instance == None:
-            raise Exception("This class is a singleton! First you must create a cesi object.")
+            raise Exception(
+                "This class is a singleton! First you must create a cesi object."
+            )
 
         return Cesi.__instance
 
     def __init__(self, config_file_path):
         """ Config File Parsing"""
         if Cesi.__instance != None:
-            raise Exception("This class is a singleton! Once you need to create a cesi object.")
+            raise Exception(
+                "This class is a singleton! Once you need to create a cesi object."
+            )
 
         print("Parsing config file...")
         Cesi.__config_file_path = config_file_path
@@ -61,7 +74,9 @@ class Cesi:
         cur.execute(sql_create_userinfo_table)
         conn.commit()
         # check admin user.
-        sql_insert_admin_user = """insert into userinfo values('{username}', '{password}', 0);""".format(username=self.admin_username, password=self.admin_password)
+        sql_insert_admin_user = """insert into userinfo values('{username}', '{password}', 0);""".format(
+            username=self.admin_username, password=self.admin_password
+        )
         try:
             cur.execute(sql_insert_admin_user)
             conn.commit()
@@ -73,35 +88,55 @@ class Cesi:
     def __check_config_file(self, config):
         for section_name in config.sections():
             section = config[section_name]
-            if section.name == 'cesi':
-                for field in self.__necessaries['cesi']['fields']:
+            if section.name == "cesi":
+                for field in self.__necessaries["cesi"]["fields"]:
                     value = section.get(field, None)
                     if value is None:
-                        sys.exit("Failed to read {0} file, Not found '{1}' field in Cesi section.".format(Cesi.__config_file_path, field))
+                        sys.exit(
+                            "Failed to read {0} file, Not found '{1}' field in Cesi section.".format(
+                                Cesi.__config_file_path, field
+                            )
+                        )
 
                     # Checking boolean field
-                    if field in self.__necessaries['cesi']['boolean_fields']:
-                        if not value in ['True', 'False']:
-                            sys.exit("Failed to read {0} file, '{1}' field is not True or False.".format(Cesi.__config_file_path, field))
+                    if field in self.__necessaries["cesi"]["boolean_fields"]:
+                        if not value in ["True", "False"]:
+                            sys.exit(
+                                "Failed to read {0} file, '{1}' field is not True or False.".format(
+                                    Cesi.__config_file_path, field
+                                )
+                            )
 
-            elif section.name[:4] == 'node':
+            elif section.name[:4] == "node":
                 # 'node:<name>'
                 clean_name = section.name[5:]
-                for field in self.__necessaries['node']['fields']:
+                for field in self.__necessaries["node"]["fields"]:
                     value = section.get(field, None)
                     if value is None:
-                        sys.exit("Failed to read {0} file, Not found '{1}' field in '{2}' node section.".format(Cesi.__config_file_path, field, clean_name))
+                        sys.exit(
+                            "Failed to read {0} file, Not found '{1}' field in '{2}' node section.".format(
+                                Cesi.__config_file_path, field, clean_name
+                            )
+                        )
 
-            elif section.name[:11] == 'environment':
+            elif section.name[:11] == "environment":
                 # 'environtment:<name>'
                 clean_name = section.name[12:]
-                for field in self.__necessaries['environment']['fields']:
+                for field in self.__necessaries["environment"]["fields"]:
                     value = section.get(field, None)
                     if value is None:
-                        sys.exit("Failed to read {0} file, Not found '{1}' field in '{2}' environment section.".format(Cesi.__config_file_path, field, clean_name))
+                        sys.exit(
+                            "Failed to read {0} file, Not found '{1}' field in '{2}' environment section.".format(
+                                Cesi.__config_file_path, field, clean_name
+                            )
+                        )
 
             else:
-                sys.exit("Failed to open/find {0} file, Unknowed section name: '{1}'".format(Cesi.__config_file_path, section.name))
+                sys.exit(
+                    "Failed to open/find {0} file, Unknowed section name: '{1}'".format(
+                        Cesi.__config_file_path, section.name
+                    )
+                )
 
     def reload(self):
         print("Reloading...")
@@ -126,32 +161,31 @@ class Cesi:
 
         for section_name in config.sections():
             section = config[section_name]
-            if section.name == 'cesi':
-                for field in self.__necessaries['cesi']['fields']:
+            if section.name == "cesi":
+                for field in self.__necessaries["cesi"]["fields"]:
                     value = section.get(field)
-                    if field in self.__necessaries['cesi']['boolean_fields']:
-                        value = True if value == 'True' else False
+                    if field in self.__necessaries["cesi"]["boolean_fields"]:
+                        value = True if value == "True" else False
 
                     self.__cesi[field] = value
 
-            elif section.name[:4] == 'node':
+            elif section.name[:4] == "node":
                 # 'node:<name>'
                 clean_name = section.name[5:]
                 _node = Node(
                     name=clean_name,
-                    host=section.get('host'),
-                    port=section.get('port'),
-                    username=section.get('username'),
-                    password=section.get('password'),
+                    host=section.get("host"),
+                    port=section.get("port"),
+                    username=section.get("username"),
+                    password=section.get("password"),
                 )
                 self.nodes.append(_node)
-            elif section.name[:11] == 'environment':
+            elif section.name[:11] == "environment":
                 # 'environtment:<name>'
                 clean_name = section.name[12:]
-                members_string = section.get('members')
+                members_string = section.get("members")
                 _environment = Environment(
-                    name=clean_name,
-                    members_string=members_string
+                    name=clean_name, members_string=members_string
                 )
                 self.environments.append(_environment)
             else:
@@ -190,7 +224,9 @@ class Cesi:
                 for node_name in node_names:
                     environment = self.get_environment_by_node_name(node_name)
                     if environment:
-                        __result[group_name][environment.name] = __result[group_name].get(environment.name, [])
+                        __result[group_name][environment.name] = __result[
+                            group_name
+                        ].get(environment.name, [])
                         if node_name not in __result[group_name][environment.name]:
                             __result[group_name][environment.name].append(node_name)
 
@@ -206,7 +242,8 @@ class Cesi:
 
     def get_node(self, node_name):
         for n in self.nodes:
-            if n.name == node_name: return n
+            if n.name == node_name:
+                return n
 
         return None
 
@@ -231,7 +268,8 @@ class Cesi:
 
     def get_environment(self, environment_name):
         for e in self.environments:
-            if e.name == environment_name: return e
+            if e.name == environment_name:
+                return e
 
         return None
 
@@ -244,19 +282,16 @@ class Cesi:
 
     def get_environment_by_node_name(self, node_name):
         for e in self.environments:
-            if node_name in e.members: return e
+            if node_name in e.members:
+                return e
 
         return None
 
     def serialize_nodes(self):
-        return {
-            'nodes': [n.serialize() for n in self.nodes],
-        }
+        return {"nodes": [n.serialize() for n in self.nodes]}
 
     def serialize_environments(self):
-        return {
-            'environments': [e.serialize() for e in self.environments],
-        }
+        return {"environments": [e.serialize() for e in self.environments]}
 
     def serialize(self):
         _serialized_nodes = self.serialize_nodes()

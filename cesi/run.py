@@ -10,19 +10,16 @@ from loggers import ActivityLog
 
 VERSION = "v2"
 
-app = Flask(__name__, static_folder='ui/build', static_url_path='', template_folder='ui/build')
+app = Flask(
+    __name__, static_folder="ui/build", static_url_path="", template_folder="ui/build"
+)
 app.config.from_object(__name__)
 app.secret_key = os.urandom(24)
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Cesi web server')
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Cesi web server")
 
-    parser.add_argument(
-        '-c', '--config',
-        type=str,
-        help='config file',
-        required=True
-    )
+    parser.add_argument("-c", "--config", type=str, help="config file", required=True)
 
     args = parser.parse_args()
     cesi = Cesi(config_file_path=args.config)
@@ -38,6 +35,7 @@ if __name__ == '__main__':
     from blueprints.users.routes import users
     from blueprints.auth.routes import auth
     from blueprints.profile.routes import profile
+
     app.register_blueprint(nodes, url_prefix="/{}/nodes".format(VERSION))
     app.register_blueprint(activitylogs, url_prefix="/{}/activitylogs".format(VERSION))
     app.register_blueprint(environments, url_prefix="/{}/environments".format(VERSION))
@@ -49,8 +47,5 @@ if __name__ == '__main__':
     signal.signal(signal.SIGHUP, lambda signum, frame: cesi.reload())
 
     app.run(
-        host=cesi.host,
-        port=cesi.port,
-        use_reloader=cesi.auto_reload,
-        debug=cesi.debug,
+        host=cesi.host, port=cesi.port, use_reloader=cesi.auto_reload, debug=cesi.debug
     )

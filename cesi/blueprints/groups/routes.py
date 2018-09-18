@@ -24,7 +24,7 @@ def get_groups_tree():
         }
     }
     """
-    return jsonify(groups=cesi.get_groups_tree())
+    return jsonify(status="success", result=cesi.get_groups_tree())
 
 
 @groups.route("/<group_name>/")
@@ -45,7 +45,7 @@ def get_group_details(group_name):
             result[n.name].append(p.serialize())
 
     print(result)
-    return jsonify(result)
+    return jsonify(status="success", result=result)
 
 
 @groups.route("/<group_name>/node/<node_name>/")
@@ -68,4 +68,4 @@ def get_group_details_by_node_name(group_name, node_name):
         result[n.name].append(p.serialize())
 
     print(result)
-    return jsonify(result)
+    return jsonify(status="success", result=result)

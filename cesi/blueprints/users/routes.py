@@ -41,7 +41,7 @@ def add_new_user():
     ):
         return jsonify(status="error", message="Please enter valid value")
     elif not new_user["password"] == new_user["confirm_password"]:
-        return jsonify(status="warning", message="Passwords didn't match")
+        return jsonify(status="error", message="Passwords didn't match")
 
     try:
         controllers.add_user(
@@ -55,7 +55,7 @@ def add_new_user():
             "Username is not available. Please select different username"
         )
         return jsonify(
-            status="warning",
+            status="error",
             message="Username is not available. Please select different username",
         )
 

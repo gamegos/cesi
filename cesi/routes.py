@@ -31,25 +31,29 @@ def close_connection(_):
 
 @app.errorhandler(404)
 def page_not_found(error):
-    return jsonify(message="page not found")
+    return jsonify(status="error", message="page not found")
 
 
 @app.errorhandler(400)
 def not_found(error):
-    return jsonify(message=error.description)
+    return jsonify(status="error", message=error.description)
 
 
 @app.route("/{}/userinfo/".format(VERSION))
 @is_user_logged_in()
 def user_info():
-    return jsonify(username=session["username"], usertypecode=session["usertypecode"])
+    return jsonify(
+        status="success",
+        username=session["username"],
+        usertypecode=session["usertypecode"],
+    )
 
 
 @app.route("/{}/initdb/".format(VERSION))
 def initdb():
     cesi.drop_database()
     cesi.check_database()
-    return jsonify(message="Success")
+    return jsonify(status="success", message="Yeah, We initialized the database.")
 
 
 @app.route("/")

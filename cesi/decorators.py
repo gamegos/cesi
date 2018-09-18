@@ -17,7 +17,7 @@ def is_user_logged_in(log_message=""):
                 message = log_message.format(**kwargs)
                 activity.logger.error(message)
 
-            return jsonify(message="Session expired"), 403
+            return jsonify(status="error", message="Session expired")
 
         return wrap
 
@@ -38,7 +38,7 @@ def is_admin_or_normal_user(log_message=""):
                 message = log_message.format(**kwargs)
                 activity.logger.error("{0}: {1}".format(username, message))
 
-            return jsonify(message="You are not authorized this action"), 403
+            return jsonify(status="error", message="You are not authorized this action")
 
         return wrap
 
@@ -59,7 +59,7 @@ def is_admin(log_message=""):
                 message = log_message.format(**kwargs)
                 activity.logger.error("{0}: {1}".format(username, message))
 
-            return jsonify(message="You are not authorized this action"), 403
+            return jsonify(status="error", message="You are not authorized this action")
 
         return wrap
 

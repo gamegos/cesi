@@ -288,10 +288,10 @@ class Cesi:
         return None
 
     def serialize_nodes(self):
-        return {"nodes": [n.serialize() for n in self.nodes]}
+        return [n.serialize() for n in self.nodes]
 
     def serialize_environments(self):
-        return {"environments": [e.serialize() for e in self.environments]}
+        return [e.serialize() for e in self.environments]
 
     def serialize(self):
         _serialized_nodes = self.serialize_nodes()

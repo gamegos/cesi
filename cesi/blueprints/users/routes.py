@@ -28,20 +28,13 @@ def add_new_user():
         data.get("username"),
         data.get("password"),
     )
-    new_user["confirm_password"] = data.get("confirmpassword")
     try:
         new_user["usertype"] = int(data.get("usertype"))
     except ValueError as e:
         return jsonify(status="warning", message=str(e))
 
-    if (
-        new_user["username"] == ""
-        or new_user["password"] == ""
-        or new_user["confirm_password"] == ""
-    ):
+    if new_user["username"] == "" or new_user["password"] == "":
         return jsonify(status="error", message="Please enter valid value")
-    elif not new_user["password"] == new_user["confirm_password"]:
-        return jsonify(status="error", message="Passwords didn't match")
 
     try:
         controllers.add_user(

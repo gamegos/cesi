@@ -24,17 +24,27 @@ def user_list():
 def add_new_user():
     data = request.get_json()
     new_user = {}
-    new_user["username"], new_user["password"] = (
-        data.get("username"),
-        data.get("password"),
-    )
-    try:
-        new_user["usertype"] = int(data.get("usertype"))
-    except ValueError as e:
-        return jsonify(status="warning", message=str(e))
+    invalid_fields = []
+    require_fields = ["username", "password", "usertype"]
+    for field in require_fields:
+        value = data.get(field)
+        if value is None:
+            invalid_fields.append(field)
 
-    if new_user["username"] == "" or new_user["password"] == "":
-        return jsonify(status="error", message="Please enter valid value")
+        new_user[field] = value
+
+    if invalid_fields:
+        return jsonify(
+            status="error",
+            message="Please enter valid value for '{}' fields".format(
+                ",".join(invalid_fields)
+            ),
+        )
+
+    try:
+        new_user["usertype"] = int(new_user["usertype"])
+    except (ValueError, TypeError) as e:
+        return jsonify(status="error", message=str(e))
 
     try:
         controllers.add_user(

@@ -16,7 +16,7 @@ def get_user(username):
     if not result:
         return {}
 
-    user = {"name": result[0][0], "type": result[0][1]}
+    user = {"name": result[0][0], "type": result[0][2]}
     return user
 
 
@@ -40,7 +40,7 @@ def validate_user(username, password):
     return cur.fetchall()
 
 
-def update_user_password(username, newpassword):
+def update_user_password(username, new_password):
     cur = g.db_conn.cursor()
     cur.execute(
         "update userinfo set password=? where username=?", [new_password, username]

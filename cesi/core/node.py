@@ -102,12 +102,15 @@ class Node:
         }
 
     def serialize_processes(self):
-        return {"processes": [p.serialize() for p in self.processes]}
+        return [p.serialize() for p in self.processes]
 
     def serialize(self):
         _serialized_general = self.serialize_general()
         _serialized_processes = self.serialize_processes()
-        return dict(_serialized_general, **_serialized_processes)
+        return {
+            "general": self.serialize_general(),
+            "processes": self.serialize_processes(),
+        }
 
     def full_name(self):
         return "node:{}".format(self.name)

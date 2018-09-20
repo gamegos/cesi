@@ -31,12 +31,12 @@ def close_connection(_):
 
 @app.errorhandler(404)
 def page_not_found(error):
-    return jsonify(status="error", message="page not found")
+    return jsonify(status="error", message="page not found"), 404
 
 
 @app.errorhandler(400)
 def not_found(error):
-    return jsonify(status="error", message=error.description)
+    return jsonify(status="error", message=error.description), 400
 
 
 @app.route("/{}/userinfo/".format(VERSION))

@@ -34,7 +34,7 @@ def get_group_details(group_name):
     groups = cesi.groups
     group = groups.get(group_name, None)
     if not group:
-        return jsonify(status="error", message="Wrong group name")
+        return jsonify(status="error", message="Wrong group name"), 400
 
     result = {}
     for node_name in group:
@@ -55,10 +55,10 @@ def get_group_details_by_node_name(group_name, node_name):
     groups = cesi.groups
     group = groups.get(group_name, None)
     if not group:
-        return jsonify(status="error", message="Wrong group name")
+        return jsonify(status="error", message="Wrong group name"), 400
 
     if node_name not in group:
-        return jsonify(status="error", message="Wrong node name for group name")
+        return jsonify(status="error", message="Wrong node name for group name"), 400
 
     result = {}
     n = cesi.get_node(node_name)

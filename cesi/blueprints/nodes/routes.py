@@ -27,7 +27,7 @@ def get_node(node_name):
 def get_node_processes(node_name):
     node = cesi.get_node_or_400(node_name)
     if not node.is_connected:
-        return jsonify(status="error", message="Node is not connected")
+        return jsonify(status="error", message="Node is not connected"), 400
 
     return jsonify(status="success", processes=node.serialize_processes())
 
@@ -37,7 +37,7 @@ def get_node_processes(node_name):
 def get_process(node_name, process_name):
     node = cesi.get_node_or_400(node_name)
     if not node.is_connected:
-        return jsonify(status="error", message="Node is not connected")
+        return jsonify(status="error", message="Node is not connected"), 400
 
     process = node.get_process_or_400(process_name)
     return jsonify(status="success", process=process.serialize())
@@ -53,7 +53,7 @@ def get_process(node_name, process_name):
 def start_process(node_name, process_name):
     node = cesi.get_node_or_400(node_name)
     if not node.is_connected:
-        return jsonify(status="error", message="Node is not connected")
+        return jsonify(status="error", message="Node is not connected"), 400
 
     status, msg = node.start_process(process_name)
     if status:
@@ -75,7 +75,7 @@ def start_process(node_name, process_name):
                 session["username"], node_name, process_name
             )
         )
-        return jsonify(status="error", message=msg)
+        return jsonify(status="error", message=msg), 500
 
 
 @nodes.route("/<node_name>/processes/<process_name>/stop/")
@@ -88,7 +88,7 @@ def start_process(node_name, process_name):
 def stop_process(node_name, process_name):
     node = cesi.get_node_or_400(node_name)
     if not node.is_connected:
-        return jsonify(status="error", message="Node is not connected")
+        return jsonify(status="error", message="Node is not connected"), 400
 
     status, msg = node.stop_process(process_name)
     if status:
@@ -110,7 +110,7 @@ def stop_process(node_name, process_name):
                 session["username"], node_name, process_name
             )
         )
-        return jsonify(status="error", message=msg)
+        return jsonify(status="error", message=msg), 500
 
 
 @nodes.route("/<node_name>/processes/<process_name>/restart/")
@@ -123,7 +123,7 @@ def stop_process(node_name, process_name):
 def restart_process(node_name, process_name):
     node = cesi.get_node_or_400(node_name)
     if not node.is_connected:
-        return jsonify(status="error", message="Node is not connected")
+        return jsonify(status="error", message="Node is not connected"), 400
 
     status, msg = node.restart_process(process_name)
     if status:
@@ -145,7 +145,7 @@ def restart_process(node_name, process_name):
                 session["username"], node_name, process_name
             )
         )
-        return jsonify(status="error", message=msg)
+        return jsonify(status="error", message=msg), 500
 
 
 @nodes.route("/<node_name>/processes/<process_name>/log/")
@@ -156,7 +156,7 @@ def read_process_log(node_name, process_name):
     if session["usertype"] == 0 or session["usertype"] == 1 or session["usertype"] == 2:
         node = cesi.get_node_or_400(node_name)
         if not node.is_connected:
-            return jsonify(status="error", message="Node is not connected")
+            return jsonify(status="error", message="Node is not connected"), 400
 
         log_string = node.connection.supervisor.tailProcessStdoutLog(
             process_name, 0, 500
@@ -174,7 +174,10 @@ def read_process_log(node_name, process_name):
                 session["username"], node_name, process_name
             )
         )
-        return jsonify(status="error", message="You are not authorized for this action")
+        return (
+            jsonify(status="error", message="You are not authorized for this action"),
+            500,
+        )
 
 
 @nodes.route("/<node_name>/all-processes/start/")
@@ -185,7 +188,7 @@ def read_process_log(node_name, process_name):
 def start_all_process(node_name):
     node = cesi.get_node_or_400(node_name)
     if not node.is_connected:
-        return jsonify(status="error", message="Node is not connected")
+        return jsonify(status="error", message="Node is not connected"), 400
 
     for process in node.processes:
         if not process.state == 20:
@@ -214,7 +217,7 @@ def start_all_process(node_name):
 def stop_all_process(node_name):
     node = cesi.get_node_or_400(node_name)
     if not node.is_connected:
-        return jsonify(status="error", message="Node is not connected")
+        return jsonify(status="error", message="Node is not connected"), 400
 
     for process in node.processes:
         if not process.state == 0:
@@ -243,7 +246,7 @@ def stop_all_process(node_name):
 def restart_all_process(node_name):
     node = cesi.get_node_or_400(node_name)
     if not node.is_connected:
-        return jsonify(status="error", message="Node is not connected")
+        return jsonify(status="error", message="Node is not connected"), 400
 
     for process in node.processes:
         if not process.state == 0:

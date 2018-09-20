@@ -24,14 +24,20 @@ def change_own_password():
     old_password = data.get("oldPassword")
     new_password = data.get("newPassword")
     if old_password == "" or new_password == "":
-        return jsonify(status="error", message="Please enter valid value")
+        return (
+            jsonify(
+                status="error",
+                message="Please enter valid value old password or new_password",
+            ),
+            400,
+        )
 
     result = controllers.validate_user(username, old_password)
     if not result:
         activity.logger.error(
             "Old password is wrong to change {} 's password.".format(username)
         )
-        return jsonify(status="error", message="Old password is wrong")
+        return jsonify(status="error", message="Old password is wrong"), 400
 
     controllers.update_user_password(username, new_password)
     activity.logger.error("{} user changed the own password.".format(username))

@@ -15,7 +15,7 @@ def login():
     result = controllers.validate_user(req_username, req_password)
     if not result:
         session.clear()
-        return jsonify(status="error", message="Invalid username/password")
+        return jsonify(status="error", message="Invalid username/password"), 403
 
     username, _, usertype = result[0]
     session["username"] = username
@@ -29,7 +29,7 @@ def login():
 def logout():
     username = session.get("username")
     if username is None:
-        return jsonify(status="error", message="You haven't already entered")
+        return jsonify(status="error", message="You haven't already entered"), 403
 
     activity.logger.error("{} logged out".format(username))
     session.clear()

@@ -16,7 +16,7 @@ def get_activity_log():
         with open(cesi.activity_log) as f:
             data = f.readlines()
     except Exception as e:
-        return jsonify(status="error", message=str(e))
+        return jsonify(status="error", message=str(e)), 500
 
     return jsonify(status="success", logs=data)
 
@@ -28,6 +28,6 @@ def get_activity_log_with_limit(limit):
         with open(cesi.activity_log) as f:
             data = f.readlines()
     except Exception as e:
-        return jsonify(status="error", message=str(e))
+        return jsonify(status="error", message=str(e)), 500
 
     return jsonify(status="success", logs=data[-limit:])

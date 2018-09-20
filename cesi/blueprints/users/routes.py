@@ -34,17 +34,20 @@ def add_new_user():
         new_user[field] = value
 
     if invalid_fields:
-        return jsonify(
-            status="error",
-            message="Please enter valid value for '{}' fields".format(
-                ",".join(invalid_fields)
+        return (
+            jsonify(
+                status="error",
+                message="Please enter valid value for '{}' fields".format(
+                    ",".join(invalid_fields)
+                ),
             ),
+            400,
         )
 
     try:
         new_user["usertype"] = int(new_user["usertype"])
     except (ValueError, TypeError) as e:
-        return jsonify(status="error", message=str(e))
+        return jsonify(status="error", message=str(e)), 400
 
     try:
         controllers.add_user(
@@ -57,9 +60,12 @@ def add_new_user():
         activity.logger.error(
             "Username is not available. Please select different username"
         )
-        return jsonify(
-            status="error",
-            message="Username is not available. Please select different username",
+        return (
+            jsonify(
+                status="error",
+                message="Username is not available. Please select different username",
+            ),
+            400,
         )
 
 
@@ -73,7 +79,7 @@ def delete_user(username):
                 session["username"]
             )
         )
-        return jsonify(status="error", message="Admin can't be deleted")
+        return jsonify(status="error", message="Admin can't be deleted"), 403
 
     controllers.delete_user(username)
     activity.logger.error("{} user deleted.".format(session["username"]))

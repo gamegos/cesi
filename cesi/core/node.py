@@ -35,8 +35,10 @@ class Node:
                 self.connection.system.listMethods()
                 print("Yes, node connected. {}".format(self.name))
                 return True
-            except (xmlrpc.client.ProtocolError, xmlrpc.client.Fault, Exception) as e:
-                print(e)
+            except (xmlrpc.client.ProtocolError, xmlrpc.client.Fault) as err:
+                print(err)
+            except Exception as err:
+                print(err)
 
         print("No, node isn't connected. {}".format(self.name))
         return False
@@ -71,6 +73,8 @@ class Node:
                 return False, "cannot start process"
         except xmlrpc.client.Fault as err:
             return False, err.faultString
+        except Exception as err:
+            return False, str(err)
 
     def stop_process(self, process_name):
         process = self.get_process_or_400(process_name)
@@ -78,9 +82,11 @@ class Node:
             if self.connection.supervisor.stopProcess(process.name):
                 return True, ""
             else:
-                return False, "aaaa"
+                return False, "cannot stop process"
         except xmlrpc.client.Fault as err:
             return False, err.faultString
+        except Exception as err:
+            return False, str(err)
 
     def restart_process(self, process_name):
         process = self.get_process_or_400(process_name)

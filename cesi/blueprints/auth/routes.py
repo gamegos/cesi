@@ -11,8 +11,30 @@ activity = ActivityLog.getInstance()
 @auth.route("/login/", methods=["POST"])
 def login():
     data = request.get_json()
-    req_username, req_password = data.get("username"), data.get("password")
-    result = controllers.validate_user(req_username, req_password)
+    user_credentials = {}
+    invalid_fields = []
+    require_fields = ["username", "password"]
+    for field in require_fields:
+        value = data.get(field)
+        if value is None:
+            invalid_fields.append(field)
+
+        user_credentials[field] = value
+
+    if invalid_fields:
+        return (
+            jsonify(
+                status="error",
+                message="Please enter valid value for '{}' fields".format(
+                    ",".join(invalid_fields)
+                ),
+            ),
+            400,
+        )
+
+    result = controllers.validate_user(
+        user_credentials["username"], user_credentials["password"]
+    )
     if not result:
         session.clear()
         return jsonify(status="error", message="Invalid username/password"), 403

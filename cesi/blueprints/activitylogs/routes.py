@@ -9,7 +9,7 @@ cesi = Cesi.getInstance()
 activity = ActivityLog.getInstance()
 
 
-@activitylogs.route("/")
+@activitylogs.route("/", methods=["GET"])
 @is_user_logged_in()
 def get_activity_log():
     try:
@@ -31,3 +31,14 @@ def get_activity_log_with_limit(limit):
         return jsonify(status="error", message=str(e)), 500
 
     return jsonify(status="success", logs=data[-limit:])
+
+
+@activitylogs.route("/", methods=["DELETE"])
+@is_user_logged_in()
+def clear_activity_log():
+    try:
+        open(cesi.activity_log, "w").close()
+    except Exception as e:
+        return jsonify(status="error", message=str(e)), 500
+
+    return jsonify(status="success")

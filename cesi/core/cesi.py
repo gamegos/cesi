@@ -201,37 +201,49 @@ class Cesi:
 
     @property
     def groups(self):
-        result = {}
+        result = dict()
         for node in self.nodes:
             if node.is_connected:
                 for p in node.processes:
-                    result[p.group] = result.get(p.group, [])
-                    if node.name not in result[p.group]:
-                        result[p.group].append(node.name)
+                    result[p.group] = result.get(p.group, set())
+                    result[p.group].add(node.name)
             else:
                 print("{} is not connected.".format(node.name))
 
-        print(result)
+        print("Groups: {}".format(result))
+        return result
+
+    def get_groups_with_environments(self):
+        result = dict()
+        for group_name, node_names in self.groups.items():
+            result[group_name] = result.get(group_name, {})
+            for node_name in node_names:
+                environment = self.get_environment_by_node_name(node_name)
+                if environment:
+                    result[group_name][environment.name] = result[group_name].get(
+                        environment.name, []
+                    )
+                    if node_name not in result[group_name][environment.name]:
+                        result[group_name][environment.name].append(node_name)
+
+        print("GroupsWithEnvironments: {}".format(result))
         return result
 
     def get_groups_tree(self):
-        __groups = self.groups
-        __result = {}
-        for env in self.environments:
-            print(env.name)
-            for group_name, node_names in __groups.items():
-                __result[group_name] = __result.get(group_name, {})
-                for node_name in node_names:
-                    environment = self.get_environment_by_node_name(node_name)
-                    if environment:
-                        __result[group_name][environment.name] = __result[
-                            group_name
-                        ].get(environment.name, [])
-                        if node_name not in __result[group_name][environment.name]:
-                            __result[group_name][environment.name].append(node_name)
+        result = []
+        for group_name, environments in self.get_groups_with_environments().items():
+            group = dict()
+            group["name"] = group_name
+            group["environments"] = []
+            print(group)
+            for environment_name, members in environments.items():
+                environment = dict(name=environment_name, members=members)
+                group["environments"].append(environment)
 
-        print(__result)
-        return __result
+            result.append(group)
+
+        print("GroupsTree: {}".format(result))
+        return result
 
     def get_db_connection(self):
         try:

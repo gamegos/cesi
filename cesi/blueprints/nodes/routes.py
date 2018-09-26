@@ -67,7 +67,6 @@ def start_process(node_name, process_name):
             message="{0} {1} {2} event succesfully".format(
                 node.name, process_name, "start"
             ),
-            process=node.get_process(process_name).serialize(),
         )
     else:
         activity.logger.info(
@@ -102,7 +101,6 @@ def stop_process(node_name, process_name):
             message="{0} {1} {2} event succesfully".format(
                 node.name, process_name, "stop"
             ),
-            process=node.get_process(process_name).serialize(),
         )
     else:
         activity.logger.info(
@@ -137,7 +135,6 @@ def restart_process(node_name, process_name):
             message="{0} {1} {2} event succesfully".format(
                 node.name, process_name, "restart"
             ),
-            process=node.get_process(process_name).serialize(),
         )
     else:
         activity.logger.info(

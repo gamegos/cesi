@@ -46,7 +46,6 @@ $ export CESI_SETUP_PATH=/opt/cesi
 $ # Download the project to /opt/cesi directory
 $ sudo git clone https://github.com/gamegos/cesi $CESI_SETUP_PATH
 
-
 $ # Install Requirement Packages Into Global Enviroment
 $ cd $CESI_SETUP_PATH
 $ sudo pip3 install -r requirements.txt

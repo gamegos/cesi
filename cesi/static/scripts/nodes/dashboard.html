@@ -1,0 +1,66 @@
+<div ng-controller="DashboardCtrl" class="dashboard-wrp">
+    <div class="row dashboard-cards">
+        <div class="col-md-4 col-xs-12">
+            <div class="card">
+                <div class="card-body">
+                    <blockquote class="card-blockquote">
+                        <h5>Environments</h5>
+                        <p>{{environment.nodeCount}} Nodes</p>
+                        <p>{{environment.processCount}} Processes</p>
+                    </blockquote>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-md-4 col-xs-12">
+            <div class="card">
+                <div class="card-body">
+                    <blockquote class="card-blockquote">
+                        <h5>Nodes</h5>
+                        <p>{{nodes.nodeCount}} Nodes</p>
+                        <p>{{nodes.connected}} Connected</p>
+                        <p>{{nodes.notConnected}} Not Connected</p>
+                    </blockquote>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 col-xs-12">
+            <div class="card">
+                <div class="card-body">
+                    <blockquote class="card-blockquote">
+                        <h5>Processes</h5>
+                        <p>{{process.processCount}} Processes</p>
+                        <p>{{process.running}} Running</p>
+                        <p>{{process.stoped}} Stopped</p>
+                    </blockquote>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- /.row -->
+
+    <div class="row">
+        <div class="col-md-10">
+            <h5>Activity Log</h5>
+        </div>
+        <div class="col-md-2" style="text-align: right">
+            <button type="button" class="btn btn-primary btn-sm" ng-click="refresh()" id="refresh-button">
+                <i class="fa fa-fw fa-refresh"></i> Refresh</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-striped table-hover table-bordered table-sm">
+                <tr ng-repeat="log in logs track by $index">
+                    <td>{{log}}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+
+
+
+</div>

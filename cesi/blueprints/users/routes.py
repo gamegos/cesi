@@ -75,12 +75,14 @@ def add_new_user():
 def delete_user(username):
     if username == "admin":
         activity.logger.error(
-            "{} user request for delete admin user. Delete admin user event fail.".format(
+            "'{}' user request for delete 'admin' user. Delete 'admin' user event fail.".format(
                 session["username"]
             )
         )
         return jsonify(status="error", message="Admin can't be deleted"), 403
 
     controllers.delete_user(username)
-    activity.logger.error("{} user deleted.".format(session["username"]))
+    activity.logger.error(
+        "'{}' user deleted by '{}' user.".format(username, session["username"])
+    )
     return jsonify(status="success")

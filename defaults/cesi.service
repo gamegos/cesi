@@ -1,11 +1,14 @@
 [Unit]
-Description=Cesi application
-After=network.target
+Description=cesi
 
 [Service]
+Environment=
+ExecStart=/opt/cesi/cesi/run.py --config /etc/cesi.conf
+ExecReload=/bin/kill -HUP $MAINPID
+KillSignal=TERM
 User=root
-ExecStart=/usr/bin/python /opt/cesi/cesi/web.py
-WorkingDirectory=/opt/cesi/
+WorkingDirectory=/opt/cesi
+
 Restart=on-failure
 
 [Install]

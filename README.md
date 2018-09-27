@@ -8,66 +8,75 @@ hard with seperate UIs (If you are using the UI of course :). CeSI aims to solve
 this problem by creating a centralized web UI, based on the RPC interface of
 Supervisor.
 
-<p align="center">
-<img src="./docs/screenshots/all-nodes.png" title="All Nodes" width="800" height="509" />
-</p>
-
 ## Installation
 
 For running CeSI inside a docker container without installation see "Usage"
 section.
 
-**Prerequisites:**
+**Install Dependencies For Api**
 
-- Python
-- Flask
-- sqlite3
+```bash
+$ # On Ubuntu [18.04, 16.04, 14.04]
+$ sudo apt install -y git python3 python3-pip
+$ # On Centos 7
+$ sudo yum install -y git epel-release
+$ sudo yum install -y python34 python34-pip
+$ # On Fedora 28
+$ sudo dnf install -y git python3 python3-pip
+```
 
-You can install these dependencies on Ubuntu with:
+**Install Dependencies For Ui (Optional)**
 
-    sudo apt-get install sqlite3 python python-flask
+```bash
+$ # On Ubuntu [18.04]
+$ sudo apt install -y nodejs npm
+$ sudo npm install -g yarn
+$ # On Centos 7
+$ sudo yum install -y nodejs
+$ sudo npm install -g yarn
+```
 
 **Installation**
 
 Then run these commands to install CeSI
 
-    # Download the project
-    git clone https://github.com/Gamegos/cesi
+```bash
+$ export CESI_SETUP_PATH=/opt/cesi
 
-    # Or download and decompress the latest version at https://github.com/gamegos/cesi/releases
-    # wget -qO- https://github.com/gamegos/cesi/archive/v2.0.0.tar.gz  | tar -xzf-
+$ # Download the project to /opt/cesi directory
+$ sudo git clone https://github.com/gamegos/cesi $CESI_SETUP_PATH
 
-    cd cesi
+$ # Install Requirement Packages Into Global Enviroment
+$ cd $CESI_SETUP_PATH
+$ sudo pip3 install -r requirements.txt
 
-    # Create user database
-    sqlite3 path/to/userinfo.db < ../userinfo.sql
+$ # Build ui (Optional)
+$ cd ${CESI_SETUP_PATH}/cesi/ui
+$ sudo yarn install
+$ sudo yarn build
 
-    # Create config file
-    cp cesi.conf.sample cesi.conf
+$ # Download the builded ui
+$ cd ${CESI_SETUP_PATH}/cesi/ui
+$ wget https://github.com/gamegos/cesi/releases/download/2.0/build-ui.tar -O build.tar
+$ tar -xvf build.tar
 
-## Configuration
-
-Update cesi.conf for your environment. Config file documentation can be found
-inside sample file.
-
-Then copy it under "/etc" folder
-
-    cp cesi.conf /etc/cesi.conf
-
-or create a symbolic link
-
-    ln -s $PWD/cesi.conf /etc/cesi.conf
+$ # Create cesi.conf file and update cesi.conf for your environment.
+$ # Config file documentation can be found inside default file.
+$ # (You must create cesi.conf in the etc directory for cesi.service)
+$ sudo cp ${CESI_SETUP_PATH}/defaults/cesi.conf /etc/cesi.conf
+```
 
 ## Usage
 
-Run
+```bash
+$ # Run with command line
+$ sudo python3 ${CESI_SETUP_PATH}/cesi/run.py --config path/to/cesi.conf
 
-    python web.py
-
-Or if you would like to run image, you must copy your config file in local pc in
-/etc/ directory.
-
-    docker run -d -p 5000:5000 -v /path/to/config/:/etc/ burcina/docker-cesi
+$ # Run as a service
+$ sudo cp ${CESI_SETUP_PATH}/defaults/cesi.service /etc/systemd/system/cesi.service
+$ sudo systemctl daemon-reload
+$ sudo systemctl start cesi
+```
 
 ### First Login
 
@@ -85,7 +94,7 @@ Please change password after first login!
 
 ## TODO
 
-- [ ] Fix user related api endpoints
+- [x] Fix user related api endpoints
 - [ ] Fix node log view
 - [ ] Refactor the usage of config
 - [ ] Rewrite dockerfile and publish image on docker hub under gamegos
@@ -95,6 +104,6 @@ Please change password after first login!
 - [ ] Better format for activity logs (tabbed date, level, component, message)
 - [ ] Auto refresh page
 - [ ] Option to select different templates
-- [ ] Upgrade flask
+- [x] Upgrade flask
 - [ ] Add tests
 - [ ] CI integration

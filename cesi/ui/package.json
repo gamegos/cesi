@@ -1,0 +1,33 @@
+{
+  "name": "cesi-web-ui",
+  "description": "Cesi Web UI",
+  "version": "0.1.0",
+  "license": "GPL-3.0",
+  "author": {
+    "name": "pleycpl",
+    "email": "h4rvey@protonmail.com",
+    "url": "http://github.com/pleycpl"
+  },
+  "contributors": [],
+  "keywords": [
+    "cesi",
+    "supervisor"
+  ],
+  "dependencies": {
+    "axios": "^0.18.0",
+    "bootstrap": "^4.1.3",
+    "react": "^16.5.2",
+    "react-dom": "^16.5.2",
+    "react-router-dom": "^4.3.1",
+    "react-scripts": "1.1.5",
+    "reactstrap": "^6.4.0"
+  },
+  "scripts": {
+    "start": "NODE_PATH=src react-scripts start",
+    "build": "NODE_PATH=src react-scripts build",
+    "test": "NODE_PATH=src react-scripts test --env=jsdom",
+    "eject": "NODE_PATH=src react-scripts eject"
+  },
+  "proxy": "http://localhost:5000",
+  "devDependencies": {}
+}

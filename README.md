@@ -8,12 +8,16 @@ hard with seperate UIs (If you are using the UI of course :). CeSI aims to solve
 this problem by creating a centralized web UI, based on the RPC interface of
 Supervisor.
 
-## Installation
+## Installation Methods
 
-For running CeSI inside a docker container without installation see "Usage"
-section.
+- [Chef Cookbook][2]
+- [Package managers][3]
+- [Docker][4]
+- [Manuel Instructions](#manuel-instructions)
 
-**Install Dependencies For Api**
+## Manuel Instructions
+
+**Install Dependencies For Cesi Api**
 
 ```bash
 $ # On Ubuntu [18.04, 16.04, 14.04]
@@ -25,7 +29,7 @@ $ # On Fedora 28
 $ sudo dnf install -y git python3 python3-pip
 ```
 
-**Install Dependencies For Ui (Optional)**
+**Install Dependencies For Cesi Ui (Optional)**
 
 ```bash
 $ # On Ubuntu [18.04]
@@ -36,9 +40,7 @@ $ sudo yum install -y nodejs
 $ sudo npm install -g yarn
 ```
 
-**Installation**
-
-Then run these commands to install CeSI
+**Install Cesi**
 
 ```bash
 $ export CESI_SETUP_PATH=/opt/cesi
@@ -64,11 +66,7 @@ $ # Create cesi.conf file and update cesi.conf for your environment.
 $ # Config file documentation can be found inside default file.
 $ # (You must create cesi.conf in the etc directory for cesi.service)
 $ sudo cp ${CESI_SETUP_PATH}/defaults/cesi.conf /etc/cesi.conf
-```
 
-## Usage
-
-```bash
 $ # Run with command line
 $ sudo python3 ${CESI_SETUP_PATH}/cesi/run.py --config path/to/cesi.conf
 
@@ -78,19 +76,12 @@ $ sudo systemctl daemon-reload
 $ sudo systemctl start cesi
 ```
 
-### First Login
+## First Login
 
 Please change password after first login!
 
 - **Username:** admin
 - **Password:** admin
-
-## Blog
-
-[Usage][2]
-
-[1]: http://supervisord.org/
-[2]: http://www.gulsahkose.com/2014/09/cesi-centralized-supervisor-interface.html
 
 ## TODO
 
@@ -99,7 +90,7 @@ Please change password after first login!
 - [ ] Refactor the usage of config
 - [ ] Rewrite dockerfile and publish image on docker hub under gamegos
 - [ ] Improve Docs
-- [ ] Do not use external adresses for javascript and css libraries
+- [x] Do not use external adresses for javascript and css libraries
 - [ ] Use a logging lib
 - [ ] Better format for activity logs (tabbed date, level, component, message)
 - [ ] Auto refresh page
@@ -107,3 +98,8 @@ Please change password after first login!
 - [x] Upgrade flask
 - [ ] Add tests
 - [ ] CI integration
+
+[1]: http://supervisord.org/
+[2]: https://github.com/gamegos/cesi-cookbook/
+[3]: https://github.com/gamegos/cesi-packaging/
+[4]: https://hub.docker.com/r/gamegos/cesi/

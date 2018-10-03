@@ -14,23 +14,6 @@ const HomePage = () => {
       <a href="https://github.com/gamegos/cesi">
         Source Code and Documentation
       </a>
-      <br />
-      <br />
-      <h4>Dashboard</h4>
-      <p>
-        We can see that the total number of nodes, number of connected nodes and
-        number of not connected nodes in this page. Also we can see total number
-        of process, number of running process, number of stopped process and the
-        all activity logs.
-      </p>
-      <h4>Nodes</h4>
-      <p>....</p>
-      <h4>Environments</h4>
-      <p>....</p>
-      <h4>Groups</h4>
-      <p>....</p>
-      <h4>Users</h4>
-      <p>....</p>
     </div>
   );
 };

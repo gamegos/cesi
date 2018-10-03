@@ -32,8 +32,8 @@ class App extends Component {
       return result.logs;
     } catch (error) {
       console.log(error);
+      return [];
     }
-    return [];
   };
 
   refreshActivityLogs = () => {
@@ -41,7 +41,7 @@ class App extends Component {
     this.getActivityLogs().then(logs => this.setState({ logs }));
   };
 
-  clearActivityLogs = async () => {
+  clearActivityLogs = () => {
     api.activitylogs.clear().then(_ => this.setState({ logs: [] }));
   };
 
@@ -52,8 +52,8 @@ class App extends Component {
       return result.groups;
     } catch (error) {
       console.log(error);
+      return [];
     }
-    return [];
   };
 
   refreshGroups = () => {
@@ -68,8 +68,8 @@ class App extends Component {
       return result.nodes;
     } catch (error) {
       console.log(error);
+      return [];
     }
-    return [];
   };
 
   refreshNodes = () => {
@@ -105,8 +105,8 @@ class App extends Component {
       return result.users;
     } catch (error) {
       console.log(error);
+      return [];
     }
-    return [];
   };
   refreshUsers = () => {
     this.getUsers().then(users => this.setState({ users }));

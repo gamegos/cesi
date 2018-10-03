@@ -12,7 +12,7 @@ Supervisor.
 
 - [Chef Cookbook][2]
 - [Package managers][3]
-- [Docker][4]
+- [Docker][4] (unavailable)
 - [Manuel Instructions](#manuel-instructions)
 
 ## Manuel Instructions
@@ -43,6 +43,37 @@ $ sudo npm install -g yarn
 **Install Cesi**
 
 ```bash
+$ export CESI_SETUP_PATH=~/cesi
+
+$ # Download the project to ~/cesi directory
+$ git clone https://github.com/gamegos/cesi $CESI_SETUP_PATH
+
+$ # Create virtual environment and install requirement packages
+$ cd $CESI_SETUP_PATH
+$ python3 -m venv venv
+$ source venv/bin/activate
+(venv) $ pip3 install -r requirements.txt
+
+# There are 2 options for ui.
+$ # 1. Build ui (First you must install dependencies for ui)
+(venv) $ cd ${CESI_SETUP_PATH}/cesi/ui
+(venv) $ yarn install
+(venv) $ yarn build
+
+$ # 2. Download the builded ui
+(venv) $ cd ${CESI_SETUP_PATH}/cesi/ui
+(venv) $ wget https://github.com/gamegos/cesi/releases/download/v2.0/build-ui.tar -O build.tar
+(venv) $ tar -xvf build.tar
+
+$ # Run with command line
+(venv) $ python3 ${CESI_SETUP_PATH}/cesi/run.py --config ${CESI_SETUP_PATH}/defaults/cesi.conf
+```
+
+**Install Cesi as a service**
+
+```
+$ # If you want to change CESI_SETUP_PATH and don't want to install packages globally, you must change the configurations in the cesi.service file.
+
 $ export CESI_SETUP_PATH=/opt/cesi
 
 $ # Download the project to /opt/cesi directory
@@ -52,23 +83,21 @@ $ # Install Requirement Packages Into Global Enviroment
 $ cd $CESI_SETUP_PATH
 $ sudo pip3 install -r requirements.txt
 
-$ # Build ui (Optional)
+$ # There are 2 options for ui.
+$ # 1. Build ui (First you must install dependencies for ui)
 $ cd ${CESI_SETUP_PATH}/cesi/ui
 $ sudo yarn install
 $ sudo yarn build
 
-$ # Download the builded ui
+$ # 2. Download the builded ui
 $ cd ${CESI_SETUP_PATH}/cesi/ui
-$ wget https://github.com/gamegos/cesi/releases/download/2.0/build-ui.tar -O build.tar
+$ wget https://github.com/gamegos/cesi/releases/download/v2.0/build-ui.tar -O build.tar
 $ tar -xvf build.tar
 
 $ # Create cesi.conf file and update cesi.conf for your environment.
 $ # Config file documentation can be found inside default file.
 $ # (You must create cesi.conf in the etc directory for cesi.service)
 $ sudo cp ${CESI_SETUP_PATH}/defaults/cesi.conf /etc/cesi.conf
-
-$ # Run with command line
-$ sudo python3 ${CESI_SETUP_PATH}/cesi/run.py --config path/to/cesi.conf
 
 $ # Run as a service
 $ sudo cp ${CESI_SETUP_PATH}/defaults/cesi.service /etc/systemd/system/cesi.service

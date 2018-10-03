@@ -37,7 +37,7 @@ const deleteRequest = url => {
 };
 
 const activitylogs = {
-  get: () => getRequest("/v2/activitylogs/"),
+  get: () => getRequest("/v2/activitylogs/20/"),
   clear: () => deleteRequest("/v2/activitylogs/")
 };
 

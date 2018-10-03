@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Container } from "reactstrap";
 
-import { ActivityLogs, DashboardSummary } from "scenes/dashboard/component";
+import { ActivityLogs, DashboardSummary } from "scenes/dashboard/components";
 
 class DashboardPage extends Component {
   componentDidMount() {

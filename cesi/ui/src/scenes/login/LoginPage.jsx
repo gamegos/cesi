@@ -45,7 +45,7 @@ class LoginPage extends Component {
       <Container className="App">
         <Row>
           <Col>
-            <h2>Log In</h2>
+            <h2>Cesi Log In</h2>
             <Form className="form-signin" onSubmit={this.submitForm}>
               <FormMessage message={formMessage} status={formStatus} />
               <FormGroup>

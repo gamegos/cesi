@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Card, CardTitle, Row, Col, Badge, Container } from "reactstrap";
 
 import Processes from "common/helpers/Processes";
-import FilterOfEnvironments from "scenes/environments/component/FilterOfEnvironments";
+import FilterOfEnvironments from "scenes/environments/components/FilterOfEnvironments";
 
 class EnvironmentsPage extends Component {
   state = {

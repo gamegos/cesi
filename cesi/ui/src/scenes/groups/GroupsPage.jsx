@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Card, CardTitle, Row, Col, Container, Badge } from "reactstrap";
 
 import Processes from "common/helpers/Processes";
-import FilterOfGroups from "scenes/groups/component/FilterOfGroups";
+import FilterOfGroups from "scenes/groups/components/FilterOfGroups";
 
 class GroupsPage extends Component {
   state = {

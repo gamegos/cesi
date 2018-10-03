@@ -1,7 +1,7 @@
 import React from "react";
 import { Row, Col, Button } from "reactstrap";
 
-import { ActivityLogList } from "scenes/dashboard/component";
+import { ActivityLogList } from "scenes/dashboard/components";
 
 const ActivityLogs = ({ logs, refreshLogs, clearLogs }) => {
   return (

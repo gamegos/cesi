@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Row, Col, Table, Container, Button } from "reactstrap";
 
-import AddNewUserModal from "scenes/users/component/AddNewUserModal";
+import AddNewUserModal from "scenes/users/components/AddNewUserModal";
 
 class UsersPage extends Component {
   componentDidMount() {

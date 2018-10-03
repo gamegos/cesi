@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Row, Col, Container } from "reactstrap";
 
 import Processes from "common/helpers/Processes";
-import FilterOfNodes from "scenes/nodes/component/FilterOfNodes";
+import FilterOfNodes from "scenes/nodes/components/FilterOfNodes";
 
 class NodesPage extends Component {
   state = {

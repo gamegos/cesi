@@ -32,11 +32,20 @@ class LoginPage extends Component {
   submitForm = e => {
     e.preventDefault();
     const { username, password } = this.state;
-    this.props.onLogIn(username, password);
-    this.setState({
-      formStatus: "danger",
-      formMessage: "Invalid username or password"
-    });
+    this.props
+      .onLogIn(username, password)
+      .then(() =>
+        this.setState({
+          formStatus: "success",
+          formMessage: "Successfully logged in."
+        })
+      )
+      .catch(error =>
+        this.setState({
+          formStatus: "danger",
+          formMessage: "Invalid username or password"
+        })
+      );
   };
 
   render() {

@@ -118,14 +118,18 @@ class App extends Component {
       .catch(error => console.log(error));
   };
   handleLogIn = (username, password) => {
-    api.auth
-      .logIn(username, password)
-      .then(_ => {
-        this.getProfile();
-      })
-      .catch(error => {
-        console.log(error);
-      });
+    return new Promise((resolve, reject) => {
+      api.auth
+        .logIn(username, password)
+        .then(_ => {
+          resolve("okey");
+          this.getProfile();
+        })
+        .catch(error => {
+          console.log(error);
+          reject(error);
+        });
+    });
   };
 
   handleLogOut = () => {

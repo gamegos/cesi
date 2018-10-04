@@ -5,6 +5,7 @@ import getConnectedAndNotConnectedNode from "util/index";
 
 const DashboardSummary = ({ environments, nodes }) => {
   // Nodes and Processes
+  console.log("DashboardSummary: Nodes:", nodes);
   const { connectedNodes, notConnectedNodes } = getConnectedAndNotConnectedNode(
     nodes
   );
@@ -22,10 +23,10 @@ const DashboardSummary = ({ environments, nodes }) => {
     }
   }
   // Environments
-  const NotDefaultsEnvironmentNodes = [];
+  const NotDefaultEnvironmentNodes = [];
   for (const environment of environments) {
-    if (environment.name !== "defaults") {
-      NotDefaultsEnvironmentNodes.push(...environment.members);
+    if (environment.name !== "default") {
+      NotDefaultEnvironmentNodes.push(...environment.members);
     }
   }
 
@@ -38,7 +39,7 @@ const DashboardSummary = ({ environments, nodes }) => {
             <Badge color="secondary">{environments.length - 1}</Badge>
           </CardTitle>
           <CardText>
-            {NotDefaultsEnvironmentNodes.length} Nodes | 0 Processes
+            {NotDefaultEnvironmentNodes.length} Nodes | 0 Processes
           </CardText>
         </Card>
       </Col>

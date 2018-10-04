@@ -80,12 +80,14 @@ class App extends Component {
 
   getEnvironmets = async () => {
     const result = await api.environments.get();
-
+    console.log("GetEnvironments:", result);
     return Promise.all(
       result.environments.map(async environment => {
         const name = environment.name;
         let members = await Promise.all(
-          environment.members.map(member => api.nodes.getNode(member))
+          environment.members.map(member =>
+            api.nodes.getNode(member.general.name)
+          )
         );
         members = members.map(member => member.node);
         return { name, members };
@@ -94,9 +96,11 @@ class App extends Component {
   };
 
   refreshEnvironments = () => {
-    this.getEnvironmets().then(environments => {
-      this.setState({ environments });
-    });
+    this.getEnvironmets()
+      .then(environments => {
+        this.setState({ environments });
+      })
+      .catch(error => console.log(error));
   };
 
   getUsers = async () => {

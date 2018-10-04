@@ -53,13 +53,6 @@ class Cesi:
         self.load_config()
         Cesi.__instance = self
 
-    def drop_database(self):
-        conn = self.get_db_connection()
-        cur = conn.cursor()
-        cur.execute("""DROP TABLE userinfo""")
-        conn.commit()
-        conn.close()
-
     def check_database(self):
         conn = self.get_db_connection()
         print("Connected Database!")

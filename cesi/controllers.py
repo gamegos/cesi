@@ -46,3 +46,9 @@ def update_user_password(username, new_password):
         "update userinfo set password=? where username=?", [new_password, username]
     )
     g.db_conn.commit()
+
+
+def drop_database():
+    cur = g.db_conn.cursor()
+    cur.execute("""DROP TABLE userinfo""")
+    g.db_conn.commit()

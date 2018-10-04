@@ -12,6 +12,7 @@ from flask import (
 from core import Cesi
 from loggers import ActivityLog
 from decorators import is_user_logged_in, is_admin, is_admin_or_normal_user
+from controllers import drop_database
 from run import app, VERSION
 
 cesi = Cesi.getInstance()
@@ -51,7 +52,7 @@ def user_info():
 
 @app.route("/{}/initdb/".format(VERSION))
 def initdb():
-    cesi.drop_database()
+    drop_database()
     cesi.check_database()
     return jsonify(status="success", message="Yeah, We initialized the database.")
 

@@ -39,5 +39,21 @@ class Process:
             }
         )
 
+    @property
+    def node(self):
+        return self.dictionary["node"]
+
+    @node.setter
+    def node(self, name):
+        self.dictionary["node"] = name
+
+    @property
+    def environment(self):
+        return self.dictionary["environment"]
+
+    @environment.setter
+    def environment(self, name):
+        self.dictionary["environment"] = name
+
     def serialize(self):
         return self.dictionary

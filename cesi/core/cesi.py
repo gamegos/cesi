@@ -150,9 +150,13 @@ class Cesi:
             elif section.name[:4] == "node":
                 # 'node:<name>'
                 clean_name = section.name[5:]
+                environment = section.get("environment")
+                if environment == "":
+                    environment = "defaults"
+
                 _node = Node(
                     name=clean_name,
-                    environment=section.get("environment"),
+                    environment=environment,
                     host=section.get("host"),
                     port=section.get("port"),
                     username=section.get("username"),
@@ -235,23 +239,35 @@ class Cesi:
 
         return _node
 
-    def get_node_by_environment(self, environment_name):
-        for n in self.nodes:
-            if n.environment == environment_name:
-                return n
-
-        return None
-
-    def get_node_by_environment_or_400(self, environment_name):
-        node = self.get_node_by_environment(environment_name)
-        if node is None:
-            abort(400, description="Wrong environment name")
-
-        return node
-
     def serialize_nodes(self):
         return [n.serialize() for n in self.nodes]
 
-    def serialize(self):
-        _serialized_nodes = self.serialize_nodes()
-        return dict(_serialized_nodes)
+    def get_environment_names(self):
+        environment_names = set()
+        for n in self.nodes:
+            environment_names.add(n.environment)
+
+        return list(environment_names)
+
+    def get_nodes_by_environment(self, environment_name):
+        nodes = []
+        for n in self.nodes:
+            if n.environment == environment_name:
+                nodes.append(n.serialize())
+
+        return nodes
+
+    def get_environment_details(self, environment_name):
+        environment = {
+            "name": environment_name,
+            "nodes": self.get_nodes_by_environment(environment_name),
+        }
+        return environment
+
+    def serialize_environments(self):
+        environments_with_details = []
+        for environment_name in self.get_environment_names():
+            environment_detail = self.get_environment_details(environment_name)
+            environments_with_details.append(environment_detail)
+
+        return environments_with_details

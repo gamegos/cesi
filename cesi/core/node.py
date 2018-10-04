@@ -6,8 +6,9 @@ from .process import Process
 
 
 class Node:
-    def __init__(self, name, host, port, username, password):
+    def __init__(self, name, environment, host, port, username, password):
         self.name = name
+        self.environment = environment
         self.host = host
         self.port = port
         self.username = username
@@ -100,6 +101,7 @@ class Node:
     def serialize_general(self):
         return {
             "name": self.name,
+            "environment": self.environment,
             "host": self.host,
             "port": self.port,
             "username": self.username,

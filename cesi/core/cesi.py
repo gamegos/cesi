@@ -5,7 +5,6 @@ import configparser
 from flask import abort
 
 from .node import Node
-from .environment import Environment
 
 
 class Cesi:
@@ -29,8 +28,7 @@ class Cesi:
             ],
             "boolean_fields": ["debug", "auto_reload"],
         },
-        "node": {"fields": ["host", "port", "username", "password"]},
-        "environment": {"fields": ["members"]},
+        "node": {"fields": ["host", "port", "username", "password", "environment"]},
     }
 
     @staticmethod
@@ -119,18 +117,6 @@ class Cesi:
                             )
                         )
 
-            elif section.name[:11] == "environment":
-                # 'environtment:<name>'
-                clean_name = section.name[12:]
-                for field in self.__necessaries["environment"]["fields"]:
-                    value = section.get(field, None)
-                    if value is None:
-                        sys.exit(
-                            "Failed to read {0} file, Not found '{1}' field in '{2}' environment section.".format(
-                                Cesi.__config_file_path, field, clean_name
-                            )
-                        )
-
             else:
                 sys.exit(
                     "Failed to open/find {0} file, Unknowed section name: '{1}'".format(
@@ -150,7 +136,6 @@ class Cesi:
     def parse_config(self):
         self.__cesi = {}
         self.nodes = []
-        self.environments = []
 
         config = configparser.ConfigParser()
         dataset = config.read(Cesi.__config_file_path)
@@ -174,24 +159,15 @@ class Cesi:
                 clean_name = section.name[5:]
                 _node = Node(
                     name=clean_name,
+                    environment=section.get("environment"),
                     host=section.get("host"),
                     port=section.get("port"),
                     username=section.get("username"),
                     password=section.get("password"),
                 )
                 self.nodes.append(_node)
-            elif section.name[:11] == "environment":
-                # 'environtment:<name>'
-                clean_name = section.name[12:]
-                members_string = section.get("members")
-                _environment = Environment(
-                    name=clean_name, members_string=members_string
-                )
-                self.environments.append(_environment)
             else:
                 pass
-
-        self.fill_defaults_environment()
 
     def __getattr__(self, name):
         if name in self.__cesi.keys():
@@ -266,46 +242,23 @@ class Cesi:
 
         return _node
 
-    def fill_defaults_environment(self):
-        # fill defaults
-        empty_nodes = []
-        for node in self.nodes:
-            _environment = self.get_environment_by_node_name(node.name)
-            if not _environment:
-                empty_nodes.append(node.name)
-
-        environment = Environment(name="defaults")
-        environment.set_members(empty_nodes)
-        self.environments.append(environment)
-
-    def get_environment(self, environment_name):
-        for e in self.environments:
-            if e.name == environment_name:
-                return e
+    def get_node_by_environment(self, environment_name):
+        for n in self.nodes:
+            if n.environment == environment_name:
+                return n
 
         return None
 
-    def get_environment_or_400(self, environment_name):
-        _environment = self.get_environment(environment_name)
-        if _environment is None:
+    def get_node_by_environment_or_400(self, environment_name):
+        node = self.get_node_by_environment(environment_name)
+        if node is None:
             abort(400, description="Wrong environment name")
 
-        return _environment
-
-    def get_environment_by_node_name(self, node_name):
-        for e in self.environments:
-            if node_name in e.members:
-                return e
-
-        return None
+        return node
 
     def serialize_nodes(self):
         return [n.serialize() for n in self.nodes]
 
-    def serialize_environments(self):
-        return [e.serialize() for e in self.environments]
-
     def serialize(self):
         _serialized_nodes = self.serialize_nodes()
-        _serialized_environments = self.serialize_environments()
-        return dict(_serialized_nodes, **_serialized_environments)
+        return dict(_serialized_nodes)

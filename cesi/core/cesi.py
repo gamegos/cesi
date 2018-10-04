@@ -172,43 +172,42 @@ class Cesi:
         else:
             raise AttributeError
 
-    @property
-    def groups(self):
-        result = dict()
-        for node in self.nodes:
-            if node.is_connected:
-                for p in node.processes:
-                    result[p.group] = result.get(p.group, set())
-                    result[p.group].add(node.name)
+    def get_all_processes(self):
+        processes = []
+        for n in self.nodes:
+            if n.is_connected:
+                for p in n.processes:
+                    p.dictionary["node"] = n.name
+                    p.dictionary["environment"] = n.environment
+                    processes.append(p)
+
             else:
-                print("{} is not connected.".format(node.name))
-
-        print("Groups: {}".format(result))
-        return result
-
-    def get_groups_with_environments(self):
-        result = dict()
-        for group_name, node_names in self.groups.items():
-            result[group_name] = result.get(group_name, {})
-            for node_name in node_names:
-                environment = self.get_environment_by_node_name(node_name)
-                if environment:
-                    result[group_name][environment.name] = result[group_name].get(
-                        environment.name, []
+                print(
+                    "{} is not connected for get_all_processes() operation.".format(
+                        n.name
                     )
-                    if node_name not in result[group_name][environment.name]:
-                        result[group_name][environment.name].append(node_name)
+                )
 
-        print("GroupsWithEnvironments: {}".format(result))
-        return result
+        return processes
+
+    def get_groups(self):
+        groups = dict()
+        for p in self.get_all_processes():
+            groups[p.group] = groups.get(p.group, dict())
+            group = groups[p.group]
+            group[p.environment] = group.get(p.environment, [])
+            if p.node not in groups[p.group][p.environment]:
+                groups[p.group][p.environment].append(p.node)
+
+        print("Groups: ", groups)
+        return groups
 
     def get_groups_tree(self):
         result = []
-        for group_name, environments in self.get_groups_with_environments().items():
+        for group_name, environments in self.get_groups().items():
             group = dict()
             group["name"] = group_name
             group["environments"] = []
-            print(group)
             for environment_name, members in environments.items():
                 environment = dict(name=environment_name, members=members)
                 group["environments"].append(environment)

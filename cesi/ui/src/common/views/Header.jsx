@@ -63,28 +63,28 @@ const Header = ({ onLogOut, isAdmin }) => {
       </NavbarBrand>
       <Nav pills>
         <NavItem>
-          <NavLink exact to="/dashboard" tag={RRNavLink}>
+          <NavLink exact replace to="/dashboard" tag={RRNavLink}>
             Dashboard
           </NavLink>
         </NavItem>
         <NavItem>
-          <NavLink exact to="/nodes" tag={RRNavLink}>
+          <NavLink exact replace to="/nodes" tag={RRNavLink}>
             Nodes
           </NavLink>
         </NavItem>
         <NavItem>
-          <NavLink exact to="/environments" tag={RRNavLink}>
+          <NavLink exact replace to="/environments" tag={RRNavLink}>
             Environments
           </NavLink>
         </NavItem>
         <NavItem>
-          <NavLink exact to="/groups" tag={RRNavLink}>
+          <NavLink exact replace to="/groups" tag={RRNavLink}>
             Groups
           </NavLink>
         </NavItem>
         {isAdmin && (
           <NavItem>
-            <NavLink exact to="/users" tag={RRNavLink}>
+            <NavLink exact replace to="/users" tag={RRNavLink}>
               Users
             </NavLink>
           </NavItem>

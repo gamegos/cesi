@@ -152,7 +152,7 @@ class Cesi:
                 clean_name = section.name[5:]
                 environment = section.get("environment")
                 if environment == "":
-                    environment = "defaults"
+                    environment = "default"
 
                 _node = Node(
                     name=clean_name,
@@ -259,7 +259,7 @@ class Cesi:
     def get_environment_details(self, environment_name):
         environment = {
             "name": environment_name,
-            "nodes": self.get_nodes_by_environment(environment_name),
+            "members": self.get_nodes_by_environment(environment_name),
         }
         return environment
 

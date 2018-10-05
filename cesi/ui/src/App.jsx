@@ -103,6 +103,17 @@ class App extends Component {
       .catch(error => console.log(error));
   };
 
+  refreshDashboardSummary = () => {
+    this.getEnvironmets()
+      .then(environments => {
+        this.setState({ environments });
+      })
+      .then(_ => {
+        this.refreshNodes();
+      })
+      .catch(error => console.log(error));
+  };
+
   getUsers = async () => {
     try {
       const result = await api.users.get();
@@ -190,8 +201,7 @@ class App extends Component {
                       nodes={this.state.nodes}
                       clearActivityLogs={this.clearActivityLogs}
                       refreshActivityLogs={this.refreshActivityLogs}
-                      refreshEnvironments={this.refreshEnvironments}
-                      refreshNodes={this.refreshNodes}
+                      refreshDashboardSummary={this.refreshDashboardSummary}
                     />
                   )}
                 />

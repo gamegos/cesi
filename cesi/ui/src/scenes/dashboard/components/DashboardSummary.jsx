@@ -22,31 +22,35 @@ const DashboardSummary = ({ environments, nodes }) => {
       }
     }
   }
-  // Environments
-  const NotDefaultEnvironmentNodes = [];
-  for (const environment of environments) {
-    if (environment.name !== "default") {
-      NotDefaultEnvironmentNodes.push(...environment.members);
-    }
-  }
+
+  const environmentNodes = environments.reduce(
+    (nodes, env) => nodes.concat(...env.members),
+    []
+  );
+  console.log(environmentNodes);
+
+  const amountOfProcessesForEnvironment = environmentNodes.reduce(
+    (total, node) => total + node.processes.length,
+    0
+  );
 
   return (
     <Row className="justify-content-md-center">
       <Col>
         <Card body>
           <CardTitle>
-            Environments{" "}
-            <Badge color="secondary">{environments.length - 1}</Badge>
+            Environments <Badge color="secondary">{environments.length}</Badge>
           </CardTitle>
           <CardText>
-            {NotDefaultEnvironmentNodes.length} Nodes | 0 Processes
+            {environmentNodes.length} Nodes | {amountOfProcessesForEnvironment}{" "}
+            Processes
           </CardText>
         </Card>
       </Col>
       <Col>
         <Card body>
           <CardTitle>
-            Nodes <Badge color="secondary">3</Badge>
+            Nodes <Badge color="secondary">{nodes.length}</Badge>
           </CardTitle>
           <CardText>
             {connectedNodes.length} Connected | {notConnectedNodes.length}{" "}

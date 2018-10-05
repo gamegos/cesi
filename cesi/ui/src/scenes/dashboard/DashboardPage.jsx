@@ -6,8 +6,7 @@ import { ActivityLogs, DashboardSummary } from "scenes/dashboard/components";
 class DashboardPage extends Component {
   componentDidMount() {
     this.props.refreshActivityLogs();
-    this.props.refreshEnvironments();
-    this.props.refreshNodes();
+    this.props.refreshDashboardSummary();
   }
   render() {
     const {

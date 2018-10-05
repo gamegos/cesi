@@ -4,8 +4,7 @@ import { Row, Col, Badge, Card, CardTitle, CardText } from "reactstrap";
 import getConnectedAndNotConnectedNode from "util/index";
 
 const DashboardSummary = ({ environments, nodes }) => {
-  // Nodes and Processes
-  console.log("DashboardSummary: Nodes:", nodes);
+  // Nodes and Processes Sections
   const { connectedNodes, notConnectedNodes } = getConnectedAndNotConnectedNode(
     nodes
   );
@@ -23,11 +22,11 @@ const DashboardSummary = ({ environments, nodes }) => {
     }
   }
 
+  // Environments Section
   const environmentNodes = environments.reduce(
     (nodes, env) => nodes.concat(...env.members),
     []
   );
-  console.log(environmentNodes);
 
   const amountOfProcessesForEnvironment = environmentNodes.reduce(
     (total, node) => total + node.processes.length,

@@ -13,11 +13,11 @@ import {
   UsersPage,
   HomePage
 } from "scenes/index";
+
 import Header from "common/views/Header";
 
 class App extends Component {
   state = {
-    loggedIn: false,
     profile: null,
     logs: [],
     nodes: [],
@@ -26,162 +26,81 @@ class App extends Component {
     groups: []
   };
 
-  getActivityLogs = async () => {
-    try {
-      const result = await api.activitylogs.get();
-      return result.logs;
-    } catch (error) {
-      console.log(error);
-      return [];
-    }
+  handleRefreshActivityLogs = async () => {
+    const logs = await api.activitylogs.get();
+    this.setState({ logs });
   };
 
-  refreshActivityLogs = () => {
-    console.log("Refreshing...");
-    this.getActivityLogs().then(logs => this.setState({ logs }));
+  handleClearActivityLogs = async () => {
+    await api.activitylogs.clear();
+    this.setState({ logs: [] });
   };
 
-  clearActivityLogs = () => {
-    api.activitylogs.clear().then(_ => this.setState({ logs: [] }));
+  handleRefreshGroups = async () => {
+    const groups = await api.groups.get();
+    this.setState({ groups });
   };
 
-  getGroups = async () => {
-    try {
-      const result = await api.groups.get();
-      console.log(result);
-      return result.groups;
-    } catch (error) {
-      console.log(error);
-      return [];
-    }
+  handleRefreshNodes = async () => {
+    const nodes = await api.nodes.get();
+    this.setState({ nodes });
   };
 
-  refreshGroups = () => {
-    this.getGroups().then(groups => {
-      this.setState({ groups });
-    });
+  handleRefreshEnvironments = async () => {
+    const environments = await api.environments.get();
+    this.setState({ environments });
   };
 
-  getNodes = async () => {
-    try {
-      const result = await api.nodes.get();
-      return result.nodes;
-    } catch (error) {
-      console.log(error);
-      return [];
-    }
+  handleRefreshDashboardSummary = async () => {
+    await this.handleRefreshEnvironments();
+    await this.handleRefreshNodes();
   };
 
-  refreshNodes = () => {
-    this.getNodes().then(nodes => {
-      this.setState({ nodes });
-    });
+  handleRefreshUsers = async () => {
+    const users = await api.users.get();
+    this.setState({ users });
   };
 
-  getEnvironmets = async () => {
-    const result = await api.environments.get();
-    console.log("GetEnvironments:", result);
-    return Promise.all(
-      result.environments.map(async environment => {
-        const name = environment.name;
-        let members = await Promise.all(
-          environment.members.map(member =>
-            api.nodes.getNode(member.general.name)
-          )
-        );
-        members = members.map(member => member.node);
-        return { name, members };
-      })
-    );
-  };
-
-  refreshEnvironments = () => {
-    this.getEnvironmets()
-      .then(environments => {
-        this.setState({ environments });
-      })
-      .catch(error => console.log(error));
-  };
-
-  refreshDashboardSummary = () => {
-    this.getEnvironmets()
-      .then(environments => {
-        this.setState({ environments });
-      })
-      .then(_ => {
-        this.refreshNodes();
-      })
-      .catch(error => console.log(error));
-  };
-
-  getUsers = async () => {
-    try {
-      const result = await api.users.get();
-      return result.users;
-    } catch (error) {
-      console.log(error);
-      return [];
-    }
-  };
-  refreshUsers = () => {
-    this.getUsers().then(users => this.setState({ users }));
-  };
-  removeUser = username => {
+  handleRemoveUser = username => {
     api.users
       .remove(username)
-      .then(_ => this.refreshUsers())
+      .then(() => this.handleRefreshUsers())
       .catch(error => console.log(error));
   };
+
   handleLogIn = (username, password) => {
-    return new Promise((resolve, reject) => {
-      api.auth
-        .logIn(username, password)
-        .then(_ => {
-          resolve("okey");
-          this.getProfile();
-        })
-        .catch(error => {
-          console.log(error);
-          reject(error);
-        });
+    return new Promise(async (resolve, reject) => {
+      try {
+        await api.auth.logIn(username, password);
+        resolve("okey");
+        this.handleRefreshProfile();
+      } catch (error) {
+        console.log(error);
+        reject(error);
+      }
     });
   };
 
   handleLogOut = () => {
     api.auth
       .logOut()
-      .then(_ => {
-        this.setState({
-          profile: null,
-          loggedIn: false
-        });
+      .then(() => {
+        this.handleRefreshProfile();
       })
-      .catch(error => {
-        console.log(error);
-      });
+      .catch(error => console.log(error));
   };
 
-  getProfile = () => {
-    api.profile
-      .get()
-      .then(json => {
-        this.setState({
-          profile: json.user,
-          loggedIn: true
-        });
-      })
-      .catch(error => {
-        console.log(error);
-      });
+  handleRefreshProfile = async () => {
+    const profile = await api.profile.get();
+    this.setState({ profile });
   };
   componentDidMount() {
-    this.getProfile();
+    this.handleRefreshProfile();
   }
   render() {
-    console.log("Render");
     return (
       <React.Fragment>
-        {this.state.loggedIn ? (
+        {this.state.profile ? (
           <HashRouter>
             <React.Fragment>
               <Header
@@ -199,9 +118,11 @@ class App extends Component {
                       logs={this.state.logs}
                       environments={this.state.environments}
                       nodes={this.state.nodes}
-                      clearActivityLogs={this.clearActivityLogs}
-                      refreshActivityLogs={this.refreshActivityLogs}
-                      refreshDashboardSummary={this.refreshDashboardSummary}
+                      clearActivityLogs={this.handleClearActivityLogs}
+                      refreshActivityLogs={this.handleRefreshActivityLogs}
+                      refreshDashboardSummary={
+                        this.handleRefreshDashboardSummary
+                      }
                     />
                   )}
                 />
@@ -212,7 +133,7 @@ class App extends Component {
                     <NodesPage
                       {...props}
                       nodes={this.state.nodes}
-                      refreshNodes={this.refreshNodes}
+                      refreshNodes={this.handleRefreshNodes}
                     />
                   )}
                 />
@@ -223,7 +144,7 @@ class App extends Component {
                     <EnvironmentsPage
                       {...props}
                       environments={this.state.environments}
-                      refreshEnvironments={this.refreshEnvironments}
+                      refreshEnvironments={this.handleRefreshEnvironments}
                     />
                   )}
                 />
@@ -234,9 +155,9 @@ class App extends Component {
                     <GroupsPage
                       {...props}
                       groups={this.state.groups}
-                      refreshGroups={this.refreshGroups}
+                      refreshGroups={this.handleRefreshGroups}
                       nodes={this.state.nodes}
-                      refreshNodes={this.refreshNodes}
+                      refreshNodes={this.handleRefreshNodes}
                     />
                   )}
                 />
@@ -247,8 +168,8 @@ class App extends Component {
                     <UsersPage
                       {...props}
                       users={this.state.users}
-                      refreshUsers={this.refreshUsers}
-                      removeUser={this.removeUser}
+                      refreshUsers={this.handleRefreshUsers}
+                      removeUser={this.handleRemoveUser}
                     />
                   )}
                 />

@@ -12,7 +12,6 @@ class GroupsPage extends Component {
     const target = event.target;
     const value = target.type === "checkbox" ? target.checked : target.value;
     const name = target.name;
-    console.log(name, value);
     if (value) {
       this.setState(prevState => ({
         checks: prevState.checks.concat([name])
@@ -31,9 +30,6 @@ class GroupsPage extends Component {
   render() {
     const { checks } = this.state;
     const { groups, nodes, refreshNodes } = this.props;
-    console.log(groups);
-    console.log(checks);
-    console.log(nodes);
     const filterFunc = process => {
       return checks.includes(process.group);
     };
@@ -68,21 +64,5 @@ class GroupsPage extends Component {
     );
   }
 }
-
-/**
- * {groups.map(group => (
-      <React.Fragment key={group.name}>
-        <h1>{group.name}</h1>
-        {group.environments.map(environment => (
-          <React.Fragment key={environment.name}>
-            <h4>{environment.name}</h4>
-            {environment.members.map(member => (
-              <p key={member}>{member}</p>
-            ))}
-          </React.Fragment>
-        ))}
-      </React.Fragment>
-    ))}
-*/
 
 export default GroupsPage;

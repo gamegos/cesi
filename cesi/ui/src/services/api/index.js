@@ -37,7 +37,15 @@ const deleteRequest = url => {
 };
 
 const activitylogs = {
-  get: () => getRequest("/v2/activitylogs/20/"),
+  get: async () => {
+    try {
+      const response = await getRequest("/v2/activitylogs/20/");
+      return response.logs;
+    } catch (error) {
+      console.log(error);
+      return [];
+    }
+  },
   clear: () => deleteRequest("/v2/activitylogs/")
 };
 
@@ -51,8 +59,14 @@ const auth = {
 };
 
 const profile = {
-  get: () => {
-    return getRequest("/v2/profile/");
+  get: async () => {
+    try {
+      const response = await getRequest("/v2/profile/");
+      return response.user;
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
   },
   changePassword: (oldPassword, newPassword) => {
     return putRequest("/v2/profile/password/", { oldPassword, newPassword });
@@ -60,8 +74,14 @@ const profile = {
 };
 
 const nodes = {
-  get: () => {
-    return getRequest("/v2/nodes/");
+  get: async () => {
+    try {
+      const result = await getRequest("/v2/nodes/");
+      return result.nodes;
+    } catch (error) {
+      console.log(error);
+      return [];
+    }
   },
   getNode: nodeName => {
     return getRequest(`/v2/nodes/${nodeName}/`);
@@ -107,8 +127,14 @@ const processes = {
 };
 
 const users = {
-  get: () => {
-    return getRequest("/v2/users/");
+  get: async () => {
+    try {
+      const result = await getRequest("/v2/users/");
+      return result.users;
+    } catch (error) {
+      console.log(error);
+      return [];
+    }
   },
   add: (username, password, usertype) => {
     return postRequest("/v2/users/", { username, password, usertype });
@@ -119,14 +145,39 @@ const users = {
 };
 
 const environments = {
-  get: () => {
-    return getRequest("/v2/environments/");
+  get: async () => {
+    try {
+      const result = await getRequest("/v2/environments/");
+      console.log("GetEnvironments:", result);
+      return Promise.all(
+        result.environments.map(async environment => {
+          const name = environment.name;
+          let members = await Promise.all(
+            environment.members.map(member =>
+              nodes.getNode(member.general.name)
+            )
+          );
+          members = members.map(member => member.node);
+          return { name, members };
+        })
+      );
+    } catch (error) {
+      console.log(error);
+      return [];
+    }
   }
 };
 
 const groups = {
-  get: () => {
-    return getRequest("/v2/groups/");
+  get: async () => {
+    try {
+      const result = await getRequest("/v2/groups/");
+      console.log(result);
+      return result.groups;
+    } catch (error) {
+      console.log(error);
+      return [];
+    }
   }
 };
 export default {

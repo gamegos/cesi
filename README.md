@@ -62,7 +62,7 @@ $ # 1. Build ui (First you must install dependencies for ui)
 
 $ # 2. Download the builded ui
 (venv) $ cd ${CESI_SETUP_PATH}/cesi/ui
-(venv) $ wget https://github.com/gamegos/cesi/releases/download/v2.1/build-ui.tar -O build.tar
+(venv) $ wget https://github.com/gamegos/cesi/releases/download/v2.2/build-ui.tar -O build.tar
 (venv) $ tar -xvf build.tar
 
 $ # Run with command line
@@ -91,7 +91,7 @@ $ sudo yarn build
 
 $ # 2. Download the builded ui
 $ cd ${CESI_SETUP_PATH}/cesi/ui
-$ wget https://github.com/gamegos/cesi/releases/download/v2.1/build-ui.tar -O build.tar
+$ wget https://github.com/gamegos/cesi/releases/download/v2.2/build-ui.tar -O build.tar
 $ tar -xvf build.tar
 
 $ # Create cesi.conf file and update cesi.conf for your environment.

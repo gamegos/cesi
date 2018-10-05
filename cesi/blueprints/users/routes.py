@@ -53,17 +53,25 @@ def add_new_user():
         controllers.add_user(
             new_user["username"], new_user["password"], new_user["usertype"]
         )
-        activity.logger.error("New user added({}).".format(session["username"]))
+        activity.logger.info(
+            "'{}' user added by '{}' user.".format(
+                new_user["username"], session["username"]
+            )
+        )
         return jsonify(status="success", message="User added")
     except Exception as e:
         print(e)
         activity.logger.error(
-            "Username is not available. Please select different username"
+            "'{}' username is not available for creating new user.".format(
+                new_user["username"]
+            )
         )
         return (
             jsonify(
                 status="error",
-                message="Username is not available. Please select different username",
+                message="'{}' username is not available. Please select different username".format(
+                    new_user["username"]
+                ),
             ),
             400,
         )
@@ -82,7 +90,7 @@ def delete_user(username):
         return jsonify(status="error", message="Admin can't be deleted"), 403
 
     controllers.delete_user(username)
-    activity.logger.error(
+    activity.logger.info(
         "'{}' user deleted by '{}' user.".format(username, session["username"])
     )
     return jsonify(status="success")

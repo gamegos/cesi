@@ -36,7 +36,11 @@ class EnvironmentsPage extends Component {
         <Row>
           <Col sm={{ size: "auto" }}>
             <Card body>
-              <CardTitle>Environments</CardTitle>
+              <CardTitle>
+                Environments{" "}
+                <Badge color="secondary">{environments.length}</Badge>
+              </CardTitle>
+
               <FilterOfEnvironments
                 environments={this.props.environments}
                 checks={this.state.checks}

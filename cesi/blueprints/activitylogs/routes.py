@@ -18,7 +18,7 @@ def get_activity_log():
     except Exception as e:
         return jsonify(status="error", message=str(e)), 500
 
-    return jsonify(status="success", logs=data)
+    return jsonify(status="success", logs=data[::-1])
 
 
 @activitylogs.route("/<int:limit>/")
@@ -30,7 +30,7 @@ def get_activity_log_with_limit(limit):
     except Exception as e:
         return jsonify(status="error", message=str(e)), 500
 
-    return jsonify(status="success", logs=data[-limit:])
+    return jsonify(status="success", logs=data[-limit::][::-1])
 
 
 @activitylogs.route("/", methods=["DELETE"])

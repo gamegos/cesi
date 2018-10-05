@@ -5,6 +5,14 @@ import PropTypes from "prop-types";
 import api from "services/api";
 
 class Processes extends Component {
+  static propTypes = {
+    node: PropTypes.object.isRequired,
+    filterFunc: PropTypes.func
+  };
+  static defaultProps = {
+    filterFunc: () => true
+  };
+
   handleAllProcess = action => {
     const nodeName = this.props.node.general.name;
     api.nodes.allProcess[action](nodeName).then(() => {
@@ -95,7 +103,7 @@ class Processes extends Component {
               </tbody>
             </Table>
           ) : (
-            <p>There isn't any processes.</p>
+            <p>No processes configured.</p>
           )}
         </Card>
         <br />
@@ -103,13 +111,5 @@ class Processes extends Component {
     );
   }
 }
-Processes.propTypes = {
-  node: PropTypes.object.isRequired,
-  filterFunc: PropTypes.func
-};
-
-Processes.defaultProps = {
-  filterFunc: () => true
-};
 
 export default Processes;

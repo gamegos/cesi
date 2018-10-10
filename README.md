@@ -44,26 +44,17 @@ $ sudo npm install -g yarn
 
 ```bash
 $ export CESI_SETUP_PATH=~/cesi
+$ mkdir ${CESI_SETUP_PATH}
+$ cd ${CESI_SETUP_PATH}
 
 $ # Download the project to ~/cesi directory
-$ git clone https://github.com/gamegos/cesi $CESI_SETUP_PATH
+$ wget https://github.com/gamegos/cesi/releases/download/v2.3/cesi.tar.gz -O cesi.tar.gz
+$ tar -xvf cesi.tar.gz
 
 $ # Create virtual environment and install requirement packages
-$ cd $CESI_SETUP_PATH
 $ python3 -m venv venv
 $ source venv/bin/activate
 (venv) $ pip3 install -r requirements.txt
-
-# There are 2 options for ui.
-$ # 1. Build ui (First you must install dependencies for ui)
-(venv) $ cd ${CESI_SETUP_PATH}/cesi/ui
-(venv) $ yarn install
-(venv) $ yarn build
-
-$ # 2. Download the builded ui
-(venv) $ cd ${CESI_SETUP_PATH}/cesi/ui
-(venv) $ wget https://github.com/gamegos/cesi/releases/download/v2.2/build-ui.tar -O build.tar
-(venv) $ tar -xvf build.tar
 
 $ # Run with command line
 (venv) $ python3 ${CESI_SETUP_PATH}/cesi/run.py --config ${CESI_SETUP_PATH}/defaults/cesi.conf
@@ -91,7 +82,7 @@ $ sudo yarn build
 
 $ # 2. Download the builded ui
 $ cd ${CESI_SETUP_PATH}/cesi/ui
-$ wget https://github.com/gamegos/cesi/releases/download/v2.2/build-ui.tar -O build.tar
+$ wget https://github.com/gamegos/cesi/releases/download/v2.3/build-ui.tar -O build.tar
 $ tar -xvf build.tar
 
 $ # Create cesi.conf file and update cesi.conf for your environment.

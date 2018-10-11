@@ -96,6 +96,13 @@ $ sudo systemctl daemon-reload
 $ sudo systemctl start cesi
 ```
 
+**Running Cesi with uWSGI**
+
+You may want to run Cesi using uWSGI (or any other WSGI deamon). Configure your system in the similiar way to running as a service and use `uwsgi` to start app. Check `defaults/cesi-uwsgi.ini` for details.
+
+While running with uWSGI Cesi config host and port are ignored.
+
+
 ## First Login
 
 Please change password after first login!

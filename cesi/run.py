@@ -16,16 +16,12 @@ app = Flask(
 app.config.from_object(__name__)
 app.secret_key = os.urandom(24)
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Cesi web server")
 
-    parser.add_argument("-c", "--config", type=str, help="config file", required=True)
-
-    args = parser.parse_args()
-    cesi = Cesi(config_file_path=args.config)
+def configure(config_file_path):
+    cesi = Cesi(config_file_path=config_file_path)
     activity = ActivityLog(log_path=cesi.activity_log)
 
-    from routes import *
+    import routes
 
     # or dynamic import
     from blueprints.nodes.routes import nodes
@@ -45,6 +41,18 @@ if __name__ == "__main__":
     app.register_blueprint(profile, url_prefix="/{}/profile".format(VERSION))
 
     signal.signal(signal.SIGHUP, lambda signum, frame: cesi.reload())
+
+    return cesi
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Cesi web server")
+
+    parser.add_argument("-c", "--config", type=str, help="config file", required=True)
+
+    args = parser.parse_args()
+
+    cesi = configure(args.config)
 
     app.run(
         host=cesi.host, port=cesi.port, use_reloader=cesi.auto_reload, debug=cesi.debug

@@ -48,7 +48,7 @@ $ mkdir ${CESI_SETUP_PATH}
 $ cd ${CESI_SETUP_PATH}
 
 $ # Download the project to ~/cesi directory
-$ wget https://github.com/gamegos/cesi/releases/download/v2.3/cesi.tar.gz -O cesi.tar.gz
+$ wget https://github.com/gamegos/cesi/releases/download/v2.4/cesi.tar.gz -O cesi.tar.gz
 $ tar -xvf cesi.tar.gz
 
 $ # Create virtual environment and install requirement packages
@@ -82,7 +82,7 @@ $ sudo yarn build
 
 $ # 2. Download the builded ui
 $ cd ${CESI_SETUP_PATH}/cesi/ui
-$ wget https://github.com/gamegos/cesi/releases/download/v2.3/build-ui.tar -O build.tar
+$ wget https://github.com/gamegos/cesi/releases/download/v2.4/build-ui.tar -O build.tar
 $ tar -xvf build.tar
 
 $ # Create cesi.conf file and update cesi.conf for your environment.
@@ -101,7 +101,6 @@ $ sudo systemctl start cesi
 You may want to run Cesi using uWSGI (or any other WSGI deamon). Configure your system in the similiar way to running as a service and use `uwsgi` to start app. Check `defaults/cesi-uwsgi.ini` for details.
 
 While running with uWSGI Cesi config host and port are ignored.
-
 
 ## First Login
 

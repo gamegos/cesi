@@ -29,17 +29,6 @@ $ # On Fedora 28
 $ sudo dnf install -y git python3 python3-pip
 ```
 
-**Install Dependencies For Cesi Ui (Optional)**
-
-```bash
-$ # On Ubuntu [18.04]
-$ sudo apt install -y nodejs npm
-$ sudo npm install -g yarn
-$ # On Centos 7
-$ sudo yum install -y nodejs
-$ sudo npm install -g yarn
-```
-
 **Install Cesi**
 
 ```bash
@@ -57,33 +46,31 @@ $ source venv/bin/activate
 (venv) $ pip3 install -r requirements.txt
 
 $ # Run with command line
-(venv) $ python3 ${CESI_SETUP_PATH}/cesi/run.py --config ${CESI_SETUP_PATH}/defaults/cesi.conf
+(venv) $ python3 ${CESI_SETUP_PATH}/cesi/run.py --config-file ${CESI_SETUP_PATH}/defaults/cesi.conf
 ```
 
 **Install Cesi as a service**
 
 ```bash
-$ # If you want to change CESI_SETUP_PATH and don't want to install packages globally, you must change the configurations in the cesi.service file.
-
+$ # If you want to change CESI_SETUP_PATH, you must change the configurations in the cesi.service file.
 $ export CESI_SETUP_PATH=/opt/cesi
+$ mkdir ${CESI_SETUP_PATH}
+$ cd ${CESI_SETUP_PATH}
 
-$ # Download the project to /opt/cesi directory
-$ sudo git clone https://github.com/gamegos/cesi $CESI_SETUP_PATH
+$ # Download the project to CESI_SETUP_PATH directory
+$ wget https://github.com/gamegos/cesi/releases/download/v2.4/cesi.tar.gz -O cesi.tar.gz
+$ tar -xvf cesi.tar.gz
 
-$ # Install Requirement Packages Into Global Enviroment
-$ cd $CESI_SETUP_PATH
-$ sudo pip3 install -r requirements.txt
+$ # Create virtual environment and install requirement packages
+$ python3 -m venv venv
+$ source venv/bin/activate
+(venv) $ pip3 install -r requirements.txt
+(venv) $ deactivate
 
-$ # There are 2 options for ui.
-$ # 1. Build ui (First you must install dependencies for ui)
+$ # Build ui (First you must install dependencies for ui -> yarn) - Optional
 $ cd ${CESI_SETUP_PATH}/cesi/ui
-$ sudo yarn install
-$ sudo yarn build
-
-$ # 2. Download the builded ui
-$ cd ${CESI_SETUP_PATH}/cesi/ui
-$ wget https://github.com/gamegos/cesi/releases/download/v2.4/build-ui.tar -O build.tar
-$ tar -xvf build.tar
+$ yarn install
+$ yarn build
 
 $ # Create cesi.conf file and update cesi.conf for your environment.
 $ # Config file documentation can be found inside default file.

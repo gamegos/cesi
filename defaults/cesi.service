@@ -3,7 +3,7 @@ Description=cesi
 
 [Service]
 Environment=
-ExecStart=/opt/cesi/cesi/run.py --config /etc/cesi.conf
+ExecStart=/opt/cesi/venv/bin/python3 /opt/cesi/cesi/run.py --config-file /etc/cesi.conf
 ExecReload=/bin/kill -HUP $MAINPID
 KillSignal=TERM
 User=root

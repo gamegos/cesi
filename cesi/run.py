@@ -8,7 +8,9 @@ from flask import Flask, render_template, jsonify, g
 from core import Cesi
 from loggers import ActivityLog
 
-VERSION = "v2"
+__version__ = "2.3"
+
+API_VERSION = "v2"
 
 
 def configure(config_file_path):
@@ -50,13 +52,17 @@ def configure(config_file_path):
     from blueprints.auth.routes import auth
     from blueprints.profile.routes import profile
 
-    app.register_blueprint(nodes, url_prefix="/{}/nodes".format(VERSION))
-    app.register_blueprint(activitylogs, url_prefix="/{}/activitylogs".format(VERSION))
-    app.register_blueprint(environments, url_prefix="/{}/environments".format(VERSION))
-    app.register_blueprint(groups, url_prefix="/{}/groups".format(VERSION))
-    app.register_blueprint(users, url_prefix="/{}/users".format(VERSION))
-    app.register_blueprint(auth, url_prefix="/{}/auth".format(VERSION))
-    app.register_blueprint(profile, url_prefix="/{}/profile".format(VERSION))
+    app.register_blueprint(nodes, url_prefix="/{}/nodes".format(API_VERSION))
+    app.register_blueprint(
+        activitylogs, url_prefix="/{}/activitylogs".format(API_VERSION)
+    )
+    app.register_blueprint(
+        environments, url_prefix="/{}/environments".format(API_VERSION)
+    )
+    app.register_blueprint(groups, url_prefix="/{}/groups".format(API_VERSION))
+    app.register_blueprint(users, url_prefix="/{}/users".format(API_VERSION))
+    app.register_blueprint(auth, url_prefix="/{}/auth".format(API_VERSION))
+    app.register_blueprint(profile, url_prefix="/{}/profile".format(API_VERSION))
 
     signal.signal(signal.SIGHUP, lambda signum, frame: cesi.reload())
 
@@ -66,12 +72,22 @@ def configure(config_file_path):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Cesi web server")
 
-    parser.add_argument("-c", "--config", type=str, help="config file", required=True)
+    parser.add_argument("-c", "--config-file", help="config file", required=True)
+    parser.add_argument("--host", help="Host of the cesi", default="0.0.0.0")
+    parser.add_argument("-p", "--port", help="Port of the cesi", default="5000")
+    parser.add_argument(
+        "--debug", help="Actived debug mode of the cesi", action="store_true"
+    )
+    parser.add_argument(
+        "--auto-reload",
+        help="Reload if app code changes (dev mode)",
+        action="store_true",
+    )
+    parser.add_argument("--version", action="version", version=__version__)
 
     args = parser.parse_args()
-
-    app, cesi = configure(args.config)
+    app, cesi = configure(args.config_file)
 
     app.run(
-        host=cesi.host, port=cesi.port, use_reloader=cesi.auto_reload, debug=cesi.debug
+        host=args.host, port=args.port, use_reloader=args.auto_reload, debug=args.debug
     )

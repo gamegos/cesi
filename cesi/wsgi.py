@@ -1,4 +1,4 @@
 import os
-from run import configure, app
+from run import configure
 
-configure(os.environ['CESI_CONFIG_PATH'])
+app, _ = configure(os.environ["CESI_CONFIG_PATH"])

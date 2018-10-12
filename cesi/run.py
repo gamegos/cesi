@@ -3,25 +3,43 @@ import argparse
 import signal
 import os
 
-from flask import Flask
+from flask import Flask, render_template, jsonify, g
 
 from core import Cesi
 from loggers import ActivityLog
 
 VERSION = "v2"
 
-app = Flask(
-    __name__, static_folder="ui/build", static_url_path="", template_folder="ui/build"
-)
-app.config.from_object(__name__)
-app.secret_key = os.urandom(24)
-
 
 def configure(config_file_path):
     cesi = Cesi(config_file_path=config_file_path)
     activity = ActivityLog(log_path=cesi.activity_log)
 
-    import routes
+    app = Flask(
+        __name__,
+        static_folder="ui/build",
+        static_url_path="",
+        template_folder="ui/build",
+    )
+    app.config.from_object(__name__)
+    app.secret_key = os.urandom(24)
+
+    app.add_url_rule("/", "index", lambda: render_template("index.html"))
+
+    @app.before_request
+    def _():
+        # Open db connection
+        g.db_conn = cesi.get_db_connection()
+
+    app.teardown_appcontext(lambda _: g.db_conn.close())
+
+    @app.errorhandler(404)
+    def _(error):
+        return jsonify(status="error", message=error.name), 404
+
+    @app.errorhandler(400)
+    def _(error):
+        return jsonify(status="error", message=error.description), 400
 
     # or dynamic import
     from blueprints.nodes.routes import nodes
@@ -42,7 +60,7 @@ def configure(config_file_path):
 
     signal.signal(signal.SIGHUP, lambda signum, frame: cesi.reload())
 
-    return cesi
+    return app, cesi
 
 
 if __name__ == "__main__":
@@ -52,7 +70,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    cesi = configure(args.config)
+    app, cesi = configure(args.config)
 
     app.run(
         host=cesi.host, port=cesi.port, use_reloader=cesi.auto_reload, debug=cesi.debug

@@ -15,18 +15,13 @@ class Cesi:
     __necessaries = {
         "cesi": {
             "fields": [
-                "host",
-                "port",
                 "name",
                 "theme",
                 "activity_log",
                 "database",
-                "debug",
-                "auto_reload",
                 "admin_username",
                 "admin_password",
-            ],
-            "boolean_fields": ["debug", "auto_reload"],
+            ]
         },
         "node": {"fields": ["host", "port", "username", "password", "environment"]},
     }
@@ -89,15 +84,6 @@ class Cesi:
                             )
                         )
 
-                    # Checking boolean field
-                    if field in self.__necessaries["cesi"]["boolean_fields"]:
-                        if not value in ["True", "False"]:
-                            sys.exit(
-                                "Failed to read {0} file, '{1}' field is not True or False.".format(
-                                    Cesi.__config_file_path, field
-                                )
-                            )
-
             elif section.name[:4] == "node":
                 # 'node:<name>'
                 clean_name = section.name[5:]
@@ -141,11 +127,7 @@ class Cesi:
             section = config[section_name]
             if section.name == "cesi":
                 for field in self.__necessaries["cesi"]["fields"]:
-                    value = section.get(field)
-                    if field in self.__necessaries["cesi"]["boolean_fields"]:
-                        value = True if value == "True" else False
-
-                    self.__cesi[field] = value
+                    self.__cesi[field] = section.get(field)
 
             elif section.name[:4] == "node":
                 # 'node:<name>'

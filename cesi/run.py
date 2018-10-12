@@ -8,7 +8,7 @@ from flask import Flask, render_template, jsonify, g
 from core import Cesi
 from loggers import ActivityLog
 
-__version__ = "2.3"
+__version__ = "2.4"
 
 API_VERSION = "v2"
 

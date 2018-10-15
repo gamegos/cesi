@@ -2,6 +2,7 @@
 import argparse
 import signal
 import os
+import importlib
 
 from flask import Flask, render_template, jsonify, g
 
@@ -43,26 +44,24 @@ def configure(config_file_path):
     def _(error):
         return jsonify(status="error", message=error.description), 400
 
-    # or dynamic import
-    from blueprints.nodes.routes import nodes
-    from blueprints.activitylogs.routes import activitylogs
-    from blueprints.environments.routes import environments
-    from blueprints.groups.routes import groups
-    from blueprints.users.routes import users
-    from blueprints.auth.routes import auth
-    from blueprints.profile.routes import profile
-
-    app.register_blueprint(nodes, url_prefix="/{}/nodes".format(API_VERSION))
-    app.register_blueprint(
-        activitylogs, url_prefix="/{}/activitylogs".format(API_VERSION)
-    )
-    app.register_blueprint(
-        environments, url_prefix="/{}/environments".format(API_VERSION)
-    )
-    app.register_blueprint(groups, url_prefix="/{}/groups".format(API_VERSION))
-    app.register_blueprint(users, url_prefix="/{}/users".format(API_VERSION))
-    app.register_blueprint(auth, url_prefix="/{}/auth".format(API_VERSION))
-    app.register_blueprint(profile, url_prefix="/{}/profile".format(API_VERSION))
+    # Import and register blueprint modules dynamically
+    #   from blueprints.nodes.routes import nodes
+    #   app.register_blueprint(nodes, url_prefix="/{}/nodes".format(API_VERSION))
+    blueprint_names = [
+        "nodes",
+        "activitylogs",
+        "environments",
+        "groups",
+        "users",
+        "auth",
+        "profile",
+    ]
+    for blueprint_name in blueprint_names:
+        module = importlib.import_module("blueprints.{}.routes".format(blueprint_name))
+        blueprint = getattr(module, blueprint_name)
+        app.register_blueprint(
+            blueprint, url_prefix="/{}/{}".format(API_VERSION, blueprint_name)
+        )
 
     signal.signal(signal.SIGHUP, lambda signum, frame: cesi.reload())
 

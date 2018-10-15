@@ -1,0 +1,14 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+Flask = "==1.0.2"
+
+[dev-packages]
+black = "==18.9b0"
+pylint = "==2.1.1"
+
+[requires]
+python_version = "3.7"

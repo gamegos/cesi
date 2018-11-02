@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, session, request
+from flask import Blueprint, jsonify, request, g
 
 from decorators import is_user_logged_in
 from loggers import ActivityLog
@@ -11,7 +11,7 @@ activity = ActivityLog.getInstance()
 @profile.route("/", methods=["GET"])
 @is_user_logged_in("Illegal request to get your own information")
 def get_own_info():
-    user = controllers.get_user(session["username"])
+    user = controllers.get_user(g.username)
     print(user)
     return jsonify(status="success", user=user)
 
@@ -19,7 +19,7 @@ def get_own_info():
 @profile.route("/password/", methods=["PUT"])
 @is_user_logged_in("Illegal request to change your own password.")
 def change_own_password():
-    username = session["username"]
+    username = g.username
     data = request.get_json()
     old_password = data.get("oldPassword")
     new_password = data.get("newPassword")

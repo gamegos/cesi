@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, session, request, g
+from flask import Blueprint, jsonify, request, g
 
 from decorators import is_user_logged_in, is_admin
 from loggers import ActivityLog
@@ -54,9 +54,7 @@ def add_new_user():
             new_user["username"], new_user["password"], new_user["usertype"]
         )
         activity.logger.info(
-            "'{}' user added by '{}' user.".format(
-                new_user["username"], session["username"]
-            )
+            "'{}' user added by '{}' user.".format(new_user["username"], g.username)
         )
         return jsonify(status="success", message="User added")
     except Exception as e:
@@ -84,13 +82,11 @@ def delete_user(username):
     if username == "admin":
         activity.logger.error(
             "'{}' user request for delete 'admin' user. Delete 'admin' user event fail.".format(
-                session["username"]
+                g.username
             )
         )
         return jsonify(status="error", message="Admin can't be deleted"), 403
 
     controllers.delete_user(username)
-    activity.logger.info(
-        "'{}' user deleted by '{}' user.".format(username, session["username"])
-    )
+    activity.logger.info("'{}' user deleted by '{}' user.".format(username, g.username))
     return jsonify(status="success")

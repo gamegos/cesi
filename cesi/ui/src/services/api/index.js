@@ -1,5 +1,7 @@
 import axios from "axios";
 
+const API_PREFIX = "/api/v2";
+
 const getRequest = url => {
   return axios
     .get(url)
@@ -39,29 +41,29 @@ const deleteRequest = url => {
 const activitylogs = {
   get: async () => {
     try {
-      const response = await getRequest("/v2/activitylogs/20/");
+      const response = await getRequest(`${API_PREFIX}/activitylogs/20/`);
       return response.logs;
     } catch (error) {
       console.log(error);
       return [];
     }
   },
-  clear: () => deleteRequest("/v2/activitylogs/")
+  clear: () => deleteRequest(`${API_PREFIX}/activitylogs/`)
 };
 
 const auth = {
   logIn: (username, password) => {
-    return postRequest("/v2/auth/login/", { username, password });
+    return postRequest(`${API_PREFIX}/auth/login/`, { username, password });
   },
   logOut: () => {
-    return postRequest("/v2/auth/logout/");
+    return postRequest(`${API_PREFIX}/auth/logout/`);
   }
 };
 
 const profile = {
   get: async () => {
     try {
-      const response = await getRequest("/v2/profile/");
+      const response = await getRequest(`${API_PREFIX}/profile/`);
       return response.user;
     } catch (error) {
       console.log(error);
@@ -69,14 +71,17 @@ const profile = {
     }
   },
   changePassword: (oldPassword, newPassword) => {
-    return putRequest("/v2/profile/password/", { oldPassword, newPassword });
+    return putRequest(`${API_PREFIX}/profile/password/`, {
+      oldPassword,
+      newPassword
+    });
   }
 };
 
 const nodes = {
   get: async () => {
     try {
-      const result = await getRequest("/v2/nodes/");
+      const result = await getRequest(`${API_PREFIX}/nodes/`);
       return result.nodes;
     } catch (error) {
       console.log(error);
@@ -84,44 +89,52 @@ const nodes = {
     }
   },
   getNode: nodeName => {
-    return getRequest(`/v2/nodes/${nodeName}/`);
+    return getRequest(`${API_PREFIX}/nodes/${nodeName}/`);
   },
   allProcess: {
     start: nodeName => {
-      return getRequest(`/v2/nodes/${nodeName}/all-processes/start/`);
+      return getRequest(`${API_PREFIX}/nodes/${nodeName}/all-processes/start/`);
     },
     stop: nodeName => {
-      return getRequest(`/v2/nodes/${nodeName}/all-processes/stop/`);
+      return getRequest(`${API_PREFIX}/nodes/${nodeName}/all-processes/stop/`);
     },
     restart: nodeName => {
-      return getRequest(`/v2/nodes/${nodeName}/all-processes/restart/`);
+      return getRequest(
+        `${API_PREFIX}/nodes/${nodeName}/all-processes/restart/`
+      );
     }
   }
 };
 
 const processes = {
   get: nodeName => {
-    return getRequest(`/v2/nodes/${nodeName}/processes/`);
+    return getRequest(`${API_PREFIX}/nodes/${nodeName}/processes/`);
   },
   process: {
     get: (nodeName, processName) => {
-      return getRequest(`/v2/nodes/${nodeName}/processes/${processName}/`);
+      return getRequest(
+        `${API_PREFIX}/nodes/${nodeName}/processes/${processName}/`
+      );
     },
     start: (nodeName, processName) => {
       return getRequest(
-        `/v2/nodes/${nodeName}/processes/${processName}/start/`
+        `${API_PREFIX}/nodes/${nodeName}/processes/${processName}/start/`
       );
     },
     stop: (nodeName, processName) => {
-      return getRequest(`/v2/nodes/${nodeName}/processes/${processName}/stop/`);
+      return getRequest(
+        `${API_PREFIX}/nodes/${nodeName}/processes/${processName}/stop/`
+      );
     },
     restart: (nodeName, processName) => {
       return getRequest(
-        `/v2/nodes/${nodeName}/processes/${processName}/restart/`
+        `${API_PREFIX}/nodes/${nodeName}/processes/${processName}/restart/`
       );
     },
     log: (nodeName, processName) => {
-      return getRequest(`/v2/nodes/${nodeName}/processes/${processName}/info/`);
+      return getRequest(
+        `${API_PREFIX}/nodes/${nodeName}/processes/${processName}/info/`
+      );
     }
   }
 };
@@ -129,7 +142,7 @@ const processes = {
 const users = {
   get: async () => {
     try {
-      const result = await getRequest("/v2/users/");
+      const result = await getRequest(`${API_PREFIX}/users/`);
       return result.users;
     } catch (error) {
       console.log(error);
@@ -137,17 +150,21 @@ const users = {
     }
   },
   add: (username, password, usertype) => {
-    return postRequest("/v2/users/", { username, password, usertype });
+    return postRequest(`${API_PREFIX}/users/`, {
+      username,
+      password,
+      usertype
+    });
   },
   remove: username => {
-    return deleteRequest(`/v2/users/${username}/`);
+    return deleteRequest(`${API_PREFIX}/users/${username}/`);
   }
 };
 
 const environments = {
   get: async () => {
     try {
-      const result = await getRequest("/v2/environments/");
+      const result = await getRequest(`${API_PREFIX}/environments/`);
       console.log("GetEnvironments:", result);
       return Promise.all(
         result.environments.map(async environment => {
@@ -171,7 +188,7 @@ const environments = {
 const groups = {
   get: async () => {
     try {
-      const result = await getRequest("/v2/groups/");
+      const result = await getRequest(`${API_PREFIX}/groups/`);
       console.log(result);
       return result.groups;
     } catch (error) {

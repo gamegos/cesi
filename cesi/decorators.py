@@ -1,4 +1,4 @@
-from flask import session, jsonify
+from flask import session, jsonify, g
 from functools import wraps
 from datetime import datetime
 
@@ -8,6 +8,8 @@ def is_user_logged_in(log_message=""):
         @wraps(f)
         def wrap(*args, **kwargs):
             if session.get("logged_in"):
+                g.username = session["username"]
+                g.usertypecode = session["usertypecode"]
                 return f(*args, **kwargs)
 
             if not log_message == "":
@@ -25,14 +27,12 @@ def is_admin_or_normal_user(log_message=""):
     def actual_decorator(f):
         @wraps(f)
         def wrap(*args, **kwargs):
-            username = session["username"]
-            usertypecode = session["usertypecode"]
-            if usertypecode == 0 or usertypecode == 1:
+            if g.usertypecode in [0, 1]:
                 return f(*args, **kwargs)
 
             if not log_message == "":
                 message = log_message.format(**kwargs)
-                print("{0}: {1}".format(username, message))
+                print("{0}: {1}".format(g.username, message))
 
             return (
                 jsonify(status="error", message="You are not authorized this action"),
@@ -48,14 +48,12 @@ def is_admin(log_message=""):
     def actual_decorator(f):
         @wraps(f)
         def wrap(*args, **kwargs):
-            username = session["username"]
-            usertypecode = session["usertypecode"]
-            if usertypecode == 0:
+            if g.usertypecode == 0:
                 return f(*args, **kwargs)
 
             if not log_message == "":
                 message = log_message.format(**kwargs)
-                print("{0}: {1}".format(username, message))
+                print("{0}: {1}".format(g.username, message))
 
             return (
                 jsonify(status="error", message="You are not authorized this action"),

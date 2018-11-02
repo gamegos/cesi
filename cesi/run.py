@@ -8,16 +8,11 @@ from flask import Flask, render_template, jsonify, g
 
 from core import Cesi
 from loggers import ActivityLog
-
-__version__ = "2.4"
-
-API_VERSION = "v2"
+from version import __version__
+from api import register_blueprints
 
 
-def configure(config_file_path):
-    cesi = Cesi(config_file_path=config_file_path)
-    activity = ActivityLog(log_path=cesi.activity_log)
-
+def create_app(cesi):
     app = Flask(
         __name__,
         static_folder="ui/build",
@@ -44,24 +39,16 @@ def configure(config_file_path):
     def _(error):
         return jsonify(status="error", message=error.description), 400
 
-    # Import and register blueprint modules dynamically
-    #   from blueprints.nodes.routes import nodes
-    #   app.register_blueprint(nodes, url_prefix="/{}/nodes".format(API_VERSION))
-    blueprint_names = [
-        "nodes",
-        "activitylogs",
-        "environments",
-        "groups",
-        "users",
-        "auth",
-        "profile",
-    ]
-    for blueprint_name in blueprint_names:
-        module = importlib.import_module("blueprints.{}.routes".format(blueprint_name))
-        blueprint = getattr(module, blueprint_name)
-        app.register_blueprint(
-            blueprint, url_prefix="/{}/{}".format(API_VERSION, blueprint_name)
-        )
+    register_blueprints(app)
+
+    return app
+
+
+def configure(config_file_path):
+    cesi = Cesi(config_file_path=config_file_path)
+    _ = ActivityLog(log_path=cesi.activity_log)
+
+    app = create_app(cesi)
 
     signal.signal(signal.SIGHUP, lambda signum, frame: cesi.reload())
 

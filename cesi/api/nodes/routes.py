@@ -155,16 +155,13 @@ def read_process_log(node_name, process_name):
         if not node.is_connected:
             return jsonify(status="error", message="Node is not connected"), 400
 
-        log_string = node.connection.supervisor.tailProcessStdoutLog(
-            process_name, 0, 500
-        )[0]
-        log_list = log_string.split("\n")[1:-1]
+        logs = node.get_process_logs(process_name)
         activity.logger.info(
             "{} read log {} node's {} process.".format(
                 g.username, node_name, process_name
             )
         )
-        return jsonify(status="success", logs=log_list)
+        return jsonify(status="success", logs=logs)
     else:
         activity.logger.info(
             "{} is unauthorized user request for read log. Read log event fail for {} node's {} process.".format(

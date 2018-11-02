@@ -59,6 +59,13 @@ class Node:
 
         return process
 
+    def get_process_logs(self, process_name):
+        log_string = self.connection.supervisor.tailProcessStdoutLog(
+            process_name, 0, 500
+        )[0]
+        log_list = log_string.split("\n")[1:-1]
+        return log_list
+
     def get_processes_by_group_name(self, group_name):
         return [p for p in self.processes if p.group == group_name]
 

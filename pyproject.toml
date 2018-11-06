@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "cesi"
+version = "2.4.1"
+description = "CeSI is a web interface for managing multiple supervisors from the same place."
+authors = ["Fatih Sarhan <f9n@protonmail.com>"]
+license = "GPL-3.0"
+
+[tool.poetry.dependencies]
+python = "^3.4"
+flask = "^1.0"
+
+[tool.poetry.dev-dependencies]
+pylint = "^2.1"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"

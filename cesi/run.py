@@ -5,31 +5,43 @@ import os
 import importlib
 
 from flask import Flask, render_template, jsonify, g
+from flask_sqlalchemy import SQLAlchemy
 
-from core import Cesi
-from loggers import ActivityLog
 from version import __version__
-from api import register_blueprints
+
+db = SQLAlchemy()
 
 
 def create_app(cesi):
+    from api import register_blueprints
+
     app = Flask(
         __name__,
         static_folder="ui/build",
         static_url_path="",
         template_folder="ui/build",
     )
-    app.config.from_object(__name__)
+    app.config["SQLALCHEMY_DATABASE_URI"] = cesi.database
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.secret_key = os.urandom(24)
+
+    db.init_app(app)
 
     app.add_url_rule("/", "index", lambda: render_template("index.html"))
 
+    @app.route("/initial_database")
+    def initial_database():
+        cesi.create_default_database()
+        return "OK"
+
+    """
     @app.before_request
     def _():
         # Open db connection
         g.db_conn = cesi.get_db_connection()
 
     app.teardown_appcontext(lambda _: g.db_conn.close())
+    """
 
     @app.errorhandler(404)
     def _(error):
@@ -45,6 +57,9 @@ def create_app(cesi):
 
 
 def configure(config_file_path):
+    from core import Cesi
+    from loggers import ActivityLog
+
     cesi = Cesi(config_file_path=config_file_path)
     _ = ActivityLog(log_path=cesi.activity_log)
 

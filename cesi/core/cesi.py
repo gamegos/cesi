@@ -1,10 +1,11 @@
 import sys
-import sqlite3
 import configparser
 
 from flask import abort
 
 from .node import Node
+from models import User
+from run import db
 
 
 class Cesi:
@@ -48,29 +49,6 @@ class Cesi:
         self.load_config()
         Cesi.__instance = self
 
-    def check_database(self):
-        conn = self.get_db_connection()
-        print("Connected Database!")
-        cur = conn.cursor()
-        # Check userinfo table
-        sql_create_userinfo_table = """create table if not exists userinfo(
-            username varchar(30) PRIMARY KEY NOT NULL,
-            password varchar(50) NOT NULL,
-            type INT NOT NULL);"""
-        cur.execute(sql_create_userinfo_table)
-        conn.commit()
-        # check admin user.
-        sql_insert_admin_user = """insert into userinfo values('{username}', '{password}', 0);""".format(
-            username=self.admin_username, password=self.admin_password
-        )
-        try:
-            cur.execute(sql_insert_admin_user)
-            conn.commit()
-        except Exception as e:
-            print(e)
-
-        conn.close()
-
     def __check_config_file(self, config):
         for section_name in config.sections():
             section = config[section_name]
@@ -110,7 +88,15 @@ class Cesi:
 
     def load_config(self):
         self.parse_config()
-        self.check_database()
+
+    def create_default_database(self):
+        ### Drop All tables
+        db.reflect()
+        db.drop_all()
+        ### Create Tables
+        db.create_all()
+        ### Add Admin User
+        admin_user = User.register(username="admin", password="admin", usertype=0)
 
     def parse_config(self):
         self.__cesi = {}
@@ -198,13 +184,6 @@ class Cesi:
 
         print("GroupsTree: {}".format(result))
         return result
-
-    def get_db_connection(self):
-        try:
-            conn = sqlite3.connect(self.database)
-            return conn
-        except Exception as e:
-            sys.exit(e)
 
     def get_node(self, node_name):
         for n in self.nodes:

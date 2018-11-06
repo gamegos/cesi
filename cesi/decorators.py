@@ -2,6 +2,8 @@ from flask import session, jsonify, g
 from functools import wraps
 from datetime import datetime
 
+from models import User
+
 
 def is_user_logged_in(log_message=""):
     def actual_decorator(f):
@@ -9,7 +11,7 @@ def is_user_logged_in(log_message=""):
         def wrap(*args, **kwargs):
             if session.get("logged_in"):
                 g.username = session["username"]
-                g.usertypecode = session["usertypecode"]
+                g.user = User.query.filter_by(username=session["username"]).first()
                 return f(*args, **kwargs)
 
             if not log_message == "":
@@ -27,7 +29,7 @@ def is_admin_or_normal_user(log_message=""):
     def actual_decorator(f):
         @wraps(f)
         def wrap(*args, **kwargs):
-            if g.usertypecode in [0, 1]:
+            if g.user.is_admin and g.user.is_normal_user:
                 return f(*args, **kwargs)
 
             if not log_message == "":
@@ -48,7 +50,7 @@ def is_admin(log_message=""):
     def actual_decorator(f):
         @wraps(f)
         def wrap(*args, **kwargs):
-            if g.usertypecode == 0:
+            if g.user.is_admin:
                 return f(*args, **kwargs)
 
             if not log_message == "":

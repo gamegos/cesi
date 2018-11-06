@@ -1,54 +1,37 @@
-from flask import g
+from run import db
+from models import User
 
 
 def get_users():
-    cur = g.db_conn.cursor()
-    cur.execute("select username, type from userinfo")
-    result = cur.fetchall()
-    users = [{"name": str(element[0]), "type": str(element[1])} for element in result]
-    return users
+    users = User.query.all()
+    result = [{"name": user.username, "type": str(user.usertype)} for user in users]
+    return result
 
 
 def get_user(username):
-    cur = g.db_conn.cursor()
-    cur.execute("select * from userinfo where username=?", (username,))
-    result = cur.fetchall()
-    if not result:
+    user = User.query.filter_by(username=username).first()
+    if not user:
         return {}
 
-    user = {"name": result[0][0], "type": result[0][2]}
-    return user
+    result = {"name": user.username, "type": user.usertype}
+    return result
 
 
 def delete_user(username):
-    cur = g.db_conn.cursor()
-    cur.execute("delete from userinfo where username=?", [username])
-    g.db_conn.commit()
+    user = user = User.query.filter_by(username=username).first()
+    db.session.delete(user)
+    db.session.commit()
 
 
 def add_user(username, password, usertype):
-    cur = g.db_conn.cursor()
-    cur.execute("insert into userinfo values(?, ?, ?)", (username, password, usertype))
-    g.db_conn.commit()
+    User.register(username=username, password=password, usertype=usertype)
 
 
 def validate_user(username, password):
-    cur = g.db_conn.cursor()
-    cur.execute(
-        "select * from userinfo where username=? and password=?", (username, password)
-    )
-    return cur.fetchall()
+    return User.verify(username, password)
 
 
 def update_user_password(username, new_password):
-    cur = g.db_conn.cursor()
-    cur.execute(
-        "update userinfo set password=? where username=?", [new_password, username]
-    )
-    g.db_conn.commit()
-
-
-def drop_database():
-    cur = g.db_conn.cursor()
-    cur.execute("""DROP TABLE userinfo""")
-    g.db_conn.commit()
+    user = User.query.filter_by(username=username).first()
+    user.set_password(new_password)
+    db.session.commit()

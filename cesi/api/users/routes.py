@@ -54,7 +54,9 @@ def add_new_user():
             new_user["username"], new_user["password"], new_user["usertype"]
         )
         activity.logger.info(
-            "'{}' user added by '{}' user.".format(new_user["username"], g.username)
+            "'{}' user added by '{}' user.".format(
+                new_user["username"], g.user.username
+            )
         )
         return jsonify(status="success", message="User added")
     except Exception as e:
@@ -82,11 +84,13 @@ def delete_user(username):
     if username == "admin":
         activity.logger.error(
             "'{}' user request for delete 'admin' user. Delete 'admin' user event fail.".format(
-                g.username
+                g.user.username
             )
         )
         return jsonify(status="error", message="Admin can't be deleted"), 403
 
     controllers.delete_user(username)
-    activity.logger.info("'{}' user deleted by '{}' user.".format(username, g.username))
+    activity.logger.info(
+        "'{}' user deleted by '{}' user.".format(username, g.user.username)
+    )
     return jsonify(status="success")

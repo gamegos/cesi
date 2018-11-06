@@ -39,10 +39,8 @@ def login():
         session.clear()
         return jsonify(status="error", message="Invalid username/password"), 403
 
-    username, _, usertype = result[0]
-    session["username"] = username
+    session["username"] = user_credentials["username"]
     session["logged_in"] = True
-    session["usertypecode"] = usertype
     activity.logger.info("{} logged in.".format(session["username"]))
     return jsonify(status="success", message="Valid username/password")
 

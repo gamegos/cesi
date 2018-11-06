@@ -8,6 +8,7 @@ license = "GPL-3.0"
 [tool.poetry.dependencies]
 python = "^3.4"
 flask = "^1.0"
+flask-sqlalchemy = "^2.3"
 
 [tool.poetry.dev-dependencies]
 pylint = "^2.1"

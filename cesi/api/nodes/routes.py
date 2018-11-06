@@ -59,7 +59,7 @@ def start_process(node_name, process_name):
     if status:
         activity.logger.info(
             "{} started {} node's {} process.".format(
-                g.username, node_name, process_name
+                g.user.username, node_name, process_name
             )
         )
         return jsonify(
@@ -71,7 +71,7 @@ def start_process(node_name, process_name):
     else:
         activity.logger.info(
             "{} unsuccessful start event {} node's {} process.".format(
-                g.username, node_name, process_name
+                g.user.username, node_name, process_name
             )
         )
         return jsonify(status="error", message=msg), 500
@@ -93,7 +93,7 @@ def stop_process(node_name, process_name):
     if status:
         activity.logger.info(
             "{} stopped {} node's {} process.".format(
-                g.username, node_name, process_name
+                g.user.username, node_name, process_name
             )
         )
         return jsonify(
@@ -105,7 +105,7 @@ def stop_process(node_name, process_name):
     else:
         activity.logger.info(
             "{} unsuccessful stop event {} node's {} process.".format(
-                g.username, node_name, process_name
+                g.user.username, node_name, process_name
             )
         )
         return jsonify(status="error", message=msg), 500
@@ -127,7 +127,7 @@ def restart_process(node_name, process_name):
     if status:
         activity.logger.info(
             "{} restarted {} node's {} process.".format(
-                g.username, node_name, process_name
+                g.user.username, node_name, process_name
             )
         )
         return jsonify(
@@ -139,7 +139,7 @@ def restart_process(node_name, process_name):
     else:
         activity.logger.info(
             "{} unsuccessful restart event {} node's {} process.".format(
-                g.username, node_name, process_name
+                g.user.username, node_name, process_name
             )
         )
         return jsonify(status="error", message=msg), 500
@@ -150,7 +150,7 @@ def restart_process(node_name, process_name):
     "Illegal request for read log to {node_name} node's {process_name} process."
 )
 def read_process_log(node_name, process_name):
-    if g.usertypecode in [0, 1, 2]:
+    if g.user.usertype in [0, 1, 2]:
         node = cesi.get_node_or_400(node_name)
         if not node.is_connected:
             return jsonify(status="error", message="Node is not connected"), 400
@@ -158,14 +158,14 @@ def read_process_log(node_name, process_name):
         logs = node.get_process_logs(process_name)
         activity.logger.info(
             "{} read log {} node's {} process.".format(
-                g.username, node_name, process_name
+                g.user.username, node_name, process_name
             )
         )
         return jsonify(status="success", logs=logs)
     else:
         activity.logger.info(
             "{} is unauthorized user request for read log. Read log event fail for {} node's {} process.".format(
-                g.username, node_name, process_name
+                g.user.username, node_name, process_name
             )
         )
         return (
@@ -190,13 +190,13 @@ def start_all_process(node_name):
             if status:
                 activity.logger.info(
                     "{} started {} node's {} process.".format(
-                        g.username, node_name, process.name
+                        g.user.username, node_name, process.name
                     )
                 )
             else:
                 activity.logger.info(
                     "{} unsuccessful start event {} node's {} process.".format(
-                        g.username, node_name, process.name
+                        g.user.username, node_name, process.name
                     )
                 )
 
@@ -219,13 +219,13 @@ def stop_all_process(node_name):
             if status:
                 activity.logger.info(
                     "{} stopped {} node's {} process.".format(
-                        g.username, node_name, process.name
+                        g.user.username, node_name, process.name
                     )
                 )
             else:
                 activity.logger.info(
                     "{} unsuccessful stop event {} node's {} process.".format(
-                        g.username, node_name, process.name
+                        g.user.username, node_name, process.name
                     )
                 )
 
@@ -254,13 +254,13 @@ def restart_all_process(node_name):
         if status:
             activity.logger.info(
                 "{} restarted {} node's {} process.".format(
-                    g.username, node_name, process.name
+                    g.user.username, node_name, process.name
                 )
             )
         else:
             activity.logger.info(
                 "{} unsuccessful restart event {} node's {} process.".format(
-                    g.username, node_name, process.name
+                    g.user.username, node_name, process.name
                 )
             )
 

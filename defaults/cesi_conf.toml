@@ -1,0 +1,44 @@
+# This is the main CeSI toml configuration file. It contains CeSI web application and
+# supervisord information to connect
+
+# This is the CeSI's own configuration.
+[cesi]
+database = "sqlite:///users.db" # Database uri ( etc. "postgres://db_user:db_password@localhost:5432/cesi")
+activity_log = "activity.log"   # File path for CeSI logs
+admin_username = "admin"        # Username of admin user
+admin_password = "admin"        # Password of admin user
+
+# This is the definition section for new supervisord node.
+# [[nodes]]
+# name = "api"          # (String) Unique name for supervisord node.
+# environment = ""      # (String) The environment name provides logical grouping of supervisord nodes. It can be used as filtering option in the UI.
+# username = ""         # (String) Username of the XML-RPC interface of supervisord Set nothing if no username is configured
+# password = ""         # (String) Password of the XML-RPC interface of supervisord. Set nothing if no username is configured
+# host = "127.0.0.1"    # (String) Host of the XML-RPC interface of supervisord
+# port = "9001"         # (String) Port of the XML-RPC interface of supervisord
+
+# Default supervisord nodes
+[[nodes]]
+name = "go-api"
+environment = ""
+username = ""
+password = ""
+host = "127.0.0.1"
+port = "9001"
+
+[[nodes]]
+name = "python-api"
+environment = ""
+username = ""
+password = ""
+host = "localhost"
+port = "9002"
+
+[[nodes]]
+name = "monitoring"
+environment = ""
+username = ""
+password = ""
+host = "127.0.0.1"
+port = "9003"
+

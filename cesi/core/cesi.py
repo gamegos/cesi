@@ -2,30 +2,33 @@ import sys
 import configparser
 
 from flask import abort
+import tomlkit
+from tomlkit.toml_file import TOMLFile
 
 from .node import Node
 from models import User
 from run import db
 
+CESI_CONF_SCHEMA = {
+    "cesi": {"database", "activity_log", "admin_username", "admin_password"},
+    "nodes": {"name", "host", "port", "username", "password", "environment"},
+}
+
 
 class Cesi:
-    """ Cesi """
-
     __instance = None
     __config_file_path = None
-    __necessaries = {
-        "cesi": {
-            "fields": [
-                "name",
-                "theme",
-                "activity_log",
-                "database",
-                "admin_username",
-                "admin_password",
-            ]
-        },
-        "node": {"fields": ["host", "port", "username", "password", "environment"]},
-    }
+
+    def __init__(self, config_file_path):
+        if Cesi.__instance != None:
+            raise Exception(
+                "This class is a singleton! Once you need to create a cesi object."
+            )
+
+        print("Parsing config file...")
+        Cesi.__config_file_path = config_file_path
+        self.load_config()
+        Cesi.__instance = self
 
     @staticmethod
     def getInstance():
@@ -37,57 +40,69 @@ class Cesi:
 
         return Cesi.__instance
 
-    def __init__(self, config_file_path):
-        """ Config File Parsing"""
-        if Cesi.__instance != None:
-            raise Exception(
-                "This class is a singleton! Once you need to create a cesi object."
-            )
+    def __getattr__(self, name):
+        if name in self.__cesi.keys():
+            return self.__cesi[name]
+        else:
+            raise AttributeError
 
-        print("Parsing config file...")
-        Cesi.__config_file_path = config_file_path
-        self.load_config()
-        Cesi.__instance = self
-
-    def __check_config_file(self, config):
-        for section_name in config.sections():
-            section = config[section_name]
-            if section.name == "cesi":
-                for field in self.__necessaries["cesi"]["fields"]:
-                    value = section.get(field, None)
-                    if value is None:
+    def _check_config_file(self, config):
+        for section_name, section_value in config.items():
+            if section_name == "cesi":
+                if not set(section_value) == CESI_CONF_SCHEMA[section_name]:
+                    sys.exit(
+                        "Failed to read {0} configuration file. Problem is the cesi section.".format(
+                            Cesi.__config_file_path
+                        )
+                    )
+            elif section_name == "nodes":
+                for node in section_value:
+                    if not set(node) == CESI_CONF_SCHEMA[section_name]:
                         sys.exit(
-                            "Failed to read {0} file, Not found '{1}' field in Cesi section.".format(
-                                Cesi.__config_file_path, field
+                            "Failed to read {0} configuration file. Problem is the nodes section".format(
+                                Cesi.__config_file_path
                             )
                         )
-
-            elif section.name[:4] == "node":
-                # 'node:<name>'
-                clean_name = section.name[5:]
-                for field in self.__necessaries["node"]["fields"]:
-                    value = section.get(field, None)
-                    if value is None:
-                        sys.exit(
-                            "Failed to read {0} file, Not found '{1}' field in '{2}' node section.".format(
-                                Cesi.__config_file_path, field, clean_name
-                            )
-                        )
-
             else:
                 sys.exit(
-                    "Failed to open/find {0} file, Unknowed section name: '{1}'".format(
-                        Cesi.__config_file_path, section.name
+                    "Failed to read {0} configuration file, Unknown '{1}' section name".format(
+                        Cesi.__config_file_path, section_name
                     )
                 )
+
+        return True
+
+    def parse_config_file(self):
+        try:
+            config = TOMLFile(Cesi.__config_file_path).read()
+        except Exception as e:
+            sys.exit(
+                "Failed to open/find {0} file. {1}".format(Cesi.__config_file_path, e)
+            )
+
+        self._check_config_file(config)
+        self.__cesi = config["cesi"]
+        self.nodes = []
+
+        for node in config["nodes"]:
+            _environment = node["environment"] or "default"
+            _node = Node(
+                name=node["name"],
+                environment=_environment,
+                host=node["host"],
+                port=node["port"],
+                username=node["username"],
+                password=node["password"],
+            )
+            self.nodes.append(_node)
+
+    def load_config(self):
+        self.parse_config_file()
 
     def reload(self):
         print("Reloading...")
         self.load_config()
         print("Reloaded.")
-
-    def load_config(self):
-        self.parse_config()
 
     def create_default_database(self):
         ### Drop All tables
@@ -97,48 +112,6 @@ class Cesi:
         db.create_all()
         ### Add Admin User
         admin_user = User.register(username="admin", password="admin", usertype=0)
-
-    def parse_config(self):
-        self.__cesi = {}
-        self.nodes = []
-
-        config = configparser.ConfigParser()
-        dataset = config.read(Cesi.__config_file_path)
-        if dataset == []:
-            sys.exit("Failed to open/find {0} file".format(Cesi.__config_file_path))
-
-        self.__check_config_file(config)
-
-        for section_name in config.sections():
-            section = config[section_name]
-            if section.name == "cesi":
-                for field in self.__necessaries["cesi"]["fields"]:
-                    self.__cesi[field] = section.get(field)
-
-            elif section.name[:4] == "node":
-                # 'node:<name>'
-                clean_name = section.name[5:]
-                environment = section.get("environment")
-                if environment == "":
-                    environment = "default"
-
-                _node = Node(
-                    name=clean_name,
-                    environment=environment,
-                    host=section.get("host"),
-                    port=section.get("port"),
-                    username=section.get("username"),
-                    password=section.get("password"),
-                )
-                self.nodes.append(_node)
-            else:
-                pass
-
-    def __getattr__(self, name):
-        if name in self.__cesi.keys():
-            return self.__cesi[name]
-        else:
-            raise AttributeError
 
     def get_all_processes(self):
         processes = []

@@ -34,15 +34,6 @@ def create_app(cesi):
         cesi.create_default_database()
         return "OK"
 
-    """
-    @app.before_request
-    def _():
-        # Open db connection
-        g.db_conn = cesi.get_db_connection()
-
-    app.teardown_appcontext(lambda _: g.db_conn.close())
-    """
-
     @app.errorhandler(404)
     def _(error):
         return jsonify(status="error", message=error.name), 404

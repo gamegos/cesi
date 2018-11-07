@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "cesi"
-version = "2.4.1"
+version = "2.5.1"
 description = "CeSI is a web interface for managing multiple supervisors from the same place."
 authors = ["Fatih Sarhan <f9n@protonmail.com>"]
 license = "GPL-3.0"
@@ -9,7 +9,7 @@ license = "GPL-3.0"
 python = "^3.4"
 flask = "^1.0"
 flask-sqlalchemy = "^2.3"
-tomlkit = "^0.4.6"
+tomlkit = "^0.5.0"
 
 [tool.poetry.dev-dependencies]
 pylint = "^2.1"

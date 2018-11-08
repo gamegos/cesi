@@ -1,9 +1,9 @@
 import React from "react";
 
-const HomePage = () => {
+const AboutPage = () => {
   return (
     <div>
-      <h1>Cesi</h1>
+      <h1>CeSI</h1>
       <p>Cesi provides a web interface that manages many supervisors.</p>
       <p>We used these technologies:</p>
       <ul>
@@ -18,4 +18,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default AboutPage;

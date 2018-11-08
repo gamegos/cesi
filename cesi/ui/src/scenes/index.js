@@ -7,4 +7,4 @@ export { default as GroupsPage } from "scenes/groups/GroupsPage";
 export { default as UsersPage } from "scenes/users/UsersPage";
 export { default as ErrorPage } from "scenes/error/ErrorPage";
 export { default as LoginPage } from "scenes/login/LoginPage";
-export { default as HomePage } from "scenes/home/HomePage";
+export { default as AboutPage } from "scenes/about/AboutPage";

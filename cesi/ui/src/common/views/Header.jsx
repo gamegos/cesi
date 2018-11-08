@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 import { NavLink as RRNavLink } from "react-router-dom";
 import {
+  Nav,
   Navbar,
   NavbarBrand,
-  Nav,
+  NavbarToggler,
   NavItem,
   NavLink,
-  NavbarToggler,
   Collapse,
   UncontrolledDropdown,
   DropdownToggle,
@@ -35,7 +35,12 @@ class HeaderProfileSettings extends Component {
                 Settings
               </DropdownToggle>
               <DropdownMenu right>
-                <DropdownItem>
+                <DropdownItem tag="div">
+                  <NavLink to="/about" tag={RRNavLink}>
+                    About
+                  </NavLink>
+                </DropdownItem>
+                <DropdownItem tag="div">
                   <ChangePasswordModal />
                 </DropdownItem>
                 <DropdownItem divider />
@@ -58,7 +63,7 @@ class HeaderProfileSettings extends Component {
 const Header = ({ onLogOut, isAdmin }) => {
   return (
     <Navbar color="light" light expand="md">
-      <NavbarBrand exact to="/" tag={RRNavLink}>
+      <NavbarBrand exact to="/about" tag={RRNavLink}>
         Cesi
       </NavbarBrand>
       <Nav pills>

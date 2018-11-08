@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { HashRouter, Route, Switch } from "react-router-dom";
+import { HashRouter, Route, Switch, Redirect } from "react-router-dom";
 
 import "./App.css";
 import api from "services/api";
@@ -11,7 +11,7 @@ import {
   NodesPage,
   EnvironmentsPage,
   UsersPage,
-  HomePage
+  AboutPage
 } from "scenes/index";
 
 import Header from "common/views/Header";
@@ -68,6 +68,11 @@ class App extends Component {
       .catch(error => console.log(error));
   };
 
+  handleRefreshProfile = async () => {
+    const profile = await api.profile.get();
+    this.setState({ profile });
+  };
+
   handleLogIn = (username, password) => {
     return new Promise(async (resolve, reject) => {
       try {
@@ -90,10 +95,6 @@ class App extends Component {
       .catch(error => console.log(error));
   };
 
-  handleRefreshProfile = async () => {
-    const profile = await api.profile.get();
-    this.setState({ profile });
-  };
   componentDidMount() {
     this.handleRefreshProfile();
   }
@@ -108,7 +109,7 @@ class App extends Component {
                 onLogOut={this.handleLogOut}
               />
               <Switch>
-                <Route path="/" exact component={HomePage} />
+                <Redirect exact from="/" to="/dashboard" />
                 <Route
                   path="/dashboard"
                   exact
@@ -173,6 +174,7 @@ class App extends Component {
                     />
                   )}
                 />
+                <Route path="/about" exact component={AboutPage} />
                 <Route component={ErrorPage} />
               </Switch>
             </React.Fragment>

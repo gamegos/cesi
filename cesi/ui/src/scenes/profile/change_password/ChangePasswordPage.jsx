@@ -1,21 +1,22 @@
 import React from "react";
+
 import {
-  Button,
-  Modal,
-  ModalHeader,
-  ModalBody,
+  Container,
+  Col,
   Form,
   FormGroup,
+  Label,
   Input,
-  Label
+  Button,
+  Row
 } from "reactstrap";
+import { withRouter } from "react-router-dom";
 
 import FormMessage from "common/helpers/FormMessage";
 import api from "services/api";
 
 class ChangePassword extends React.Component {
   state = {
-    modal: false,
     oldPassword: "",
     newPassword: "",
     confirmPassword: "",
@@ -23,15 +24,23 @@ class ChangePassword extends React.Component {
     formStatus: ""
   };
 
-  toggle = () => {
+  handleInputChange = event => {
+    const { name, value } = event.target;
     this.setState({
-      modal: !this.state.modal
+      [name]: value
     });
   };
 
   handleChangePassword = e => {
     e.preventDefault();
     const { oldPassword, newPassword, confirmPassword } = this.state;
+    if (!oldPassword) {
+      this.setState({
+        formStatus: "danger",
+        formMessage: "Please enter valid value old password"
+      });
+      return;
+    }
     if (newPassword !== confirmPassword) {
       this.setState({
         formStatus: "danger",
@@ -47,7 +56,8 @@ class ChangePassword extends React.Component {
           formMessage: "Success! Your Password has been changed!"
         });
         setTimeout(() => {
-          this.toggle();
+          // Redirect home page
+          this.props.history.push("/");
         }, 1000);
       })
       .catch(error => {
@@ -58,13 +68,6 @@ class ChangePassword extends React.Component {
         });
       });
   };
-  handleInputChange = event => {
-    const { name, value } = event.target;
-    this.setState({
-      [name]: value
-    });
-  };
-
   render() {
     const {
       oldPassword,
@@ -74,11 +77,10 @@ class ChangePassword extends React.Component {
       formStatus
     } = this.state;
     return (
-      <div>
-        <span onClick={this.toggle}>Change Password</span>
-        <Modal isOpen={this.state.modal} toggle={this.toggle}>
-          <ModalHeader toggle={this.toggle}>Changing Your Password</ModalHeader>
-          <ModalBody>
+      <Container className="App">
+        <Row>
+          <Col>
+            <h2>Change Password</h2>
             <Form onSubmit={this.handleChangePassword}>
               <FormMessage message={formMessage} status={formStatus} />
               <FormGroup>
@@ -116,11 +118,11 @@ class ChangePassword extends React.Component {
                 Cancel
               </Button>
             </Form>
-          </ModalBody>
-        </Modal>
-      </div>
+          </Col>
+        </Row>
+      </Container>
     );
   }
 }
 
-export default ChangePassword;
+export default withRouter(ChangePassword);

@@ -14,10 +14,9 @@ import {
   DropdownItem
 } from "reactstrap";
 
-import ChangePasswordModal from "common/views/ChangePasswordModal";
-
-class HeaderProfileSettings extends Component {
+class HeaderSettings extends Component {
   state = { isOpen: false };
+
   toggle = () => {
     this.setState({
       isOpen: !this.state.isOpen
@@ -37,11 +36,13 @@ class HeaderProfileSettings extends Component {
               <DropdownMenu right>
                 <DropdownItem tag="div">
                   <NavLink to="/about" tag={RRNavLink}>
-                    About
+                    <strong>About</strong>
                   </NavLink>
                 </DropdownItem>
                 <DropdownItem tag="div">
-                  <ChangePasswordModal />
+                  <NavLink to="/profile/change_password" tag={RRNavLink}>
+                    <strong>Change Password</strong>
+                  </NavLink>
                 </DropdownItem>
                 <DropdownItem divider />
                 <DropdownItem onClick={this.props.onLogOut}>
@@ -95,7 +96,7 @@ const Header = ({ onLogOut, isAdmin }) => {
           </NavItem>
         )}
       </Nav>
-      <HeaderProfileSettings onLogOut={onLogOut} />
+      <HeaderSettings onLogOut={onLogOut} />
     </Navbar>
   );
 };

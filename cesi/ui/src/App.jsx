@@ -11,7 +11,8 @@ import {
   NodesPage,
   EnvironmentsPage,
   UsersPage,
-  AboutPage
+  AboutPage,
+  ChangePasswordPage
 } from "scenes/index";
 
 import Header from "common/views/Header";
@@ -175,6 +176,11 @@ class App extends Component {
                   )}
                 />
                 <Route path="/about" exact component={AboutPage} />
+                <Route
+                  path="/profile/change_password"
+                  exact
+                  component={ChangePasswordPage}
+                />
                 <Route component={ErrorPage} />
               </Switch>
             </React.Fragment>

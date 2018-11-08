@@ -8,3 +8,6 @@ export { default as UsersPage } from "scenes/users/UsersPage";
 export { default as ErrorPage } from "scenes/error/ErrorPage";
 export { default as LoginPage } from "scenes/login/LoginPage";
 export { default as AboutPage } from "scenes/about/AboutPage";
+export {
+  default as ChangePasswordPage
+} from "scenes/profile/change_password/ChangePasswordPage";

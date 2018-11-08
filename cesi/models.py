@@ -32,4 +32,6 @@ class User(db.Model):
     @staticmethod
     def verify(username, password):
         user = User.query.filter_by(username=username).first()
+        if not user:
+            return None
         return user.verify_password(password)

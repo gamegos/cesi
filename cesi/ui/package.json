@@ -4,9 +4,9 @@
   "version": "0.1.0",
   "license": "GPL-3.0",
   "author": {
-    "name": "pleycpl",
-    "email": "h4rvey@protonmail.com",
-    "url": "http://github.com/pleycpl"
+    "name": "Fatih Sarhan",
+    "email": "f9n@protonmail.com",
+    "url": "http://github.com/f9n"
   },
   "contributors": [],
   "keywords": [
@@ -16,11 +16,11 @@
   "dependencies": {
     "axios": "^0.18.0",
     "bootstrap": "^4.1.3",
-    "react": "^16.5.2",
-    "react-dom": "^16.5.2",
+    "react": "^16.6.1",
+    "react-dom": "^16.6.1",
     "react-router-dom": "^4.3.1",
-    "react-scripts": "1.1.5",
-    "reactstrap": "^6.4.0"
+    "react-scripts": "^2.1.1",
+    "reactstrap": "^6.5.0"
   },
   "scripts": {
     "start": "NODE_PATH=src react-scripts start",
@@ -29,5 +29,11 @@
     "eject": "NODE_PATH=src react-scripts eject"
   },
   "proxy": "http://localhost:5000",
-  "devDependencies": {}
+  "devDependencies": {},
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }

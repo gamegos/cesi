@@ -133,7 +133,7 @@ const processes = {
     },
     log: (nodeName, processName) => {
       return getRequest(
-        `${API_PREFIX}/nodes/${nodeName}/processes/${processName}/info/`
+        `${API_PREFIX}/nodes/${nodeName}/processes/${processName}/log/`
       );
     }
   }

@@ -49,7 +49,7 @@ class NodesPage extends Component {
                 <Processes
                   key={node.general.name}
                   node={node}
-                  refresh={refreshNodes}
+                  refreshNodes={refreshNodes}
                 />
               ))}
           </Col>

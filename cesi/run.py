@@ -48,6 +48,10 @@ def configure(config_file_path):
 
     app = create_app(cesi)
 
+    # Check database
+    with app.app_context():
+        cesi.check_database()
+
     signal.signal(signal.SIGHUP, lambda signum, frame: cesi.reload())
 
     return app, cesi
@@ -59,11 +63,6 @@ if __name__ == "__main__":
     parser.add_argument("-c", "--config-file", help="config file", required=True)
     parser.add_argument("--host", help="Host of the cesi", default="0.0.0.0")
     parser.add_argument("-p", "--port", help="Port of the cesi", default="5000")
-    parser.add_argument(
-        "--initialize-database",
-        help="Initialize database of the cesi",
-        action="store_true",
-    )
     parser.add_argument(
         "--debug", help="Actived debug mode of the cesi", action="store_true"
     )
@@ -78,15 +77,6 @@ if __name__ == "__main__":
 
     app, cesi = configure(args.config_file)
 
-    if args.initialize_database:
-        print("Initializing database...")
-        with app.app_context():
-            cesi.create_default_database()
-    else:
-        app.run(
-            host=args.host,
-            port=args.port,
-            use_reloader=args.auto_reload,
-            debug=args.debug,
-        )
-
+    app.run(
+        host=args.host, port=args.port, use_reloader=args.auto_reload, debug=args.debug
+    )

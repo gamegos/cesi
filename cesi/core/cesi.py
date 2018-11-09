@@ -110,14 +110,14 @@ class Cesi:
         self.load_config()
         print("Reloaded.")
 
-    def create_default_database(self):
-        ### Drop All tables
-        db.reflect()
-        db.drop_all()
-        ### Create Tables
-        db.create_all()
-        ### Add Admin User
-        admin_user = User.register(username="admin", password="admin", usertype=0)
+    def check_database(self):
+        try:
+            ### Create Tables
+            db.create_all()
+            ### Add Admin User
+            admin_user = User.register(username="admin", password="admin", usertype=0)
+        except Exception as e:
+            print(e)
 
     def get_all_processes(self):
         processes = []

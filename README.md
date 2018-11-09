@@ -45,9 +45,6 @@ $ python3 -m venv venv
 $ source venv/bin/activate
 (venv) $ pip3 install -r requirements.txt
 
-$ # Create database
-(venv) $ python3 ${CESI_SETUP_PATH}/cesi/run.py --config-file ${CESI_SETUP_PATH}/defaults/cesi.conf.toml --initialize-database
-
 $ # Run with command line
 (venv) $ python3 ${CESI_SETUP_PATH}/cesi/run.py --config-file ${CESI_SETUP_PATH}/defaults/cesi.conf.toml
 ```
@@ -68,9 +65,6 @@ $ # Create virtual environment and install requirement packages
 $ python3 -m venv venv
 $ source venv/bin/activate
 (venv) $ pip3 install -r requirements.txt
-
-$ # Create database
-(venv) $ python3 ${CESI_SETUP_PATH}/cesi/run.py --config-file ${CESI_SETUP_PATH}/defaults/cesi.conf.toml --initialize-database
 (venv) $ deactivate   # Deactivate virtual environment
 
 $ # Build ui (First you must install dependencies for ui -> yarn) - Optional

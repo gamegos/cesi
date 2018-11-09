@@ -11,7 +11,9 @@ def is_user_logged_in(log_message=""):
         def wrap(*args, **kwargs):
             if session.get("logged_in"):
                 g.username = session["username"]
-                g.user = User.query.filter_by(username=session["username"]).first()
+                g.user = User.query.filter_by(
+                    username=session["username"]
+                ).first_or_404()
                 return f(*args, **kwargs)
 
             if not log_message == "":

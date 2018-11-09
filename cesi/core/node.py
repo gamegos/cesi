@@ -68,7 +68,7 @@ class Node:
         )[0]
         logs = {
             "stdout": stdout_log_string.split("\n")[1:-1],
-            "stderr": stderr_log_string.split("\n")[1:-1]
+            "stderr": stderr_log_string.split("\n")[1:-1],
         }
         return logs
 

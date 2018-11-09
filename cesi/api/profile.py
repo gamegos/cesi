@@ -3,6 +3,7 @@ from flask import Blueprint, jsonify, request, g
 from decorators import is_user_logged_in
 from loggers import ActivityLog
 import controllers
+from models import User
 
 profile = Blueprint("profile", __name__)
 activity = ActivityLog.getInstance()
@@ -32,13 +33,13 @@ def change_own_password():
             400,
         )
 
-    result = controllers.validate_user(username, old_password)
+    result = User.verify(username, old_password)
     if not result:
         activity.logger.error(
             "Old password is wrong to change {} 's password.".format(username)
         )
         return jsonify(status="error", message="Old password is wrong"), 400
 
-    controllers.update_user_password(username, new_password)
+    User.update_password(username, new_password)
     activity.logger.error("{} user changed the own password.".format(username))
     return jsonify(status="success")

@@ -3,6 +3,7 @@ from flask import Blueprint, jsonify, request, g
 from decorators import is_user_logged_in, is_admin
 from loggers import ActivityLog
 import controllers
+from models import User
 
 users = Blueprint("users", __name__)
 activity = ActivityLog.getInstance()
@@ -50,9 +51,12 @@ def add_new_user():
         return jsonify(status="error", message=str(e)), 400
 
     try:
-        controllers.add_user(
-            new_user["username"], new_user["password"], new_user["usertype"]
+        User.register(
+            username=new_user["username"],
+            password=new_user["password"],
+            usertype=new_user["usertype"],
         )
+
         activity.logger.info(
             "'{}' user added by '{}' user.".format(
                 new_user["username"], g.user.username
@@ -89,7 +93,7 @@ def delete_user(username):
         )
         return jsonify(status="error", message="Admin can't be deleted"), 403
 
-    controllers.delete_user(username)
+    User.delete(username)
     activity.logger.info(
         "'{}' user deleted by '{}' user.".format(username, g.user.username)
     )

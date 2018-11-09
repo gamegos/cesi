@@ -35,3 +35,15 @@ class User(db.Model):
         if not user:
             return None
         return user.verify_password(password)
+
+    @staticmethod
+    def update_password(username, new_password):
+        user = User.query.filter_by(username=username).first_or_404()
+        user.set_password(new_password)
+        db.session.commit()
+
+    @staticmethod
+    def delete(username):
+        user = User.query.filter_by(username=username).first_or_404()
+        db.session.delete(user)
+        db.session.commit()

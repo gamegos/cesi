@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, session, request, g
 
 from decorators import is_user_logged_in, is_admin
 from loggers import ActivityLog
-import controllers
+from models import User
 
 auth = Blueprint("auth", __name__)
 activity = ActivityLog.getInstance()
@@ -32,9 +32,7 @@ def login():
             400,
         )
 
-    result = controllers.validate_user(
-        user_credentials["username"], user_credentials["password"]
-    )
+    result = User.verify(user_credentials["username"], user_credentials["password"])
     if not result:
         session.clear()
         return jsonify(status="error", message="Invalid username/password"), 403

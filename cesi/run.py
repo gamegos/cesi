@@ -35,12 +35,9 @@ def create_app(cesi):
         return "OK"
 
     @app.errorhandler(404)
-    def _(error):
-        return jsonify(status="error", message=error.name), 404
-
     @app.errorhandler(400)
     def _(error):
-        return jsonify(status="error", message=error.description), 400
+        return jsonify(status="error", message=error.description), error.code
 
     register_blueprints(app)
 

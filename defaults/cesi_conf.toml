@@ -3,7 +3,10 @@
 
 # This is the CeSI's own configuration.
 [cesi]
-database = "sqlite:///users.db" # Database uri ( etc. "postgres://db_user:db_password@localhost:5432/cesi")
+database = "sqlite:///users.db" # Database uri
+# Etc.
+#database = "postgres://<user>:<password>@localhost:5432/<database_name>"
+#database = "mysql+pymysql://<user>:<password>@localhost:3306/<database_name>"
 activity_log = "activity.log"   # File path for CeSI logs
 admin_username = "admin"        # Username of admin user
 admin_password = "admin"        # Password of admin user

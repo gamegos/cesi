@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "cesi"
-version = "2.6.1"
+version = "2.6.2"
 description = "CeSI is a web interface for managing multiple supervisors from the same place."
 authors = ["Fatih Sarhan <f9n@protonmail.com>"]
 license = "GPL-3.0"

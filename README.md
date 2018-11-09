@@ -37,7 +37,7 @@ $ mkdir ${CESI_SETUP_PATH}
 $ cd ${CESI_SETUP_PATH}
 
 $ # Download the project to ~/cesi directory
-$ wget https://github.com/gamegos/cesi/releases/download/v2.5.0/cesi-extended.tar.gz -O cesi.tar.gz
+$ wget https://github.com/gamegos/cesi/releases/download/v2.6.0/cesi-extended.tar.gz -O cesi.tar.gz
 $ tar -xvf cesi.tar.gz
 
 $ # Create virtual environment and install requirement packages
@@ -45,8 +45,11 @@ $ python3 -m venv venv
 $ source venv/bin/activate
 (venv) $ pip3 install -r requirements.txt
 
+$ # Create database
+(venv) $ python3 ${CESI_SETUP_PATH}/cesi/run.py --config-file ${CESI_SETUP_PATH}/defaults/cesi.conf.toml --initialize-database
+
 $ # Run with command line
-(venv) $ python3 ${CESI_SETUP_PATH}/cesi/run.py --config-file ${CESI_SETUP_PATH}/defaults/cesi.conf
+(venv) $ python3 ${CESI_SETUP_PATH}/cesi/run.py --config-file ${CESI_SETUP_PATH}/defaults/cesi.conf.toml
 ```
 
 **Install Cesi as a service**
@@ -58,24 +61,27 @@ $ mkdir ${CESI_SETUP_PATH}
 $ cd ${CESI_SETUP_PATH}
 
 $ # Download the project to CESI_SETUP_PATH directory
-$ wget https://github.com/gamegos/cesi/releases/download/v2.5.0/cesi-extended.tar.gz -O cesi.tar.gz
+$ wget https://github.com/gamegos/cesi/releases/download/v2.6.0/cesi-extended.tar.gz -O cesi.tar.gz
 $ tar -xvf cesi.tar.gz
 
 $ # Create virtual environment and install requirement packages
 $ python3 -m venv venv
 $ source venv/bin/activate
 (venv) $ pip3 install -r requirements.txt
-(venv) $ deactivate
+
+$ # Create database
+(venv) $ python3 ${CESI_SETUP_PATH}/cesi/run.py --config-file ${CESI_SETUP_PATH}/defaults/cesi.conf.toml --initialize-database
+(venv) $ deactivate   # Deactivate virtual environment
 
 $ # Build ui (First you must install dependencies for ui -> yarn) - Optional
 $ cd ${CESI_SETUP_PATH}/cesi/ui
 $ yarn install
 $ yarn build
 
-$ # Create cesi.conf file and update cesi.conf for your environment.
+$ # Create cesi.conf.toml file and update cesi.conf.toml for your environment.
 $ # Config file documentation can be found inside default file.
 $ # (You must create cesi.conf in the etc directory for cesi.service)
-$ sudo cp ${CESI_SETUP_PATH}/defaults/cesi.conf /etc/cesi.conf
+$ sudo cp ${CESI_SETUP_PATH}/defaults/cesi.conf.toml /etc/cesi.conf.toml
 
 $ # Run as a service
 $ sudo cp ${CESI_SETUP_PATH}/defaults/cesi.service /etc/systemd/system/cesi.service
@@ -100,7 +106,7 @@ Please change password after first login!
 
 - [x] Fix user related api endpoints
 - [ ] Fix node log view
-- [ ] Refactor the usage of config
+- [x] Refactor the usage of config
 - [ ] Rewrite dockerfile and publish image on docker hub under gamegos
 - [ ] Improve Docs
 - [x] Do not use external adresses for javascript and css libraries

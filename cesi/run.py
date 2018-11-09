@@ -39,7 +39,7 @@ def create_app(cesi):
     return app
 
 
-def configure(config_file_path, initialize_database=False):
+def configure(config_file_path):
     from core import Cesi
     from loggers import ActivityLog
 
@@ -47,11 +47,6 @@ def configure(config_file_path, initialize_database=False):
     _ = ActivityLog(log_path=cesi.activity_log)
 
     app = create_app(cesi)
-
-    if initialize_database:
-        with app.app_context():
-            print("Initializing database...")
-            cesi.create_default_database()
 
     signal.signal(signal.SIGHUP, lambda signum, frame: cesi.reload())
 
@@ -66,7 +61,7 @@ if __name__ == "__main__":
     parser.add_argument("-p", "--port", help="Port of the cesi", default="5000")
     parser.add_argument(
         "--initialize-database",
-        help="Initialize database of th cesi",
+        help="Initialize database of the cesi",
         action="store_true",
     )
     parser.add_argument(
@@ -80,10 +75,18 @@ if __name__ == "__main__":
     parser.add_argument("--version", action="version", version=__version__)
 
     args = parser.parse_args()
-    app, cesi = configure(
-        args.config_file, initialize_database=args.initialize_database
-    )
 
-    app.run(
-        host=args.host, port=args.port, use_reloader=args.auto_reload, debug=args.debug
-    )
+    app, cesi = configure(args.config_file)
+
+    if args.initialize_database:
+        print("Initializing database...")
+        with app.app_context():
+            cesi.create_default_database()
+    else:
+        app.run(
+            host=args.host,
+            port=args.port,
+            use_reloader=args.auto_reload,
+            debug=args.debug,
+        )
+

@@ -65,7 +65,7 @@ class Cesi:
                         )
             else:
                 sys.exit(
-                    "Failed to read {0} configuration file, Unknown '{1}' section name".format(
+                    "Failed to read {0} configuration file. Unknown '{1}' section name".format(
                         Cesi.__config_file_path, section_name
                     )
                 )
@@ -81,10 +81,16 @@ class Cesi:
             )
 
         self._check_config_file(config)
-        self.__cesi = config["cesi"]
+        self.__cesi = config.get("cesi", None)
+        if self.__cesi is None:
+            sys.exit(
+                "Failed to read {0} configuration file. You must write cesi section.".format(
+                    Cesi.__config_file_path
+                )
+            )
         self.nodes = []
 
-        for node in config["nodes"]:
+        for node in config.get("nodes", []):
             _environment = node["environment"] or "default"
             _node = Node(
                 name=node["name"],

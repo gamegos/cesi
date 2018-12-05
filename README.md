@@ -37,7 +37,7 @@ $ mkdir ${CESI_SETUP_PATH}
 $ cd ${CESI_SETUP_PATH}
 
 $ # Download the project to ~/cesi directory
-$ wget https://github.com/gamegos/cesi/releases/download/v2.6.2/cesi-extended.tar.gz -O cesi.tar.gz
+$ wget https://github.com/gamegos/cesi/releases/download/v2.6.3/cesi-extended.tar.gz -O cesi.tar.gz
 $ tar -xvf cesi.tar.gz
 
 $ # Create virtual environment and install requirement packages
@@ -58,7 +58,7 @@ $ mkdir ${CESI_SETUP_PATH}
 $ cd ${CESI_SETUP_PATH}
 
 $ # Download the project to CESI_SETUP_PATH directory
-$ wget https://github.com/gamegos/cesi/releases/download/v2.6.2/cesi-extended.tar.gz -O cesi.tar.gz
+$ wget https://github.com/gamegos/cesi/releases/download/v2.6.3/cesi-extended.tar.gz -O cesi.tar.gz
 $ tar -xvf cesi.tar.gz
 
 $ # Create virtual environment and install requirement packages

@@ -54,6 +54,7 @@ class ProcessLog extends React.Component {
                 {this.state.logs.stdout.map(log => (
                   <p key={log}>{log}</p>
                 ))}
+                <br />
                 <strong>Stderr</strong>
                 {this.state.logs.stderr.map(log => (
                   <p key={log}>{log}</p>

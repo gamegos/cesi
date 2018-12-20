@@ -30,4 +30,5 @@ clean-ui-node-modules:
 clean: clean-ui-node-modules
 	@echo 'Cleaning...'
 	rm -f *.db *.log
+	rm -f */*.db */*.log
 	@echo 'Cleaned'

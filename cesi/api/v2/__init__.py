@@ -20,7 +20,9 @@ def register_blueprints(app):
         "profile",
     ]
     for blueprint_name in blueprint_names:
-        module = importlib.import_module("api.{}".format(blueprint_name))
+        module = importlib.import_module(
+            "api.{}.{}".format(API_VERSION, blueprint_name)
+        )
         blueprint = getattr(module, blueprint_name)
         app.register_blueprint(
             blueprint, url_prefix="{}/{}".format(API_PREFIX, blueprint_name)

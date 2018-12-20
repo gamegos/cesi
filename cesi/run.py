@@ -13,7 +13,7 @@ db = SQLAlchemy()
 
 
 def create_app(cesi):
-    from api import register_blueprints
+    from api.v2 import register_blueprints
 
     app = Flask(
         __name__,

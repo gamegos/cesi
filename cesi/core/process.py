@@ -8,6 +8,7 @@ class Process:
         self.dictionary = dictionary
         self.name = self.dictionary["name"]
         self.group = self.dictionary["group"]
+        self.description = self.dictionary["description"]
         self.start = self.dictionary["start"]
         self.stop = self.dictionary["stop"]
         self.now = self.dictionary["now"]
@@ -28,8 +29,14 @@ class Process:
         self.now_hr = datetime.fromtimestamp(self.now).strftime("%Y-%m-%d %H:%M:%S")[
             11:
         ]
-        self.seconds = self.now - self.start
-        self.uptime = str(timedelta(seconds=self.seconds))
+
+        if self.state == 20:
+            # description = 'pid 11039, uptime 0:00:03'
+            __uptime_string = self.description.split(",")[1].strip()
+            self.uptime = __uptime_string.split(" ")[1].strip()
+        else:
+            self.uptime = 0
+
         self.dictionary.update(
             {
                 "start_hr": self.start_hr,

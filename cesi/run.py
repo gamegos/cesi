@@ -60,7 +60,9 @@ def configure(config_file_path):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Cesi web server")
 
-    parser.add_argument("-c", "--config-file", help="config file", required=True)
+    parser.add_argument(
+        "-c", "--config-file", "--config", help="config file", required=True
+    )
     parser.add_argument("--host", help="Host of the cesi", default="0.0.0.0")
     parser.add_argument("-p", "--port", help="Port of the cesi", default="5000")
     parser.add_argument(
@@ -74,7 +76,6 @@ if __name__ == "__main__":
     parser.add_argument("--version", action="version", version=__version__)
 
     args = parser.parse_args()
-
     app, cesi = configure(args.config_file)
 
     app.run(

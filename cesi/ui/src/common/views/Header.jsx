@@ -7,6 +7,7 @@ import {
   NavbarToggler,
   NavItem,
   NavLink,
+  Badge,
   Collapse,
   UncontrolledDropdown,
   DropdownToggle,
@@ -61,11 +62,11 @@ class HeaderSettings extends Component {
  * https://stackoverflow.com/questions/42372179/reactstrap-and-react-router-4-0-0-beta-6-active-navlink
  *
  */
-const Header = ({ onLogOut, isAdmin }) => {
+const Header = ({ onLogOut, isAdmin, version }) => {
   return (
     <Navbar color="light" light expand="md">
       <NavbarBrand exact to="/about" tag={RRNavLink}>
-        Cesi
+        Cesi <Badge color="success">{version}</Badge>
       </NavbarBrand>
       <Nav pills>
         <NavItem>

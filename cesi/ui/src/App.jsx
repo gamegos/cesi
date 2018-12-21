@@ -20,6 +20,7 @@ import Header from "common/views/Header";
 class App extends Component {
   state = {
     profile: null,
+    version: "0",
     logs: [],
     nodes: [],
     environments: [],
@@ -96,8 +97,14 @@ class App extends Component {
       .catch(error => console.log(error));
   };
 
+  getApiVersion = async () => {
+    const version = await api.version.get();
+    this.setState({ version });
+  };
+
   componentDidMount() {
     this.handleRefreshProfile();
+    this.getApiVersion();
   }
   render() {
     return (
@@ -108,6 +115,7 @@ class App extends Component {
               <Header
                 isAdmin={this.state.profile.type === 0}
                 onLogOut={this.handleLogOut}
+                version={this.state.version}
               />
               <Switch>
                 <Redirect exact from="/" to="/dashboard" />

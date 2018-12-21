@@ -197,6 +197,20 @@ const groups = {
     }
   }
 };
+
+const version = {
+  get: async () => {
+    try {
+      const result = await getRequest("/api/version");
+      console.log(result);
+      return result.version;
+    } catch (error) {
+      console.log(error);
+      return "0";
+    }
+  }
+};
+
 export default {
   activitylogs,
   auth,
@@ -205,5 +219,6 @@ export default {
   processes,
   users,
   environments,
-  groups
+  groups,
+  version
 };

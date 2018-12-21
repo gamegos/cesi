@@ -28,6 +28,11 @@ def create_app(cesi):
     db.init_app(app)
 
     app.add_url_rule("/", "index", lambda: render_template("index.html"))
+    app.add_url_rule(
+        "/api/version",
+        "version",
+        lambda: jsonify(status="success", version=__version__),
+    )
 
     @app.errorhandler(404)
     @app.errorhandler(400)

@@ -24,26 +24,26 @@ admin_password = "admin"        # Password of admin user
 
 # Default supervisord nodes
 [[nodes]]
-name = "go-api"
+name = "products-server"
 environment = ""
 username = ""
 password = ""
-host = "127.0.0.1"
+host = "products.example.com"
 port = "9001"
 
 [[nodes]]
-name = "python-api"
+name = "analysis-server"
 environment = ""
 username = ""
 password = ""
-host = "localhost"
-port = "9002"
+host = "analysis.example.com"
+port = "9001"
 
 [[nodes]]
-name = "monitoring"
+name = "monitoring-server"
 environment = ""
 username = ""
 password = ""
-host = "127.0.0.1"
-port = "9003"
+host = "monitoring.example.com"
+port = "9001"
 

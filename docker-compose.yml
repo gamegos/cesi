@@ -1,0 +1,62 @@
+version: "3"
+services:
+  cesi-backend:
+    container_name: cesi-backend
+    restart: on-failure
+    build:
+      context: .
+      dockerfile: .docker/Dockerfile.backend
+    volumes:
+      - "./:/app:ro"
+      - "./defaults/cesi.conf.toml:/etc/cesi.conf.toml:ro"
+    ports:
+      - ${CESI_BACKEND_PORT}:5000
+    depends_on:
+      - products.example.com
+      - analysis.example.com
+      - monitoring.example.com
+
+  cesi-frontend:
+    container_name: cesi-frontend
+    restart: on-failure
+    build:
+      context: .
+      dockerfile: .docker/Dockerfile.frontend
+    volumes:
+      - "./cesi/ui/:/app:ro"
+    ports:
+      - "${CESI_UI_PORT}:3000"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - cesi-backend
+
+  products.example.com:
+    image: ef9n/supervisord:${SUPERVISOR_TAG}
+    restart: on-failure
+    volumes:
+      - "./.docker/supervisor/confs/:/etc/supervisor"
+      - "./.docker/supervisor/bin/:/opt/cesi-dev/bin"
+      - "/tmp/cesi-dev/logs/products/:/opt/cesi-dev/logs"
+    ports:
+      - "9001:9001"
+
+  analysis.example.com:
+    image: ef9n/supervisord:${SUPERVISOR_TAG}
+    restart: on-failure
+    volumes:
+      - "./.docker/supervisor/confs/:/etc/supervisor"
+      - "./.docker/supervisor/bin/:/opt/cesi-dev/bin"
+      - "/tmp/cesi-dev/logs/analysis/:/opt/cesi-dev/logs"
+    ports:
+      - "9002:9001"
+
+  monitoring.example.com:
+    image: ef9n/supervisord:${SUPERVISOR_TAG}
+    restart: on-failure
+    volumes:
+      - "./.docker/supervisor/confs/:/etc/supervisor"
+      - "./.docker/supervisor/bin/:/opt/cesi-dev/bin"
+      - "/tmp/cesi-dev/logs/monitoring/:/opt/cesi-dev/logs"
+    ports:
+      - "9003:9001"

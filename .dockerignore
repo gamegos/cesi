@@ -1,0 +1,15 @@
+README.md
+LICENSE
+CONTRIBUTORS.md
+.gitignore
+.git/
+Dockerfile*
+docker-compose*
+.docker/
+**/node_modules
+**/build
+**/*.log
+**/*.db
+**/__pycache__
+**/.venv
+

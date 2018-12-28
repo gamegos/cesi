@@ -28,7 +28,7 @@
     "test": "NODE_PATH=src react-scripts test --env=jsdom",
     "eject": "NODE_PATH=src react-scripts eject"
   },
-  "proxy": "http://localhost:5000",
+  "proxy": "http://cesi-backend:5000",
   "devDependencies": {},
   "browserslist": [
     ">0.2%",

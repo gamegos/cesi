@@ -244,13 +244,13 @@ def restart_all_process(node_name):
 
     for process in node.processes:
         if not process.state == 0:
-            status, msg = node.stop_process(process.name)
+            status, msg = node.stop_process(process.group+":"+process.name)
             if status:
                 print("Process stopped!")
             else:
                 print(msg)
 
-        status, msg = node.start_process(process.name)
+        status, msg = node.start_process(process.group+":"+process.name)
         if status:
             activity.logger.info(
                 "{} restarted {} node's {} process.".format(

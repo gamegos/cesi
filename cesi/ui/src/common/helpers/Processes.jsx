@@ -27,7 +27,7 @@ class ProcessLog extends React.Component {
 
   showLogs = () => {
     const { node, process } = this.props;
-    api.processes.process.log(node.general.name, process.name).then(data => {
+    api.processes.process.log(node.general.name, process.group + ":" + process.name).then(data => {
       console.log(data);
       this.setState({
         logs: data.logs

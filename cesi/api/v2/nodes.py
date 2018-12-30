@@ -186,7 +186,7 @@ def start_all_process(node_name):
 
     for process in node.processes:
         if not process.state == 20:
-            status, msg = node.start_process(process.name)
+            status, msg = node.start_process(process.group+":"+process.name)
             if status:
                 activity.logger.info(
                     "{} started {} node's {} process.".format(
@@ -215,7 +215,7 @@ def stop_all_process(node_name):
 
     for process in node.processes:
         if not process.state == 0:
-            status, msg = node.stop_process(process.name)
+            status, msg = node.stop_process(process.group+":"+process.name)
             if status:
                 activity.logger.info(
                     "{} stopped {} node's {} process.".format(

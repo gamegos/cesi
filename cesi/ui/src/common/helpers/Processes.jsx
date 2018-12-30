@@ -87,19 +87,19 @@ const Process = ({ node, process, refreshNodes }) => {
         <td>
           <Button
             color="success"
-            onClick={() => handleProcess("start", process.name)}
+            onClick={() => handleProcess("start", process.group + ":" + process.name)}
           >
             Start
           </Button>{" "}
           <Button
             color="danger"
-            onClick={() => handleProcess("stop", process.name)}
+            onClick={() => handleProcess("stop", process.group + ":" + process.name)}
           >
             Stop
           </Button>{" "}
           <Button
             color="warning"
-            onClick={() => handleProcess("restart", process.name)}
+            onClick={() => handleProcess("restart", process.group + ":" + process.name)}
           >
             Restart
           </Button>{" "}

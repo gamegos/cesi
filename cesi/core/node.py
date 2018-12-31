@@ -115,10 +115,10 @@ class Node:
         return {
             "name": self.name,
             "environment": self.environment,
-            "host": self.host,
-            "port": self.port,
-            "username": self.username,
-            "password": self.password,
+            # "host": self.host,
+            # "port": self.port,
+            # "username": self.username,
+            # "password": self.password,
             "connected": self.is_connected,
         }
 

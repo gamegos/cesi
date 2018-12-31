@@ -47,6 +47,7 @@ def create_app(cesi):
 def configure(config_file_path):
     from core import Cesi
     from loggers import ActivityLog
+    from controllers import check_database
 
     cesi = Cesi(config_file_path=config_file_path)
     _ = ActivityLog(log_path=cesi.activity_log)
@@ -55,7 +56,7 @@ def configure(config_file_path):
 
     # Check database
     with app.app_context():
-        cesi.check_database()
+        check_database()
 
     signal.signal(signal.SIGHUP, lambda signum, frame: cesi.reload())
 

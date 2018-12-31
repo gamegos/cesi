@@ -81,7 +81,7 @@ class Node:
         """
         process = self.get_process_or_400(process_name)
         try:
-            if self.connection.supervisor.startProcess(process.name):
+            if self.connection.supervisor.startProcess(process.group + ":" + process.name):
                 return True, ""
             else:
                 return False, "cannot start process"
@@ -93,7 +93,7 @@ class Node:
     def stop_process(self, process_name):
         process = self.get_process_or_400(process_name)
         try:
-            if self.connection.supervisor.stopProcess(process.name):
+            if self.connection.supervisor.stopProcess(process.group + ":" + process.name):
                 return True, ""
             else:
                 return False, "cannot stop process"
@@ -115,10 +115,10 @@ class Node:
         return {
             "name": self.name,
             "environment": self.environment,
-            "host": self.host,
-            "port": self.port,
-            "username": self.username,
-            "password": self.password,
+            # "host": self.host,
+            # "port": self.port,
+            # "username": self.username,
+            # "password": self.password,
             "connected": self.is_connected,
         }
 

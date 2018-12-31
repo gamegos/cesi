@@ -71,7 +71,7 @@ class ProcessLog extends React.Component {
 const Process = ({ node, process, refreshNodes }) => {
   const handleProcess = (action, processName) => {
     const nodeName = node.general.name;
-    api.processes.process[action](nodeName, processName).then(data => {
+    api.processes.process[action](nodeName, `${process.group}:${process.name}`).then(data => {
       console.log(data);
       refreshNodes();
     });
@@ -87,19 +87,19 @@ const Process = ({ node, process, refreshNodes }) => {
         <td>
           <Button
             color="success"
-            onClick={() => handleProcess("start", process.group + ":" + process.name)}
+            onClick={() => handleProcess("start", process)}
           >
             Start
           </Button>{" "}
           <Button
             color="danger"
-            onClick={() => handleProcess("stop", process.group + ":" + process.name)}
+            onClick={() => handleProcess("stop", process)}
           >
             Stop
           </Button>{" "}
           <Button
             color="warning"
-            onClick={() => handleProcess("restart", process.group + ":" + process.name)}
+            onClick={() => handleProcess("restart", process)}
           >
             Restart
           </Button>{" "}

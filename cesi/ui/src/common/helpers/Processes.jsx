@@ -27,13 +27,16 @@ class ProcessLog extends React.Component {
 
   showLogs = () => {
     const { node, process } = this.props;
-    api.processes.process.log(node.general.name, process.group + ":" + process.name).then(data => {
-      console.log(data);
-      this.setState({
-        logs: data.logs
+    const processUniqueName = `${process.group}:${process.name}`;
+    api.processes.process
+      .log(node.general.name, processUniqueName)
+      .then(data => {
+        console.log(data);
+        this.setState({
+          logs: data.logs
+        });
+        this.toggle();
       });
-      this.toggle();
-    });
   };
 
   render() {
@@ -69,13 +72,15 @@ class ProcessLog extends React.Component {
 }
 
 const Process = ({ node, process, refreshNodes }) => {
-  const handleProcess = (action, processName) => {
+  const handleProcess = action => {
     const nodeName = node.general.name;
-    api.processes.process[action](nodeName, `${process.group}:${process.name}`).then(data => {
+    const processUniqueName = `${process.group}:${process.name}`;
+    api.processes.process[action](nodeName, processUniqueName).then(data => {
       console.log(data);
       refreshNodes();
     });
   };
+
   return (
     <React.Fragment>
       <tr key={process.name}>
@@ -85,22 +90,13 @@ const Process = ({ node, process, refreshNodes }) => {
         <td>{process.uptime}</td>
         <td>{process.statename}</td>
         <td>
-          <Button
-            color="success"
-            onClick={() => handleProcess("start", process)}
-          >
+          <Button color="success" onClick={() => handleProcess("start")}>
             Start
           </Button>{" "}
-          <Button
-            color="danger"
-            onClick={() => handleProcess("stop", process)}
-          >
+          <Button color="danger" onClick={() => handleProcess("stop")}>
             Stop
           </Button>{" "}
-          <Button
-            color="warning"
-            onClick={() => handleProcess("restart", process)}
-          >
+          <Button color="warning" onClick={() => handleProcess("restart")}>
             Restart
           </Button>{" "}
           <ProcessLog process={process} node={node} />
@@ -121,7 +117,7 @@ class Processes extends React.Component {
 
   handleAllProcess = action => {
     const nodeName = this.props.node.general.name;
-    api.nodes.allProcess[action](nodeName).then(() => {
+    api.nodes.allProcesses[action](nodeName).then(() => {
       console.log("Updating nodes for single node action.");
       this.props.refreshNodes();
     });
@@ -169,6 +165,7 @@ class Processes extends React.Component {
               <tbody>
                 {node.processes.filter(filterFunc).map(process => (
                   <Process
+                    key={`${node.name}:${process.name}`}
                     node={node}
                     process={process}
                     refreshNodes={this.props.refreshNodes}

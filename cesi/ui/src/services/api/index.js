@@ -91,7 +91,7 @@ const nodes = {
   getNode: nodeName => {
     return getRequest(`${API_PREFIX}/nodes/${nodeName}/`);
   },
-  allProcess: {
+  allProcesses: {
     start: nodeName => {
       return getRequest(`${API_PREFIX}/nodes/${nodeName}/all-processes/start/`);
     },
@@ -111,29 +111,29 @@ const processes = {
     return getRequest(`${API_PREFIX}/nodes/${nodeName}/processes/`);
   },
   process: {
-    get: (nodeName, processName) => {
+    get: (nodeName, processUniqueName) => {
       return getRequest(
-        `${API_PREFIX}/nodes/${nodeName}/processes/${processName}/`
+        `${API_PREFIX}/nodes/${nodeName}/processes/${processUniqueName}/`
       );
     },
-    start: (nodeName, processName) => {
+    start: (nodeName, processUniqueName) => {
       return getRequest(
-        `${API_PREFIX}/nodes/${nodeName}/processes/${processName}/start/`
+        `${API_PREFIX}/nodes/${nodeName}/processes/${processUniqueName}/start/`
       );
     },
-    stop: (nodeName, processName) => {
+    stop: (nodeName, processUniqueName) => {
       return getRequest(
-        `${API_PREFIX}/nodes/${nodeName}/processes/${processName}/stop/`
+        `${API_PREFIX}/nodes/${nodeName}/processes/${processUniqueName}/stop/`
       );
     },
-    restart: (nodeName, processName) => {
+    restart: (nodeName, processUniqueName) => {
       return getRequest(
-        `${API_PREFIX}/nodes/${nodeName}/processes/${processName}/restart/`
+        `${API_PREFIX}/nodes/${nodeName}/processes/${processUniqueName}/restart/`
       );
     },
-    log: (nodeName, processName) => {
+    log: (nodeName, processUniqueName) => {
       return getRequest(
-        `${API_PREFIX}/nodes/${nodeName}/processes/${processName}/log/`
+        `${API_PREFIX}/nodes/${nodeName}/processes/${processUniqueName}/log/`
       );
     }
   }

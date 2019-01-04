@@ -32,146 +32,146 @@ def get_node_processes(node_name):
     return jsonify(status="success", processes=node.serialize_processes())
 
 
-@nodes.route("/<node_name>/processes/<process_name>/")
+@nodes.route("/<node_name>/processes/<unique_process_name>/")
 @is_user_logged_in()
-def get_process(node_name, process_name):
+def get_process(node_name, unique_process_name):
     node = cesi.get_node_or_400(node_name)
     if not node.is_connected:
         return jsonify(status="error", message="Node is not connected"), 400
 
-    process = node.get_process_or_400(process_name)
+    process = node.get_process_or_400(unique_process_name)
     return jsonify(status="success", process=process.serialize())
 
 
-@nodes.route("/<node_name>/processes/<process_name>/start/")
+@nodes.route("/<node_name>/processes/<unique_process_name>/start/")
 @is_user_logged_in(
-    "Illegal request for start to {node_name} node's {process_name} process."
+    "Illegal request for start to {node_name} node's {unique_process_name} process."
 )
 @is_admin_or_normal_user(
-    "Unauthorized user request for start.Start event fail for {node_name} node's {process_name} process."
+    "Unauthorized user request for start.Start event fail for {node_name} node's {unique_process_name} process."
 )
-def start_process(node_name, process_name):
+def start_process(node_name, unique_process_name):
     node = cesi.get_node_or_400(node_name)
     if not node.is_connected:
         return jsonify(status="error", message="Node is not connected"), 400
 
-    status, msg = node.start_process(process_name)
+    status, msg = node.start_process(unique_process_name)
     if status:
         activity.logger.info(
             "{} started {} node's {} process.".format(
-                g.user.username, node_name, process_name
+                g.user.username, node_name, unique_process_name
             )
         )
         return jsonify(
             status="success",
             message="{0} {1} {2} event succesfully".format(
-                node.name, process_name, "start"
+                node.name, unique_process_name, "start"
             ),
         )
-    else:
-        activity.logger.info(
-            "{} unsuccessful start event {} node's {} process.".format(
-                g.user.username, node_name, process_name
-            )
+
+    activity.logger.info(
+        "{} unsuccessful start event {} node's {} process.".format(
+            g.user.username, node_name, unique_process_name
         )
-        return jsonify(status="error", message=msg), 500
+    )
+    return jsonify(status="error", message=msg), 500
 
 
-@nodes.route("/<node_name>/processes/<process_name>/stop/")
+@nodes.route("/<node_name>/processes/<unique_process_name>/stop/")
 @is_user_logged_in(
-    "Illegal request for stop to {node_name} node's {process_name} process."
+    "Illegal request for stop to {node_name} node's {unique_process_name} process."
 )
 @is_admin_or_normal_user(
-    "Unauthorized user request for stop.Stop event fail for {node_name} node's {process_name} process."
+    "Unauthorized user request for stop.Stop event fail for {node_name} node's {unique_process_name} process."
 )
-def stop_process(node_name, process_name):
+def stop_process(node_name, unique_process_name):
     node = cesi.get_node_or_400(node_name)
     if not node.is_connected:
         return jsonify(status="error", message="Node is not connected"), 400
 
-    status, msg = node.stop_process(process_name)
+    status, msg = node.stop_process(unique_process_name)
     if status:
         activity.logger.info(
             "{} stopped {} node's {} process.".format(
-                g.user.username, node_name, process_name
+                g.user.username, node_name, unique_process_name
             )
         )
         return jsonify(
             status="success",
             message="{0} {1} {2} event succesfully".format(
-                node.name, process_name, "stop"
+                node.name, unique_process_name, "stop"
             ),
         )
-    else:
-        activity.logger.info(
-            "{} unsuccessful stop event {} node's {} process.".format(
-                g.user.username, node_name, process_name
-            )
+
+    activity.logger.info(
+        "{} unsuccessful stop event {} node's {} process.".format(
+            g.user.username, node_name, unique_process_name
         )
-        return jsonify(status="error", message=msg), 500
+    )
+    return jsonify(status="error", message=msg), 500
 
 
-@nodes.route("/<node_name>/processes/<process_name>/restart/")
+@nodes.route("/<node_name>/processes/<unique_process_name>/restart/")
 @is_user_logged_in(
-    "Illegal request for restart to {node_name} node's {process_name} process."
+    "Illegal request for restart to {node_name} node's {unique_process_name} process."
 )
 @is_admin_or_normal_user(
-    "Unauthorized user request for restart.Restart event fail for {node_name} node's {process_name} process."
+    "Unauthorized user request for restart.Restart event fail for {node_name} node's {unique_process_name} process."
 )
-def restart_process(node_name, process_name):
+def restart_process(node_name, unique_process_name):
     node = cesi.get_node_or_400(node_name)
     if not node.is_connected:
         return jsonify(status="error", message="Node is not connected"), 400
 
-    status, msg = node.restart_process(process_name)
+    status, msg = node.restart_process(unique_process_name)
     if status:
         activity.logger.info(
             "{} restarted {} node's {} process.".format(
-                g.user.username, node_name, process_name
+                g.user.username, node_name, unique_process_name
             )
         )
         return jsonify(
             status="success",
             message="{0} {1} {2} event succesfully".format(
-                node.name, process_name, "restart"
+                node.name, unique_process_name, "restart"
             ),
         )
-    else:
-        activity.logger.info(
-            "{} unsuccessful restart event {} node's {} process.".format(
-                g.user.username, node_name, process_name
-            )
+
+    activity.logger.info(
+        "{} unsuccessful restart event {} node's {} process.".format(
+            g.user.username, node_name, unique_process_name
         )
-        return jsonify(status="error", message=msg), 500
+    )
+    return jsonify(status="error", message=msg), 500
 
 
-@nodes.route("/<node_name>/processes/<process_name>/log/")
+@nodes.route("/<node_name>/processes/<unique_process_name>/log/")
 @is_user_logged_in(
-    "Illegal request for read log to {node_name} node's {process_name} process."
+    "Illegal request for read log to {node_name} node's {unique_process_name} process."
 )
-def read_process_log(node_name, process_name):
+def read_process_log(node_name, unique_process_name):
     if g.user.usertype in [0, 1, 2]:
         node = cesi.get_node_or_400(node_name)
         if not node.is_connected:
             return jsonify(status="error", message="Node is not connected"), 400
 
-        logs = node.get_process_logs(process_name)
+        logs = node.get_process_logs(unique_process_name)
         activity.logger.info(
             "{} read log {} node's {} process.".format(
-                g.user.username, node_name, process_name
+                g.user.username, node_name, unique_process_name
             )
         )
         return jsonify(status="success", logs=logs)
-    else:
-        activity.logger.info(
-            "{} is unauthorized user request for read log. Read log event fail for {} node's {} process.".format(
-                g.user.username, node_name, process_name
-            )
+
+    activity.logger.info(
+        "{} is unauthorized user request for read log. Read log event fail for {} node's {} process.".format(
+            g.user.username, node_name, unique_process_name
         )
-        return (
-            jsonify(status="error", message="You are not authorized for this action"),
-            500,
-        )
+    )
+    return (
+        jsonify(status="error", message="You are not authorized for this action"),
+        500,
+    )
 
 
 @nodes.route("/<node_name>/all-processes/start/")

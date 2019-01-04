@@ -1,8 +1,10 @@
 import xmlrpc.client
 
 from flask import abort
+
 from .xmlrpc import XmlRpc
 from .process import Process
+from .handlers import xmlrpc_exceptions
 
 
 class Node:
@@ -31,40 +33,34 @@ class Node:
         return self.__connect()
 
     def __connect(self):
-        if self.connection:
-            try:
-                self.connection.system.listMethods()
-                print("Yes, node connected. {}".format(self.name))
-                return True
-            except (xmlrpc.client.ProtocolError, xmlrpc.client.Fault) as err:
-                print(err)
-            except Exception as err:
-                print(err)
+        status, msg = self.get_system_list_methods_for_xmlrpc_server()
+        if not status:
+            print("Node: '{}', Error: '{}'".format(self.name, msg))
+        return status
 
-        print("No, node isn't connected. {}".format(self.name))
-        return False
+    @xmlrpc_exceptions
+    def get_system_list_methods_for_xmlrpc_server(self):
+        self.connection.system.listMethods()
+        return True, "Okey, got system list methods"
 
-    def get_process(self, process_name):
-        try:
-            _p = self.connection.supervisor.getProcessInfo(process_name)
-            return Process(_p)
-        except Exception as err:
-            print(err)
-            return None
+    @xmlrpc_exceptions
+    def get_process(self, unique_name):
+        _p = self.connection.supervisor.getProcessInfo(unique_name)
+        return Process(_p), ""
 
-    def get_process_or_400(self, process_name):
-        process = self.get_process(process_name)
+    def get_process_or_400(self, unique_name):
+        process, msg = self.get_process(unique_name)
         if not process:
             return abort(400, description="Wrong process name")
 
         return process
 
-    def get_process_logs(self, process_name):
+    def get_process_logs(self, unique_name):
         stdout_log_string = self.connection.supervisor.tailProcessStdoutLog(
-            process_name, 0, 500
+            unique_name, 0, 500
         )[0]
         stderr_log_string = self.connection.supervisor.tailProcessStderrLog(
-            process_name, 0, 500
+            unique_name, 0, 500
         )[0]
         logs = {
             "stdout": stdout_log_string.split("\n")[1:-1],
@@ -75,41 +71,28 @@ class Node:
     def get_processes_by_group_name(self, group_name):
         return [p for p in self.processes if p.group == group_name]
 
-    def start_process(self, process_name):
-        """
-            http://supervisord.org/api.html#supervisor.rpcinterface.SupervisorNamespaceRPCInterface.startProcess
-        """
-        process = self.get_process_or_400(process_name)
-        try:
-            if self.connection.supervisor.startProcess(process.group + ":" + process.name):
-                return True, ""
-            else:
-                return False, "cannot start process"
-        except xmlrpc.client.Fault as err:
-            return False, err.faultString
-        except Exception as err:
-            return False, str(err)
+    @xmlrpc_exceptions
+    def start_process(self, unique_name):
+        if self.connection.supervisor.startProcess(unique_name):
+            return True, ""
+        else:
+            return False, "cannot start process"
 
-    def stop_process(self, process_name):
-        process = self.get_process_or_400(process_name)
-        try:
-            if self.connection.supervisor.stopProcess(process.group + ":" + process.name):
-                return True, ""
-            else:
-                return False, "cannot stop process"
-        except xmlrpc.client.Fault as err:
-            return False, err.faultString
-        except Exception as err:
-            return False, str(err)
+    @xmlrpc_exceptions
+    def stop_process(self, unique_name):
+        if self.connection.supervisor.stopProcess(unique_name):
+            return True, ""
+        else:
+            return False, "cannot stop process"
 
-    def restart_process(self, process_name):
-        process = self.get_process_or_400(process_name)
+    def restart_process(self, unique_name):
+        process = self.get_process_or_400(unique_name)
         if process.state == 20:
-            status, msg = self.stop_process(process_name)
+            status, msg = self.stop_process(unique_name)
             if not status:
                 return status, msg
 
-        return self.start_process(process_name)
+        return self.start_process(unique_name)
 
     def serialize_general(self):
         return {

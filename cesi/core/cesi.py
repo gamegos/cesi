@@ -5,15 +5,12 @@ from .parser import parse_config_file
 
 class Cesi:
     __instance = None
-    __config_file_path = None
 
     def __init__(self, config_file_path):
         if Cesi.__instance != None:
             raise Exception(
                 "This class is a singleton! Once you need to create a cesi object."
             )
-
-        Cesi.__config_file_path = config_file_path
 
         self.config_file_path = config_file_path
         self.database = "sqlite:///users.db"

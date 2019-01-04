@@ -21,6 +21,9 @@ class User(db.Model):
     def is_normal_user(self):
         return self.usertype == 1
 
+    def serialize(self):
+        return {"name": self.username, "type": self.usertype}
+
     @staticmethod
     def register(username, password, usertype):
         user = User(username=username, usertype=usertype)
@@ -47,3 +50,4 @@ class User(db.Model):
         user = User.query.filter_by(username=username).first_or_404()
         db.session.delete(user)
         db.session.commit()
+

@@ -71,13 +71,13 @@ class ProcessLog extends React.Component {
   }
 }
 
-const Process = ({ node, process, refreshNodes }) => {
+const Process = ({ node, process, refresh }) => {
   const handleProcess = action => {
     const nodeName = node.general.name;
     const processUniqueName = `${process.group}:${process.name}`;
     api.processes.process[action](nodeName, processUniqueName).then(data => {
       console.log(data);
-      refreshNodes();
+      refresh();
     });
   };
 
@@ -119,7 +119,7 @@ class Processes extends React.Component {
     const nodeName = this.props.node.general.name;
     api.nodes.allProcesses[action](nodeName).then(() => {
       console.log("Updating nodes for single node action.");
-      this.props.refreshNodes();
+      this.props.refresh();
     });
   };
 
@@ -168,7 +168,7 @@ class Processes extends React.Component {
                     key={`${node.name}:${process.name}`}
                     node={node}
                     process={process}
-                    refreshNodes={this.props.refreshNodes}
+                    refresh={this.props.refresh}
                   />
                 ))}
               </tbody>

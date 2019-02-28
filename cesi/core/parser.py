@@ -46,14 +46,14 @@ def check_config_file(config_file_path):
                 )
             )
 
-    for field in CESI_CONF_SCHEMA.keys():
-        _field = configurations.get(field, None)
-        if _field is None:
-            sys.exit(
-                "Failed to read '{0}' configuration file. You must write '{1}' section.".format(
-                    config_file_path, field
-                )
+    field_name = "cesi"
+    _field = configurations.get(field_name, None)
+    if _field is None:
+        sys.exit(
+            "Failed to read '{0}' configuration file. You must write '{1}' section.".format(
+                config_file_path, field_name
             )
+        )
 
     return configurations
 
@@ -70,7 +70,7 @@ def parse_config_file(config_file_path):
 
     for node in configurations.get("nodes", []):
         node_name = node["name"]
-        node_environment = node["environment"] or "default"
+        node_environment = node.get("environment", "default")
         node_names.add(node_name)
         node_environments.add(node_environment)
 

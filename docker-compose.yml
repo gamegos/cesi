@@ -35,7 +35,8 @@ services:
     image: ef9n/supervisord:${SUPERVISOR_TAG}
     restart: on-failure
     volumes:
-      - "./.docker/supervisor/confs/:/etc/supervisor"
+      - "./.docker/supervisor/confs/conf.d:/etc/supervisor/conf.d"
+      - "./.docker/supervisor/products_supervisord.conf:/etc/supervisor/supervisord.conf"
       - "./.docker/supervisor/bin/:/opt/cesi-dev/bin"
       - "/tmp/cesi-dev/logs/products/:/opt/cesi-dev/logs"
     ports:
@@ -45,7 +46,8 @@ services:
     image: ef9n/supervisord:${SUPERVISOR_TAG}
     restart: on-failure
     volumes:
-      - "./.docker/supervisor/confs/:/etc/supervisor"
+      - "./.docker/supervisor/confs/conf.d:/etc/supervisor/conf.d"
+      - "./.docker/supervisor/analysis_supervisord.conf:/etc/supervisor/supervisord.conf"
       - "./.docker/supervisor/bin/:/opt/cesi-dev/bin"
       - "/tmp/cesi-dev/logs/analysis/:/opt/cesi-dev/logs"
     ports:
@@ -55,7 +57,8 @@ services:
     image: ef9n/supervisord:${SUPERVISOR_TAG}
     restart: on-failure
     volumes:
-      - "./.docker/supervisor/confs/:/etc/supervisor"
+      - "./.docker/supervisor/confs/conf.d:/etc/supervisor/conf.d"
+      - "./.docker/supervisor/monitoring_supervisord.conf:/etc/supervisor/supervisord.conf"
       - "./.docker/supervisor/bin/:/opt/cesi-dev/bin"
       - "/tmp/cesi-dev/logs/monitoring/:/opt/cesi-dev/logs"
     ports:

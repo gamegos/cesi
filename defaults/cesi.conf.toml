@@ -26,16 +26,16 @@ admin_password = "admin"        # Password of admin user
 [[nodes]]
 name = "products-server"
 environment = ""
-username = ""
-password = ""
+username = "root"
+password = "root"
 host = "products.example.com"
 port = "9001"
 
 [[nodes]]
 name = "analysis-server"
 environment = ""
-username = ""
-password = ""
+username = "user123"
+password = "pass123"
 host = "analysis.example.com"
 port = "9001"
 
@@ -46,4 +46,3 @@ username = ""
 password = ""
 host = "monitoring.example.com"
 port = "9001"
-

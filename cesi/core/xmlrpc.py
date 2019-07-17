@@ -1,16 +1,16 @@
 import xmlrpc.client
 
-
 class XmlRpc:
     @staticmethod
     def connection(host, port, username, password):
-        server = "{host}:{port}/RPC2".format(host=host, port=port)
+        server = "{}:{}".format(host, port)
+        credentials = "{}:{}".format(username, password)
         if username == "" and password == "":
-            address = "http://{server}/RPC2".format(server=server)
+            uri = "http://{server}/RPC2".format(server=server)
         else:
-            address = "http://{username}:{password}@{server}/RPC2".format(
-                username=username, password=password, server=server
+            uri = "http://{credentials}@{server}/RPC2".format(
+                credentials=credentials, server=server
             )
 
-        print(server)
-        return xmlrpc.client.ServerProxy(address)
+        print(uri)
+        return xmlrpc.client.ServerProxy(uri)

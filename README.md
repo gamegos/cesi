@@ -21,12 +21,12 @@ Supervisor.
 
 ```bash
 $ # On Ubuntu [18.04, 16.04, 14.04]
-$ sudo apt install -y git python3 python3-pip
+$ sudo apt install -y git python3 python3-pip python3-venv
 $ # On Centos 7
 $ sudo yum install -y git epel-release
-$ sudo yum install -y python34 python34-pip
+$ sudo yum install -y python34 python34-pip python34-venv
 $ # On Fedora 28
-$ sudo dnf install -y git python3 python3-pip
+$ sudo dnf install -y git python3 python3-pip python3-venv
 ```
 
 **Install Cesi**

@@ -15,11 +15,11 @@ build-ui: install-ui
 	@echo 'Builded UI'
 
 install-ui:
-	@echo 'Installing dependecies for UI'
+	@echo 'Installing all dependecies of UI'
 	pushd ${ui_path}; \
 	yarn install; \
 	popd;
-	@echo 'Installed dependecies for UI'
+	@echo 'Installed all dependecies of UI'
 
 remove-ui-node-modules:
 	pushd ${ui_path}; \
@@ -34,3 +34,13 @@ remove-project-cache-files:
 	find . -type f -name '*.db' -exec rm {} +
 
 clean: remove-ui-node-modules remove-python-cache-files remove-project-cache-files
+
+upgrade: upgrade-all-dependecies-of-ui
+
+upgrade-all-dependecies-of-ui:
+	@echo 'Upgrading all dependecies of UI'
+	pushd ${ui_path}; \
+	yarn upgrade --latest; \
+	popd;
+	@echo 'Upgradedd all dependecies of UI'
+

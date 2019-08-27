@@ -35,12 +35,17 @@ remove-project-cache-files:
 
 clean: remove-ui-node-modules remove-python-cache-files remove-project-cache-files
 
-upgrade: upgrade-all-dependecies-of-ui
+upgrade: upgrade-all-dependencies-of-ui upgrade-all-dependencies-of-py
 
-upgrade-all-dependecies-of-ui:
-	@echo 'Upgrading all dependecies of UI'
+upgrade-all-dependencies-of-ui:
+	@echo 'Upgrading all dependencies of UI'
 	pushd ${ui_path}; \
 	yarn upgrade --latest; \
 	popd;
-	@echo 'Upgradedd all dependecies of UI'
+	@echo 'Upgraded all dependencies of UI'
+
+upgrade-all-dependencies-of-py:
+	@echo 'Upgrading all dependencies of Python'
+	poetry update
+	@echo 'Upgraded all dependecies of Python'
 

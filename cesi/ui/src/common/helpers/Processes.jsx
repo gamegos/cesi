@@ -83,7 +83,7 @@ const Process = ({ node, process, refresh }) => {
 
   return (
     <React.Fragment>
-      <tr key={process.name}>
+      <tr key={process.name} style={{background:(process.statename === 'STARTING') ? 'skyblue' : ((process.statename !== 'RUNNING') ? 'red' : 'transparent')}}>
         <td>{process.name}</td>
         <td>{process.group}</td>
         <td>{process.pid}</td>

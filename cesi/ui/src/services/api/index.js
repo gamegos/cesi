@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_PREFIX = "/api/v2";
+const API_PREFIX = process.env.PUBLIC_URL + "/api/v2";
 
 const getRequest = url => {
   return axios
@@ -201,7 +201,7 @@ const groups = {
 const version = {
   get: async () => {
     try {
-      const result = await getRequest("/api/version");
+      const result = await getRequest(process.env.PUBLIC_URL + "/api/version");
       console.log(result);
       return result.version;
     } catch (error) {

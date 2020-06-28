@@ -28,7 +28,7 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
-  "proxy": "http://0.0.0.0:5000",
+  "proxy": "http://cesi-backend:5000",
   "devDependencies": {},
   "browserslist": [
     ">0.2%",

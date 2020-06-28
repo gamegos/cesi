@@ -26,6 +26,7 @@ services:
       - "./cesi/ui/:/app:ro"
     ports:
       - "${CESI_UI_PORT}:3000"
+    stdin_open: true
     environment:
       - NODE_ENV=development
     depends_on:

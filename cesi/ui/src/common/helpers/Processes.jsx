@@ -93,7 +93,7 @@ const Process = ({ node, process, refresh }) => {
     case 'STOPPED':
       rowClass = 'table-warning';
       break;
-    case 'FATAL'
+    case 'FATAL':
       rowClass = 'table-danger';
       break;
     default:

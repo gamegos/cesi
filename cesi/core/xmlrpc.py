@@ -4,7 +4,7 @@ import xmlrpc.client
 class XmlRpc:
     @staticmethod
     def connection(host, port, username, password):
-        if not host.startswith('http://') or host.startswith('https://'):
+        if not (host.startswith('http://') or host.startswith('https://')):
             host = 'http://' + host
         scheme, netloc, path, params, query, fragment = urlparse(host)
         path = path.rstrip('/')

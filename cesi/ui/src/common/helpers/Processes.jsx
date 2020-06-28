@@ -81,9 +81,28 @@ const Process = ({ node, process, refresh }) => {
     });
   };
 
+  let rowClass = '';
+
+  switch (process.statename) {
+    case 'STARTING':
+      rowClass = 'table-info';
+      break;
+    case 'RUNNING':
+      rowClass = 'table-success';
+      break;
+    case 'STOPPED':
+      rowClass = 'table-warning';
+      break;
+    case 'FATAL':
+      rowClass = 'table-danger';
+      break;
+    default:
+      rowClass = '';
+  }
+
   return (
     <React.Fragment>
-      <tr key={process.name} style={{background:(process.statename === 'STARTING') ? 'skyblue' : ((process.statename !== 'RUNNING') ? 'red' : 'transparent')}}>
+      <tr key={process.name} class={rowClass}>
         <td>{process.name}</td>
         <td>{process.group}</td>
         <td>{process.pid}</td>

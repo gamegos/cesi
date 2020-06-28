@@ -7,5 +7,6 @@ Runs cesi and multiple supervisors inside docker containers for testing [CeSI](h
 To run docker containers
 
 ```bash
+$ cp env.sample .env
 $ docker-compose up
 ```

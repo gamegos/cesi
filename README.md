@@ -12,7 +12,7 @@ Supervisor.
 
 - [Chef Cookbook][2]
 - [Package managers][3]
-- [Docker][4] (unavailable)
+- [Docker][4]
 - [Manuel Instructions](#manuel-instructions)
 
 ## Manuel Instructions
@@ -88,6 +88,21 @@ $ sudo systemctl start cesi
 You may want to run Cesi using uWSGI (or any other WSGI deamon). Configure your system in the similiar way to running as a service and use `uwsgi` to start app. Check `defaults/cesi-uwsgi.ini` for details.
 
 While running with uWSGI Cesi config host and port are ignored.
+
+**Run Cesi with Docker**
+
+```
+$ # Download the project (update version to fit your needs)
+$ wget --output-document cesi.tar.gz https://github.com/gamegos/cesi/releases/download/v2.7.1/cesi-extended.tar.gz
+$ tar -xzvf cesi.tar.gz
+$ cd cesi/
+$ docker build -t=cesi:2.7.1 .
+
+$ # Add --detach to background container
+$ docker run --publish 5000:5000 cesi:2.7.1
+
+$ # Open browser to http://localhost:5000 or http://127.0.0.1:5000
+```
 
 ## First Login
 

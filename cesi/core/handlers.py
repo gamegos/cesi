@@ -10,7 +10,7 @@ def xmlrpc_exceptions(f):
         except xmlrpc.client.Fault as err:
             return False, err.faultString
         except xmlrpc.client.ProtocolError as err:
-            return False, err.faultString
+            return False, err.errmsg
         except Exception as err:
             return False, str(err)
 

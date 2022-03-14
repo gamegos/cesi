@@ -69,7 +69,7 @@ $ source venv/bin/activate
 
 $ # Build ui (First you must install dependencies for ui -> yarn) - Optional
 $ cd ${CESI_SETUP_PATH}/cesi/ui
-$ yarn install
+$ yarn install --network-timeout 100000
 $ yarn build
 
 $ # Create cesi.conf.toml file and update cesi.conf.toml for your environment.

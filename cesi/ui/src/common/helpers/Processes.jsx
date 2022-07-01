@@ -10,8 +10,11 @@ import {
   ModalBody
 } from "reactstrap";
 import PropTypes from "prop-types";
+import { Pagination, Collapse } from 'antd';
 
 import api from "services/api";
+
+const { Panel } = Collapse;
 
 class ProcessLog extends React.Component {
   state = {
@@ -103,11 +106,11 @@ const Process = ({ node, process, refresh }) => {
   return (
     <React.Fragment>
       <tr key={process.name} class={rowClass}>
-        <td>{process.name}</td>
-        <td>{process.group}</td>
-        <td>{process.pid}</td>
-        <td>{process.uptime}</td>
-        <td>{process.statename}</td>
+        <td style={{width:'17%'}}>{process.name}</td>
+        <td style={{width:'17%'}}>{process.group}</td>
+        <td style={{width:'17%'}}>{process.pid}</td>
+        <td style={{width:'17%'}}>{process.uptime}</td>
+        <td style={{width:'17%'}}>{process.statename}</td>
         <td>
           <Button color="success" onClick={() => handleProcess("start")}>
             Start
@@ -126,6 +129,10 @@ const Process = ({ node, process, refresh }) => {
 };
 
 class Processes extends React.Component {
+  state = {
+    current_page: 1,
+    pagesize: 5
+  }
   static propTypes = {
     node: PropTypes.object.isRequired,
     filterFunc: PropTypes.func
@@ -133,6 +140,21 @@ class Processes extends React.Component {
   static defaultProps = {
     filterFunc: () => true
   };
+
+  onChange = (current_page,pagesize) => {
+    // console.log(current_page,pagesize)
+    this.setState({
+      current_page: current_page,
+      pagesize: pagesize
+    });
+  }
+  
+  onShowSizeChange = (current_page,pagesize) => {
+    this.setState({
+      current_page: current_page,
+      pagesize: pagesize
+    });
+  }
 
   handleAllProcess = action => {
     const nodeName = this.props.node.general.name;
@@ -170,9 +192,10 @@ class Processes extends React.Component {
             </Button>{" "}
           </CardTitle>
           {node.processes.length !== 0 ? (
-            <Table hover>
+            <Table hover>  <Collapse defaultActiveKey={['1']}>
+            <Panel header="Collapse" key="1">           
               <thead>
-                <tr>
+                <tr>             
                   <th>Name</th>
                   <th>Group</th>
                   <th>Pid</th>
@@ -180,21 +203,24 @@ class Processes extends React.Component {
                   <th>State</th>
                   <th>Action</th>
                 </tr>
-              </thead>
+              </thead >
               <tbody>
-                {node.processes.filter(filterFunc).map(process => (
+                {node.processes.filter(filterFunc).slice((this.state.current_page-1)*this.state.pagesize,this.state.current_page*this.state.pagesize).map(process => (
                   <Process
                     key={`${node.name}:${process.name}`}
-                    node={node}
+                    node={node} 
                     process={process}
                     refresh={this.props.refresh}
                   />
                 ))}
-              </tbody>
+              </tbody> </Panel>
+          </Collapse>
             </Table>
           ) : (
             <p>No processes configured.</p>
           )}
+          {/*  antd Pagination */}
+          <Pagination defaultPageSize={5} pageSizeOptions={[5,10,20,50]} showQuickJumper defaultCurrent={1} total={node.processes.length} showTotal={total => `Total ${total} items`} onChange={(current_page,pagesize) => this.onChange(current_page,pagesize)} onShowSizeChange={(current_page,pagesize) => this.onShowSizeChange(current_page,pagesize)} />
         </Card>
         <br />
       </React.Fragment>

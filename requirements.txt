@@ -1,5 +1,6 @@
 flask==1.1.2
-flask-sqlalchemy==2.4.3
+flask-sqlalchemy==2.5.1
 psycopg2-binary==2.8.5
 pymysql==0.9.3
 tomlkit==0.5.11
+itsdangerous==2.0.1

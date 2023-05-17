@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/cesi/static/css/main.1584120f.chunk.css",
+    "main.js": "/cesi/static/js/main.3c897545.chunk.js",
+    "main.js.map": "/cesi/static/js/main.3c897545.chunk.js.map",
+    "runtime-main.js": "/cesi/static/js/runtime-main.22c0eb5e.js",
+    "runtime-main.js.map": "/cesi/static/js/runtime-main.22c0eb5e.js.map",
+    "static/css/2.0e1a4c73.chunk.css": "/cesi/static/css/2.0e1a4c73.chunk.css",
+    "static/js/2.51644260.chunk.js": "/cesi/static/js/2.51644260.chunk.js",
+    "static/js/2.51644260.chunk.js.map": "/cesi/static/js/2.51644260.chunk.js.map",
+    "index.html": "/cesi/index.html",
+    "precache-manifest.5b705781bda7298d2a42c550d289cce9.js": "/cesi/precache-manifest.5b705781bda7298d2a42c550d289cce9.js",
+    "service-worker.js": "/cesi/service-worker.js",
+    "static/css/2.0e1a4c73.chunk.css.map": "/cesi/static/css/2.0e1a4c73.chunk.css.map",
+    "static/css/main.1584120f.chunk.css.map": "/cesi/static/css/main.1584120f.chunk.css.map",
+    "static/js/2.51644260.chunk.js.LICENSE.txt": "/cesi/static/js/2.51644260.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.22c0eb5e.js",
+    "static/css/2.0e1a4c73.chunk.css",
+    "static/js/2.51644260.chunk.js",
+    "static/css/main.1584120f.chunk.css",
+    "static/js/main.3c897545.chunk.js"
+  ]
+}

@@ -1,6 +1,10 @@
+URL_PREFIX = ''
 SHELL := /bin/bash
 cwd := $(shell pwd)
 ui_path =${cwd}/cesi/ui
+
+run: build-ui
+	cd $cwd; python3 cesi/run.py --config-file defaults/cesi.conf.toml  --url_prefix $(URL_PREFIX)
 
 release: build-ui clean
 	@echo 'Releasing...'
@@ -8,6 +12,7 @@ release: build-ui clean
 
 build-ui: install-ui
 	@echo 'Building UI'
+	export PUBLIC_URL=$(URL_PREFIX); \
 	pushd ${ui_path}; \
 	yarn build; \
 	tar -czvf ${cwd}/../build-ui.tar.gz build; \

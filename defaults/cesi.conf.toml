@@ -24,25 +24,25 @@ admin_password = "admin"        # Password of admin user
 
 # Default supervisord nodes
 [[nodes]]
-name = "products-server"
+name = "this-server"
 environment = ""
-username = "root"
-password = "root"
-host = "products.example.com"
-port = "9001"
+username = "test1"
+password = "thepassword"
+host = "127.0.0.1"
+port = "19001"
 
-[[nodes]]
-name = "analysis-server"
-environment = ""
-username = "user123"
-password = "pass123"
-host = "analysis.example.com"
-port = "9001"
-
-[[nodes]]
-name = "monitoring-server"
-environment = ""
-username = ""
-password = ""
-host = "monitoring.example.com"
-port = "9001"
+# [[nodes]]
+# name = "analysis-server"
+# environment = ""
+# username = "user123"
+# password = "pass123"
+# host = "analysis.example.com"
+# port = "9001"
+#
+# [[nodes]]
+# name = "monitoring-server"
+# environment = ""
+# username = ""
+# password = ""
+# host = "monitoring.example.com"
+# port = "9001"

@@ -29,10 +29,23 @@ $ # On Fedora 28
 $ sudo dnf install -y git python3 python3-pip python3-venv
 ```
 
+**Using Makefile**
+
+```bash
+## serve under /cesi
+make run URL_PREFIX=/cesi
+
+## or with more control
+URL_PREFIX=/cesi
+make install-ui URL_PREFIX=$URL_PREFIX
+python3 cesi/run.py --config-file defaults/cesi.conf.toml  --url_prefix $URL_PREFIX
+```
+
 **Install Cesi**
 
 ```bash
 $ export CESI_SETUP_PATH=~/cesi
+$ export PUBLIC_URL=''  ## this is the url_prefix to be served under. e.g.  /cesi
 $ mkdir ${CESI_SETUP_PATH}
 $ cd ${CESI_SETUP_PATH}
 
@@ -46,7 +59,7 @@ $ source venv/bin/activate
 (venv) $ pip3 install -r requirements.txt
 
 $ # Run with command line
-(venv) $ python3 ${CESI_SETUP_PATH}/cesi/run.py --config-file ${CESI_SETUP_PATH}/defaults/cesi.conf.toml
+(venv) $ python3 ${CESI_SETUP_PATH}/cesi/run.py --config-file ${CESI_SETUP_PATH}/defaults/cesi.conf.toml --url_prefix $PUBLIC_URL
 ```
 
 **Install Cesi as a service**

@@ -60,7 +60,27 @@ def configure(config_file_path):
 
     signal.signal(signal.SIGHUP, lambda signum, frame: cesi.reload())
 
+
+
     return app, cesi
+
+class PrefixMiddleware(object):
+    '''
+    source: https://stackoverflow.com/questions/18967441/add-a-prefix-to-all-flask-routes/36033627#36033627
+    '''
+    def __init__(self, app, prefix=''):
+        self.app = app
+        self.prefix = prefix
+    def __call__(self, environ, start_response):
+        if environ['PATH_INFO'].startswith(self.prefix):
+            environ['PATH_INFO'] = environ['PATH_INFO'][len(self.prefix):]
+            environ['SCRIPT_NAME'] = self.prefix
+            return self.app(environ, start_response)
+        else:
+            start_response('404', [('Content-Type', 'text/plain')])
+            return ["This url does not belong to the app.".encode()]
+
+
 
 
 if __name__ == "__main__":
@@ -80,9 +100,15 @@ if __name__ == "__main__":
         action="store_true",
     )
     parser.add_argument("--version", action="version", version=__version__)
+    parser.add_argument(
+        "--url_prefix",
+        default = '',
+    )
 
     args = parser.parse_args()
     app, cesi = configure(args.config_file)
+
+    app.wsgi_app = PrefixMiddleware(app.wsgi_app, prefix=args.url_prefix)
 
     app.run(
         host=args.host, port=args.port, use_reloader=args.auto_reload, debug=args.debug
